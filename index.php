@@ -12,7 +12,6 @@
 	$permissions = ['email']; // optional
 	session_start();
 	$loginUrl = $helper->getLoginUrl('http://localhost/MommysSecret/login-callback.php', $permissions);
-	$PostUrl = $helper->getLoginUrl('http://localhost/MommysSecret/Post.php', $permissions);
 	//echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
 	//echo '<a href="' . $PostUrl . '">Post</a>';
 	header("location: ".$loginUrl);

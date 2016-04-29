@@ -38,5 +38,4 @@
 	
 	$fbAccount = urlencode($userNode->getName()); 
 	
-	//header("location: ".$googleFormUrl.$fbAccount);
-	header("location: http://localhost/MommysSecret/Post.php");
+	header("location: ".$googleFormUrl.$fbAccount);
