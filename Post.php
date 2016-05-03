@@ -1,37 +1,47 @@
 <?php
-
-function ObtainPageSource($url)
-{
-	$ch = curl_init();
-	$timeout = 5;
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($curl, CURLOPT_HEADER, false);
-	$data = curl_exec($ch);
-	return $data;
-}
-	$url = "https://docs.google.com/forms/d/1kCA1gdJDOD0X0hPfHdW4E9z0k7HPuBl0AaimQLnpAnw/viewform?entry.743012400=rexcool";
-	$data = ObtainPageSource($url);
-	$googleFormPattern = "/(?<=<form action=\")[^\"]*/";
-	$formActionUrl = '';
-
-	if (preg_match($googleFormPattern,$data, $matches)) {
-		$formActionUrl = $matches[0];
+	require_once __DIR__ . '/vendor/autoload.php';
+	if(!session_id()) {
+		session_start();
 	}
-	else {
-		echo "Not match";
+	$fb = new Facebook\Facebook([
+			'app_id' => '1540605312908660',
+			'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+			'default_graph_version' => 'v2.6',
+	]);
+	$helper = $fb->getRedirectLoginHelper();
+	try {
+		$accessToken = $helper->getAccessToken();
+	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		// When Graph returns an error
+		echo 'Graph returned an error: ' . $e->getMessage();
+		exit;
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		// When validation fails or other local issues
+		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+		exit;
 	}
-	$redirectUrl = "http://localhost/MommysSecret/RedirectedPage.php";
-	$replacement = "<script type=\"text/javascript\">var submitted=false;</script>
-		<iframe name=\"hidden_iframe\" id=\"hidden_iframe\"
-		style=\"display:none;\" onload=\"if(submitted)
-		{window.location='".$redirectUrl."';}\"></iframe>
-		<form action=\"".$formActionUrl
-		."\" method=\"post\"
-		target=\"hidden_iframe\" onsubmit=\"submitted=true;\">";
 	
-	echo preg_replace("/(<form[^>]*>)/", $replacement, $data);
+	$fb->setDefaultAccessToken($accessToken);
 	
-	//echo htmlspecialchars($replacedString);
+	$fbAccount = GetFBAccount($fb);
+	
+	echo $fbAccount;
+	
+	function GetFBAccount($fb)
+	{
+		try {
+			$response = $fb->get('/me');
+			$userNode = $response->getGraphUser();
+		} catch(Facebook\Exceptions\FacebookResponseException $e) {
+			// When Graph returns an error
+			echo 'Graph returned an error: ' . $e->getMessage();
+			exit;
+		} catch(Facebook\Exceptions\FacebookSDKException $e) {
+			// When validation fails or other local issues
+			echo 'Facebook SDK returned an error: ' . $e->getMessage();
+			exit;
+		}
+		return $userNode->getName();
+	}
 ?>
 	

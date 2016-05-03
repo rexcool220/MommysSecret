@@ -22,20 +22,32 @@
 	}
 	
 	$fb->setDefaultAccessToken($accessToken);
-	try {
-		$response = $fb->get('/me');
-		$userNode = $response->getGraphUser();
-	} catch(Facebook\Exceptions\FacebookResponseException $e) {
-		// When Graph returns an error
-		echo 'Graph returned an error: ' . $e->getMessage();
-		exit;
-	} catch(Facebook\Exceptions\FacebookSDKException $e) {
-		// When validation fails or other local issues
-		echo 'Facebook SDK returned an error: ' . $e->getMessage();
-		exit;
+	
+	$fbAccount = GetFBAccount($fb);
+	
+	$googleFormUrl = 'https://docs.google.com/forms/d/1kCA1gdJDOD0X0hPfHdW4E9z0k7HPuBl0AaimQLnpAnw/viewform?entry.743012400=';
+	
+	$customedGoogleForm = 'http://localhost/MommysSecret/CustomedGoogleForm.php';
+	
+	$RedirectUrl = $customedGoogleForm.'?CustomedGoogleForm='.$googleFormUrl.'&FbAccount='.urlencode($fbAccount);
+	
+	header("location: ".$RedirectUrl);
+
+	function GetFBAccount($fb)
+	{
+		try {
+			$response = $fb->get('/me');
+			$userNode = $response->getGraphUser();
+		} catch(Facebook\Exceptions\FacebookResponseException $e) {
+			// When Graph returns an error
+			echo 'Graph returned an error: ' . $e->getMessage();
+			exit;
+		} catch(Facebook\Exceptions\FacebookSDKException $e) {
+			// When validation fails or other local issues
+			echo 'Facebook SDK returned an error: ' . $e->getMessage();
+			exit;
+		}
+		return $userNode->getName();
 	}
-	$googleFormUrl = 'https://docs.google.com/forms/d/1Lri9S19QPEgYcIKXlG_GiNDlaEAO3mPZtUOpBkVbyDc/viewform?entry.999339676=';
+?>
 	
-	$fbAccount = urlencode($userNode->getName()); 
-	
-	header("location: ".$googleFormUrl.$fbAccount);
