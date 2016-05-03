@@ -11,6 +11,7 @@
 	$helper = $fb->getRedirectLoginHelper();
 	$permissions = ['email']; // optional
 	session_start();
-	$loginUrl = $helper->getLoginUrl('http://localhost/MommysSecret/GetFBAccount.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://localhost/MommysSecret/FBPostWallCallBack.php', $permissions);
 	header("location: ".$loginUrl);
 ?>
+	

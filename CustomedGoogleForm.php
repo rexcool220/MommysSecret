@@ -26,12 +26,13 @@
 	$data = ObtainPageSource($customedGoogleForm.urlencode($fbAccount));
 	$googleFormPattern = "/(?<=<form action=\")[^\"]*/";
 
-	$redirectUrl = "http://localhost/MommysSecret/Post.php";
+	$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$redirectUrl = "http://localhost/MommysSecret/FBPostWall.php";
 	$replacement = "<script type=\"text/javascript\">var submitted=false;</script>
 		<iframe name=\"hidden_iframe\" id=\"hidden_iframe\"
 		style=\"display:none;\" onload=\"if(submitted)
 		{window.location='".$redirectUrl."';}\"></iframe>
-		<form action=\"".$customedGoogleForm.urlencode($fbAccount)
+		<form action=\"".$actual_link
 		."\" method=\"post\"
 		target=\"hidden_iframe\" onsubmit=\"submitted=true;\">";
 	
