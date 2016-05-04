@@ -21,6 +21,8 @@
 		exit;
 	}
 	
+	
+	
 	$customedGoogleForm = $_GET['CustomedGoogleForm'];
 	$fbAccount = $_GET['FbAccount'];
 	$data = ObtainPageSource($customedGoogleForm.urlencode($fbAccount));
@@ -32,7 +34,7 @@
 		<iframe name=\"hidden_iframe\" id=\"hidden_iframe\"
 		style=\"display:none;\" onload=\"if(submitted)
 		{window.location='".$redirectUrl."';}\"></iframe>
-		<form action=\"".$actual_link
+		<form action=\"".$customedGoogleForm
 		."\" method=\"post\"
 		target=\"hidden_iframe\" onsubmit=\"submitted=true;\">";
 	

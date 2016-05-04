@@ -23,27 +23,31 @@
 	
 	$fb->setDefaultAccessToken($accessToken);
 	
-	$fbAccount = GetFBAccount($fb);
+	$fbAccount = PublishMessage($fb);
 	
-	echo $fbAccount;
+	$next = 'https://www.facebook.com/';
+	$logoutUrl = $helper->getLogoutUrl($accessToken, $next);
+	echo '<a href="' . htmlspecialchars($logoutUrl) . '">Log out with Facebook!</a>';
 	
 	//header("location: ".$RedirectUrl);
 
-	function GetFBAccount($fb)
+	function PublishMessage($fb)
 	{
+		# Facebook PHP SDK v5: Publish to User's Timeline
 		try {
-			$response = $fb->get('/me');
-			$userNode = $response->getGraphUser();
-		} catch(Facebook\Exceptions\FacebookResponseException $e) {
-			// When Graph returns an error
-			echo 'Graph returned an error: ' . $e->getMessage();
-			exit;
-		} catch(Facebook\Exceptions\FacebookSDKException $e) {
-			// When validation fails or other local issues
-			echo 'Facebook SDK returned an error: ' . $e->getMessage();
-			exit;
+			$res = $fb->post( '/622296324591674/feed', array(
+					'message' => 'Test1234'
+			));
+		} catch (Exception $e) {
+			echo $e->getMessage();
 		}
-		return $userNode->getName();
+		
+		try {
+			$post = $res->getGraphObject();
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
+		var_dump( $post );
 	}
 ?>
 	

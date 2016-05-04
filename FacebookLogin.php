@@ -12,5 +12,6 @@
 	$permissions = ['email']; // optional
 	session_start();
 	$loginUrl = $helper->getLoginUrl('http://localhost/MommysSecret/GetFBAccount.php', $permissions);
+	
 	header("location: ".$loginUrl);
 ?>
