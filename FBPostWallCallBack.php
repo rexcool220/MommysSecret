@@ -26,7 +26,9 @@
 	$fbAccount = PublishMessage($fb);
 	
 	$next = 'https://www.facebook.com/';
+	
 	$logoutUrl = $helper->getLogoutUrl($accessToken, $next);
+	
 	echo '<a href="' . htmlspecialchars($logoutUrl) . '">Log out with Facebook!</a>';
 	
 	//header("location: ".$RedirectUrl);
