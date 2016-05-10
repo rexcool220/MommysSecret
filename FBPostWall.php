@@ -9,9 +9,8 @@
 	  'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
-	$permissions = ['email']; // optional
+	$permissions = ['email','publish_actions']; // optional
 	session_start();
 	$loginUrl = $helper->getLoginUrl('http://localhost/MommysSecret/FBPostWallCallBack.php', $permissions);
 	header("location: ".$loginUrl);
 ?>
-	

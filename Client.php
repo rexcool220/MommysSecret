@@ -1,5 +1,7 @@
 <?php
-$message = "Hello Server";
+$fbAccount = $_GET['FbAccount'];
+
+$message = $fbAccount;
 echo "Message To server :".$message;
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 $connection = socket_connect($socket,'127.0.0.1', 1234); 
