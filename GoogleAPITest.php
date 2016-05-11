@@ -6,7 +6,7 @@ include_once "./vendor/google/apiclient/examples/templates/base.php";
 
 $client = new Google_Client();
 
-putenv("GOOGLE_APPLICATION_CREDENTIALS=Mommyssecret-86f67288f5ad.json");
+putenv("GOOGLE_APPLICATION_CREDENTIALS=Mommyssecret-e24d4b121c15.json");
 
 if ($credentials_file = checkServiceAccountCredentialsFile()) {
   // set the location manually
@@ -30,6 +30,7 @@ $accessToken = $tokenArray["access_token"];
 
 $service = new Google_Service_Drive($client);
 $results = $service->files->get($fileId);
+
 
 
 
