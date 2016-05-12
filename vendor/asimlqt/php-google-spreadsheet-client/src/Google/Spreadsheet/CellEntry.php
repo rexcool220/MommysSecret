@@ -16,7 +16,7 @@
  */
 namespace Google\Spreadsheet;
 
-use SimpleXMLElement;
+use Google\Spreadsheet\Exception\Exception;
 
 /**
  * Worksheet Data.
@@ -63,6 +63,13 @@ class CellEntry
     protected $content;
     
     /**
+     * The input value of this cell
+     *
+     * @var string
+     */
+    protected $inputValue;
+
+    /**
      * Constructor
      * 
      * @param \SimpleXMLElement $xml
@@ -73,7 +80,8 @@ class CellEntry
         $this->xml = $xml;
         $this->postUrl = $postUrl;
         $this->setCellLocation();
-        $this->content = $this->xml->content->__toString();
+        $this->content = $xml->content->__toString();
+        $this->inputValue = Util::extractAttributeFromXml($xml, "gs", "inputValue");
     }
 
     /**
@@ -132,13 +140,33 @@ class CellEntry
     }
 
     /**
+     * Get post url
+     * 
+     * @return string
+     */
+    public function getPostUrl()
+    {
+        return $this->postUrl;
+    }
+
+    /**
      * Get the the <gs:cell inputValue="FORMULA"> of this cell from its XML
      * 
      * @return string
      */
     public function getInputValue()
     {
-        return Util::extractAttributeFromXml($this->xml, 'inputValue', 'gs', 'cell');
+        return $this->inputValue;
+    }
+
+    /**
+     * Set the input value of this cell
+     * 
+     * @param string $inputValue
+     */
+    public function setInputValue($inputValue)
+    {
+        $this->inputValue = $inputValue;
     }
 
     /**
@@ -160,52 +188,47 @@ class CellEntry
     {
         return $this->content;
     }
-
-    /**
-     * Set the contents of this cell
-     * 
-     * @param string $content
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
     
     /**
      * Update the cell value
      *
-     * @param string $value
+     * @param string $value Can be a simple constant value or a formula
      * 
      * @return null
      */
     public function update($value)
     {
-        $entry = sprintf('
-            <entry xmlns="http://www.w3.org/2005/Atom"
-                xmlns:gs="http://schemas.google.com/spreadsheets/2006">
-              <gs:cell row="%u" col="%u" inputValue="%s"/>
-            </entry>',
-            $this->row,
-            $this->column,
-            $value
-        );
+        $entry = new \SimpleXMLElement("
+            <entry
+                xmlns=\"http://www.w3.org/2005/Atom\"
+                xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">
+            </entry>
+        ");
 
-        $res = ServiceRequestFactory::getInstance()->post($this->postUrl, $entry);
-        $this->xml = new SimpleXMLElement($res);
+        $child = $entry->addChild("xmlns:gs:cell");
+        $child->addAttribute("row", $this->row);
+        $child->addAttribute("col", $this->column);
+        $child->addAttribute("inputValue", $value);
+
+        $res = ServiceRequestFactory::getInstance()->post($this->postUrl, $entry->asXML());
+        $this->xml = new \SimpleXMLElement($res);
     }
 
     /**
      * Get the location of the cell.
      * 
      * @return array
+     *
+     * @codeCoverageIgnore
+     * This method is covered by getRow and getColumn tests
      */
     protected function setCellLocation()
     {
         $id = $this->xml->id->__toString();
-        preg_match('@/R(\d+)C(\d+)@', $id, $matches);
+        preg_match("@/R(\d+)C(\d+)@", $id, $matches);
 
         if(count($matches) !== 3) {
-            throw new Exception('Filed to get the location of the cell');
+            throw new Exception("Filed to get the location of the cell");
         }
 
         $this->row = (int) $matches[1];
@@ -219,7 +242,7 @@ class CellEntry
      */
     public function getEditUrl()
     {
-        return Util::getLinkHref($this->xml, 'edit');
+        return Util::getLinkHref($this->xml, "edit");
     }
     
 }

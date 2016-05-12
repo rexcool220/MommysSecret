@@ -4,25 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "466180f1f1be20542285897c02adcb90",
-    "content-hash": "e5dd6f24f773da8dedad2ba76a56cebc",
+    "hash": "2489e7d45b408188d9ad58eb9be85465",
+    "content-hash": "eb92cf8f647123e1876276ef2ace2240",
     "packages": [
         {
             "name": "asimlqt/php-google-spreadsheet-client",
-            "version": "2.3.7",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asimlqt/php-google-spreadsheet-client.git",
-                "reference": "05527b328b2cf08c4b1992bdb531116305c1b711"
+                "reference": "fd908c641f394bf459f1042288bd9a6ea172b6be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asimlqt/php-google-spreadsheet-client/zipball/05527b328b2cf08c4b1992bdb531116305c1b711",
-                "reference": "05527b328b2cf08c4b1992bdb531116305c1b711",
+                "url": "https://api.github.com/repos/asimlqt/php-google-spreadsheet-client/zipball/fd908c641f394bf459f1042288bd9a6ea172b6be",
+                "reference": "fd908c641f394bf459f1042288bd9a6ea172b6be",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.6.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "4.4.2"
@@ -42,12 +42,6 @@
                     "name": "Asim Liaquat",
                     "email": "asimlqt22@gmail.com",
                     "role": "Developer"
-                },
-                {
-                    "name": "Martin Czygan",
-                    "email": "martin.czygan@gmail.com",
-                    "homepage": "http://twitter.com/cvvfj",
-                    "role": "Packager"
                 }
             ],
             "description": "Google Spreadsheet PHP Client",
@@ -56,7 +50,7 @@
                 "google",
                 "spreadsheet"
             ],
-            "time": "2015-12-13 15:13:17"
+            "time": "2016-04-22 09:14:40"
         },
         {
             "name": "facebook/php-sdk-v4",

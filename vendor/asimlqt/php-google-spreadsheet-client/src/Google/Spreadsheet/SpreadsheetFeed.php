@@ -16,8 +16,7 @@
  */
 namespace Google\Spreadsheet;
 
-use ArrayIterator;
-use SimpleXMLElement;
+use Google\Spreadsheet\Exception\SpreadsheetNotFoundException;
 
 /**
  * Spreadsheet feed. 
@@ -26,29 +25,23 @@ use SimpleXMLElement;
  * @subpackage Spreadsheet
  * @author     Asim Liaquat <asimlqt22@gmail.com>
  */
-class SpreadsheetFeed extends ArrayIterator
+class SpreadsheetFeed
 {
     /**
      * The spreadsheet feed xml object
      * 
-     * @var \SimpleXMLElement
+     * @var SimpleXMLElement
      */
     protected $xml;
 
     /**
-     * Initializes the the spreadsheet feed object
+     * Initializes the spreadsheet feed object
      * 
-     * @param string $xml the raw xml string of a spreadsheet feed
+     * @param \SimpleXMLElement $xml
      */
-    public function __construct($xml)
+    public function __construct(\SimpleXMLElement $xml)
     {
-        $this->xml = new SimpleXMLElement($xml);
-
-        $spreadsheets = array();
-        foreach ($this->xml->entry as $entry) {
-            $spreadsheets[] = new Spreadsheet($entry);
-        }
-        parent::__construct($spreadsheets);
+        $this->xml = $xml;
     }
 
     /**
@@ -62,13 +55,39 @@ class SpreadsheetFeed extends ArrayIterator
     }
     
     /**
+     * Get the feed id. Returns the full url.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->xml->id->__toString();
+    }
+    
+    /**
+     * Get all spreadsheets in the feed
+     * 
+     * @return Spreadsheet[]
+     */
+    public function getEntries()
+    {
+        $spreadsheets = [];
+        foreach ($this->xml->entry as $entry) {
+            $spreadsheets[] = new Spreadsheet($entry);
+        }
+        return $spreadsheets;
+    }
+
+    /**
      * Gets a spreadhseet from the feed by its title. i.e. the name of 
      * the spreadsheet in google drive. This method will return only the
      * first spreadsheet found with the specified title.
      * 
      * @param string $title
      * 
-     * @return \Google\Spreadsheet\Spreadsheet|null
+     * @return Spreadsheet
+     *
+     * @throws SpreadsheetNotFoundException
      */
     public function getByTitle($title)
     {
@@ -77,7 +96,8 @@ class SpreadsheetFeed extends ArrayIterator
                 return new Spreadsheet($entry);
             }
         }
-        return null;
+
+        throw new SpreadsheetNotFoundException();
     }
 
 }

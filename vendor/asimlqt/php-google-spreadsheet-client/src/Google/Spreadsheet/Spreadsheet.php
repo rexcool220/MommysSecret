@@ -16,8 +16,7 @@
  */
 namespace Google\Spreadsheet;
 
-use SimpleXMLElement;
-use DateTime;
+use Google\Spreadsheet\Exception\WorksheetNotFoundException;
 
 /**
  * Spreadsheet. Represents a single spreadsheet.
@@ -40,9 +39,9 @@ class Spreadsheet
     /**
      * Initializes the spreadsheet object
      * 
-     * @param SimpleXMLElement $xml
+     * @param \SimpleXMLElement $xml
      */
-    public function __construct(SimpleXMLElement $xml)
+    public function __construct(\SimpleXMLElement $xml)
     {
         $this->xml = $xml;
     }
@@ -74,7 +73,7 @@ class Spreadsheet
      */
     public function getUpdated()
     {
-        return new DateTime($this->xml->updated->__toString());
+        return new \DateTime($this->xml->updated->__toString());
     }
 
     /**
@@ -90,12 +89,32 @@ class Spreadsheet
     /**
      * Get all the worksheets which belong to this spreadsheet
      * 
-     * @return \Google\Spreadsheet\WorksheetFeed
+     * @return WorksheetFeed
      */
-    public function getWorksheets()
+    public function getWorksheetFeed()
     {
         $res = ServiceRequestFactory::getInstance()->get($this->getWorksheetsFeedUrl());
-        return new WorksheetFeed($res);
+        return new WorksheetFeed(new \SimpleXMLElement($res));
+    }
+
+    /**
+     * Get a single worksheet by it's title. If there is more than
+     * one worksheet with the same title then the first one matched 
+     * will be returned.
+     * 
+     * @return Worksheet
+     *
+     * @throws WorksheetNotFoundException
+     */
+    public function getWorksheetByTitle($title)
+    {
+        foreach ($this->getWorksheetFeed()->getEntries() as $worksheet) {
+            if ($worksheet->getTitle() === $title) {
+                return $worksheet;
+            }
+        }
+
+        throw new WorksheetNotFoundException(); 
     }
 
     /**
@@ -105,23 +124,27 @@ class Spreadsheet
      * @param int    $rowCount default is 100
      * @param int    $colCount default is 10
      *
-     * @return \Google\Spreadsheet\Worksheet
+     * @return Worksheet
      */
     public function addWorksheet($title, $rowCount=100, $colCount=10)
     {
-        $entry = sprintf('
-            <entry xmlns="http://www.w3.org/2005/Atom" xmlns:gs="http://schemas.google.com/spreadsheets/2006">
-                <title>%s</title>
-                <gs:rowCount>%u</gs:rowCount>
-                <gs:colCount>%u</gs:colCount>
-            </entry>',
-            $title,
-            $rowCount,
-            $colCount
+        $entry = new \SimpleXMLElement("
+            <entry
+                xmlns=\"http://www.w3.org/2005/Atom\"
+                xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">
+            </entry>
+        ");
+
+        $entry->title = $title;
+        $entry->addChild("xmlns:gs:rowCount", (int) $rowCount);
+        $entry->addChild("xmlns:gs:colCount", (int) $colCount);
+
+        $response = ServiceRequestFactory::getInstance()->post(
+            $this->getWorksheetsFeedUrl(),
+            $entry->asXML()
         );
 
-        $response = ServiceRequestFactory::getInstance()->post($this->getWorksheetsFeedUrl(), $entry);
-        return new Worksheet(new SimpleXMLElement($response));
+        return new Worksheet(new \SimpleXMLElement($response));
     }
 
     /**

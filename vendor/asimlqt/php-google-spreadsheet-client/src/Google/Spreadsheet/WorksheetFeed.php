@@ -16,8 +16,7 @@
  */
 namespace Google\Spreadsheet;
 
-use ArrayIterator;
-use SimpleXMLElement;
+use Google\Spreadsheet\Exception\WorksheetNotFoundException;
 
 /**
  * Worksheet Feed.
@@ -26,7 +25,7 @@ use SimpleXMLElement;
  * @subpackage Spreadsheet
  * @author     Asim Liaquat <asimlqt22@gmail.com>
  */
-class WorksheetFeed extends ArrayIterator
+class WorksheetFeed
 {
     /**
      * Worksheet feed xml object
@@ -38,19 +37,11 @@ class WorksheetFeed extends ArrayIterator
     /**
      * Initializes thie worksheet feed object
      * 
-     * @param string $xml
+     * @param SimpleXMLElement $xml
      */
-    public function __construct($xml)
+    public function __construct(\SimpleXMLElement $xml)
     {
-        $this->xml = new SimpleXMLElement($xml);
-
-        $worksheets = array();
-        foreach ($this->xml->entry as $entry) {
-            $worksheet = new Worksheet($entry);
-            $worksheet->setPostUrl($this->getPostUrl());
-            $worksheets[] = $worksheet;
-        }
-        parent::__construct($worksheets);
+        $this->xml = $xml;
     }
 
     /**
@@ -64,32 +55,37 @@ class WorksheetFeed extends ArrayIterator
     }
     
     /**
+     * Get the feed id. Returns the full url.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->xml->id->__toString();
+    }
+    
+    /**
+     * Get all worksheets in this feed
+     * 
+     * @return Worksheet[]
+     */
+    public function getEntries()
+    {
+        $worksheets = [];
+        foreach ($this->xml->entry as $entry) {
+            $worksheets[] = new Worksheet($entry);
+        }
+        return $worksheets;
+    }
+
+    /**
      * Get the worksheet feed post url
      * 
      * @return string
      */
-    private function getPostUrl()
+    public function getPostUrl()
     {
         return Util::getLinkHref($this->xml, 'http://schemas.google.com/g/2005#post');
-    }
-
-    /**
-     * Get the cell feed url
-     *
-     * @return string
-     */
-    public function getCellFeedUrl()
-    {
-        return Util::getLinkHref($this->xml, 'http://schemas.google.com/spreadsheets/2006#cellsfeed');
-    }
-
-    /**
-     * Get the export csv url
-     *
-     * @return string
-     */
-    public function getExportCsvUrl() {
-        return Util::getLinkHref($this->xml, 'http://schemas.google.com/spreadsheets/2006#exportcsv');
     }
 
     /**
@@ -97,18 +93,41 @@ class WorksheetFeed extends ArrayIterator
      * 
      * @param string $title name of the worksheet
      * 
-     * @return \Google\Spreadsheet\Worksheet
+     * @return Worksheet
+     *
+     * @throws WorksheetNotFoundException
      */
     public function getByTitle($title)
     {
         foreach ($this->xml->entry as $entry) {
             if ($entry->title->__toString() == $title) {
-                $worksheet = new Worksheet($entry);
-                $worksheet->setPostUrl($this->getPostUrl());
-                return $worksheet;
+                return new Worksheet($entry);
             }
         }
-        return null;
+        
+        throw new WorksheetNotFoundException();
+    }
+    
+    /**
+     * Get a worksheet by id
+     *
+     * @param string $id of the worksheet
+     *
+     * @return Worksheet
+     *
+     * @throws WorksheetNotFoundException
+     */
+    public function getById($id)
+    {
+        $feedId = $this->xml->id->__toString();
+
+        foreach ($this->xml->entry as $entry) {
+            if ($entry->id == $feedId . '/' . $id) {
+                return new Worksheet($entry);
+            }
+        }
+
+        throw new WorksheetNotFoundException();
     }
 
 }

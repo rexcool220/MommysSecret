@@ -1,13 +1,36 @@
 [![Build Status](https://travis-ci.org/asimlqt/php-google-spreadsheet-client.svg?branch=master)](https://travis-ci.org/asimlqt/php-google-spreadsheet-client)
 
+> Note: This library has been updated to v3 and it is not backwards compatible with v2 so please test/update your code appropriately before upgrading.
+
+# Contents
+* [Introduction](#introduction)
+* [Installation](#installation)
+* [Bootstrapping](#bootstrapping)
+* [Spreadsheet](#spreadsheet)
+    * [Retrieving a list of spreadsheets](#retrieving-a-list-of-spreadsheets)
+    * [Retrieving a public spreadsheet](#retrieving-a-public-spreadsheet)
+* [Worksheet](#worksheet)
+    * [Retrieving a list of worksheets](#retrieving-a-list-of-worksheets)
+    * [Adding a worksheet](#adding-a-worksheet)
+    * [Adding headers to a new worksheet](#adding-headers-to-a-new-worksheet)
+    * [Deleting a worksheet](#deleting-a-worksheet)
+* [List feed](#list-feed)
+    * [Retrieving a list feed](#retrieving-a-list-feed)
+    * [Adding a list row](#adding-a-list-row)
+    * [Updating a list row](#updating-a-list-row)
+* [Cell feed](#cell-feed)
+    * [Retrieving a cell feed](#retrieving-a-cell-feed)
+    * [Updating a cell](#updating-a-cell)
+* [Batch request](#updating-multiple-cells-with-a-batch-request)
+
 # Introduction
 
 This library provides a simple interface to the Google Spreadsheet API.
 
 There are a couple of important things to note.
 
-* This library requires a valid OAuth access token to work but does not provide any means of generating one. The [Google APIs Client Library for PHP](https://github.com/google/google-api-php-client) has all the functionality required for for generating and refreshing tokens so it would have been a waste of time duplicating the official google library. I have created a demo application which shows how to generate an OAuth token [here](https://github.com/asimlqt/php-google-oauth).
-* You can not create spreadsheets using this (PHP Google Spreadsheet Client) library, as creating spreadsheets is not part of the Spreadsheet API and the functionality already exists in the official Google Client Library.
+* This library requires a valid OAuth access token to work but does not provide any means of generating one. The [Google APIs Client Library for PHP](https://github.com/google/google-api-php-client) has all the functionality required for for generating and refreshing tokens so it would have been a waste of time duplicating the official google library.
+* You can not create spreadsheets using this library, as creating spreadsheets is not part of the Spreadsheet API, rather it's part of the Drive API. See the official [Google APIs Client Library for PHP](https://github.com/google/google-api-php-client).
 
 I strongly recommend you read through the [official Google Spreadsheet API documentation](https://developers.google.com/google-apps/spreadsheets) to get a grasp of the concepts.
 
@@ -22,7 +45,7 @@ Using [composer](https://getcomposer.org/) is the recommended way to install it.
 ```json
 {
     "require": {
-        "asimlqt/php-google-spreadsheet-client": "2.3.*"
+        "asimlqt/php-google-spreadsheet-client": "3.0.*"
     }
 }
 ```
@@ -58,68 +81,98 @@ $serviceRequest = new DefaultServiceRequest($accessToken);
 ServiceRequestFactory::setInstance($serviceRequest);
 ```
 
-## Retrieving a list of spreadsheets
+> Note: For Windows users, you can disable the ssl verification by '$serviceRequest->setSslVerifyPeer(false)'
+
+## Spreadsheet
+
+### Retrieving a list of spreadsheets
 
 ```php
 $spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
+$spreadsheetFeed = $spreadsheetService->getSpreadsheetFeed();
 ```
 
-SpreadsheetFeed implements ArrayIterator so you can iterate over it using a foreach loop or you can retrieve a single spreadsheet by name.
+Once you have a SpreadsheetFeed you can iterate over the spreadsheets using a foreach loop by calling the 'getEntries()' method or you can retrieve a single spreadsheet by it's title.
 
 ```php
 $spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
 ```
 
-## Retrieving a list of worksheets
+> Note: The 'getByTitle' method will return the first spreadsheet found with that title if you have more than one spreadsheet with the same name.
+
+### Retrieving a public spreadsheet
+
+A public spreadsheet is one that has been "published to the web". This does not require authentication. e.g.
+
+```php
+$serviceRequest = new DefaultServiceRequest("");
+ServiceRequestFactory::setInstance($serviceRequest);
+
+$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
+$worksheetFeed = $spreadsheetService->getPublicSpreadsheet("spreadsheet-id");
+```
+
+The spreadsheet id can be copied from the url of the acual spreadsheet in Google Drive.
+
+## Worksheet
+
+### Retrieving a list of worksheets
 
 You can retrieve a list of worksheets from a spreadsheet by calling the getWorksheets() method.
 
 ```php
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
 $spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
-$worksheetFeed = $spreadsheet->getWorksheets();
+$worksheetFeed = $spreadsheet->getWorksheetFeed();
 ```
 
-You can loop over each worksheet or get a single worksheet by title.
+You can loop over each worksheet using 'getEntries()' or retrieve a single worksheet by it's title.
 
 ```php
-$worksheet = $worksheetFeed->getByTitle('Sheet 1');
+$worksheet = $worksheetFeed->getByTitle('Sheet1');
 ```
 
-## Adding a worksheet
+### Adding a worksheet
+
+To create a new worksheet simply use the 'addWorksheet()' method. This takes 3 arguments:
+- Worksheet name
+- Number of rows
+- Number of columns
 
 ```php
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
 $spreadsheet->addWorksheet('New Worksheet', 50, 20);
+```
+
+### Adding headers to a new worksheet
+
+The Google Spreadsheet API does not allow you to update a list row if headers are not already assigned. So, when you create a new worksheet, before you can add data to a worksheet using the 'Adding/Updating a list row' methods above, you need to add headers.
+
+To add headers to a worksheet, use the following:
+```php
+$cellFeed = $worksheet->getCellFeed();
+
+$cellFeed->editCell(1,1, "Row1Col1Header");
+$cellFeed->editCell(1,2, "Row1Col2Header");
 ```
 
 The only required parameter is the worksheet name, The row and column count are optional. The default value for rows is 100 and columns is 10.
 
-## Deleting a worksheet
+### Deleting a worksheet
+
+It's also possible to delete a worksheet.
 
 ```php
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
-$worksheetFeed = $spreadsheet->getWorksheets();
-$worksheet = $worksheetFeed->getByTitle('New Worksheet');
 $worksheet->delete();
 ```
 
-## Working with list-based feeds
+## List feed
 
-### Retrieving a list-based feed
+List feeds work at the row level. Each entry will contain the data for a specific row.
+
+> Note: You can not use formulas with the list feed. If you want to use formulas then you must use the cell feed (described below).
+
+### Retrieving a list feed
 
 ```php
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
-$worksheetFeed = $spreadsheet->getWorksheets();
-$worksheet = $worksheetFeed->getByTitle('Sheet 1');
 $listFeed = $worksheet->getListFeed();
 ```
 
@@ -140,22 +193,14 @@ The getValues() method returns an associative array where the keys are the colum
 You can also sort and filter the data so you only retrieve what is required, this is expecially useful for large worksheets.
 
 ```php
-$listFeed = $worksheet->getListFeed(array("sq" => "age > 45", "reverse" => "true"));
+$listFeed = $worksheet->getListFeed(["sq" => "age > 45", "reverse" => "true"]);
 ```
 To find out all the available options visit [https://developers.google.com/google-apps/spreadsheets/#sorting_rows](https://developers.google.com/google-apps/spreadsheets/#sorting_rows).
 
 ### Adding a list row
 
 ```php
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
-$worksheetFeed = $spreadsheet->getWorksheets();
-$worksheet = $worksheetFeed->getByTitle('Sheet 1');
-$listFeed = $worksheet->getListFeed();
-
-$row = array('name'=>'John', 'age'=>25);
-$listFeed->insert($row);
+$listFeed->insert(["name" => "Someone", "age" => 25]);
 ```
 
 > When adding or updating a row the column headers need to match exactly what was returned by the Google API, not what you see in Google Drive.
@@ -163,58 +208,52 @@ $listFeed->insert($row);
 ### Updating a list row
 
 ```php
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
-$worksheetFeed = $spreadsheet->getWorksheets();
-$worksheet = $worksheetFeed->getByTitle('Sheet 1');
-$listFeed = $worksheet->getListFeed();
 $entries = $listFeed->getEntries();
 $listEntry = $entries[0];
 
 $values = $listEntry->getValues();
-$values['name'] = 'Joe';
+$values["name"] = "Joe";
 $listEntry->update($values);
 ```
 
-### Adding headers to a new worksheet
+## Cell feed
 
-The Google Spreadsheet API does not allow you to update a list row if headers are not already assigned. So, when you create a new worksheet, before you can add data to a worksheet using the 'Adding/Updating a list row' methods above, you need to add headers.
+Cell feed deals with individual cells. A cell feed is a collection of cells (of type CellEntry)
 
-To add headers to a worksheet, use the following:
+### Retrieving a cell feed
+
 ```php
-
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
-$worksheetFeed = $spreadsheet->getWorksheets();
-$worksheet = $worksheetFeed->getByTitle('Sheet 1');
 $cellFeed = $worksheet->getCellFeed();
+```
 
-$cellFeed->editCell(1,1, "Row1Col1Header");
-$cellFeed->editCell(1,2, "Row1Col2Header");
-$cellFeed->editCell(1,3, "Row1Col3Header");
-$cellFeed->editCell(1,4, "Row1Col4Header");
+### Updating a cell
 
+You can retrieve a single cell from the cell feed if you know the row and column numbers for that specific cell.
+
+```php
+$cell = $cellFeed->getCell(10, 2);
+```
+
+You can then update the cell value using the 'update' method. The value can be a primitive value or a formula e.g.
+
+```php
+$cell->update("=SUM(B2:B9)");
 ```
 
 ### Updating multiple cells with a batch request
 
 When attempting to insert data into multiple cells then consider using the batch request functionality to improve performance.
 
+To use the batch request functionality you need access to a cell feed first. You can not use batch requests with list feeds.
+
 ```php
-$spreadsheetService = new Google\Spreadsheet\SpreadsheetService();
-
-$spreadsheetFeed = $spreadsheetService->getSpreadsheets();
-$spreadsheet = $spreadsheetFeed->getByTitle('MySpreadsheet');
-
-$worksheet = $spreadsheet->getWorksheets()->getByTitle('Sheet1');
 $cellFeed = $worksheet->getCellFeed();
 
 $batchRequest = new Google\Spreadsheet\Batch\BatchRequest();
-$batchRequest->addEntry($cellFeed->createInsertionCell(2, 1, "111"));
-$batchRequest->addEntry($cellFeed->createInsertionCell(3, 1, "222"));
-$batchRequest->addEntry($cellFeed->createInsertionCell(4, 1, "333"));
+$batchRequest->addEntry($cellFeed->createCell(2, 1, "111"));
+$batchRequest->addEntry($cellFeed->createCell(3, 1, "222"));
+$batchRequest->addEntry($cellFeed->createCell(4, 1, "333"));
+$batchRequest->addEntry($cellFeed->createCell(5, 1, "=SUM(A2:A4)"));
 
 $batchResponse = $cellFeed->insertBatch($batchRequest);
 ```

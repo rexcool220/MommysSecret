@@ -16,7 +16,6 @@
  */
 namespace Google\Spreadsheet;
 
-use SimpleXMLElement;
 use Google\Spreadsheet\Batch\BatchRequest;
 use Google\Spreadsheet\Batch\BatchResponse;
 
@@ -45,11 +44,11 @@ class CellFeed
     /**
      * Constructor
      * 
-     * @param string $xml
+     * @param \SimpleXMLElement $xml
      */
-    public function __construct($xml)
+    public function __construct(\SimpleXMLElement $xml)
     {
-        $this->xml = new SimpleXMLElement($xml);
+        $this->xml = $xml;
         $this->entries = array();
     }
 
@@ -63,6 +62,16 @@ class CellFeed
         return $this->xml;
     }
     
+    /**
+     * Get the feed id. Returns the full url.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->xml->id->__toString();
+    }
+
     /**
      * Get the feed entries
      * 
@@ -104,8 +113,8 @@ class CellFeed
 
     /**
      *
-     * @param type $row
-     * @param type $col
+     * @param int $row
+     * @param int $col
      * 
      * @return CellEntry|null
      */
@@ -132,24 +141,27 @@ class CellFeed
      * Edit a single cell. the row and column indexing start at 1.
      * So the first column of the first row will be (1,1).
      * 
-     * @param int    $rowNum
-     * @param int    $colNum
-     * @param string $value
+     * @param int    $rowNum Row number
+     * @param int    $colNum Column number
+     * @param string $value  Can also be a formula
      * 
-     * @return null
+     * @return void
      */
     public function editCell($rowNum, $colNum, $value)
     {
-        $entry = sprintf('
-            <entry xmlns="http://www.w3.org/2005/Atom" xmlns:gs="http://schemas.google.com/spreadsheets/2006">
-              <gs:cell row="%u" col="%u" inputValue="%s"/>
-            </entry>',
-            $rowNum,
-            $colNum,
-            $value
-        );
+        $entry = new \SimpleXMLElement("
+            <entry
+                xmlns=\"http://www.w3.org/2005/Atom\"
+                xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">
+            </entry>
+        ");
 
-        ServiceRequestFactory::getInstance()->post($this->getPostUrl(), $entry);
+        $child = $entry->addChild("xmlns:gs:cell");
+        $child->addAttribute("row", $rowNum);
+        $child->addAttribute("col", $colNum);
+        $child->addAttribute("inputValue", $value);
+
+        ServiceRequestFactory::getInstance()->post($this->getPostUrl(), $entry->asXML());
     }
 
     /**
@@ -162,7 +174,7 @@ class CellFeed
     {
         $xml = $batchRequest->createRequestXml($this);
         $response = ServiceRequestFactory::getInstance()->post($this->getBatchUrl(), $xml);
-        return new BatchResponse(new SimpleXMLElement($response));
+        return new BatchResponse(new \SimpleXMLElement($response));
     }
 
     /**
@@ -177,11 +189,11 @@ class CellFeed
 
         $response = ServiceRequestFactory::getInstance()
             ->addHeader("If-Match", "*")
-            ->post($this->getBatchUrl(), $xml);
-            
+            ->post($this->getBatchUrl(), $xml->asXML());
+        
         ServiceRequestFactory::getInstance()->removeHeader("If-Match");
 
-        return new BatchResponse(new SimpleXMLElement($response));
+        return new BatchResponse(new \SimpleXMLElement($response));
     }
     
     /**
@@ -191,7 +203,7 @@ class CellFeed
      */
     public function getPostUrl()
     {
-        return Util::getLinkHref($this->xml, 'http://schemas.google.com/g/2005#post');
+        return Util::getLinkHref($this->xml, "http://schemas.google.com/g/2005#post");
     }
 
     /**
@@ -200,7 +212,7 @@ class CellFeed
      */
     public function getBatchUrl()
     {
-        return Util::getLinkHref($this->xml, 'http://schemas.google.com/g/2005#batch');
+        return Util::getLinkHref($this->xml, "http://schemas.google.com/g/2005#batch");
     }
 
     /**
@@ -208,24 +220,44 @@ class CellFeed
      *
      * @param int    $row
      * @param int    $col
-     * @param string $content
+     * @param string $value
      * 
      * @return CellEntry
      */
-    public function createInsertionCell($row, $col, $content)
+    public function createCell($row, $col, $value)
     {
-        $xml = new SimpleXMLElement('<entry></entry>');
-        $child = $xml->addChild('content', $content);
-        $child->addAttribute('type', 'text');
-        $child = $xml->addChild('title');
-        $child->addAttribute('type', 'text');
-        $xml->addChild('id', $this->getPostUrl() . '/R' . $row . 'C' . $col);
-        $link = $xml->addChild('link');
-        $link->addAttribute('rel', 'edit');
-        $link->addAttribute('type', 'application/atom+xml');
-        $link->addAttribute('href', $this->getPostUrl() . '/R' . $row . 'C' . $col);
+        $entry = new \SimpleXMLElement("
+            <entry
+                xmlns=\"http://www.w3.org/2005/Atom\"
+                xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">
+            </entry>
+        ");
 
-        return new CellEntry($xml, $this->getPostUrl());
+        // use ->content instead of addChild('content', $value)
+        // due to addChild not escaping & properly.
+        // http://php.net/manual/en/simplexmlelement.addchild.php#112204
+        $entry->content = $value;
+        $child = $entry->content;
+        $child->addAttribute("type", "text");
+        $child = $entry->addChild("title");
+        $child->addAttribute("type", "text");
+        $entry->addChild("id", $this->getPostUrl() . "/R" . $row . "C" . $col);
+        $link = $entry->addChild("link");
+        $link->addAttribute("rel", "edit");
+        $link->addAttribute("type", "application/atom+xml");
+        $link->addAttribute("href", $this->getPostUrl() . "/R" . $row . "C" . $col);
+
+        $elementType = "gs:cell";
+        $entry->{$elementType} = $value;
+        $child = $entry->{$elementType};
+        $child->addAttribute("row", $row);
+        $child->addAttribute("col", $col);
+        $child->addAttribute("inputValue", $value);
+
+        return new CellEntry(
+            new \SimpleXMLElement($entry->asXML()),
+            $this->getPostUrl()
+        );
     }
     
 }

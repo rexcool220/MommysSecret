@@ -16,6 +16,9 @@
  */
 namespace Google\Spreadsheet;
 
+use Google\Spreadsheet\Exception\BadRequestException;
+use Google\Spreadsheet\Exception\UnauthorizedException;
+
 /**
  * Service Request. The parent class of all services.
  *
@@ -44,21 +47,41 @@ class DefaultServiceRequest implements ServiceRequestInterface
      * 
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * Service url
      * 
      * @var string
      */
-    protected $serviceUrl = 'https://spreadsheets.google.com/';
+    protected $serviceUrl = "https://spreadsheets.google.com/";
 
     /**
      * User agent
      * 
      * @var string
      */
-    protected $userAgent = 'PHP Google Spreadsheet Api';
+    protected $userAgent = "PHP Google Spreadsheet Api";
+
+    /**
+     * SSL verify peer
+     * 
+     * @var boolean
+     */
+    protected $sslVerifyPeer = true;
+
+    /**
+     * cURL parameters
+     * 
+     * @var array
+     */
+    protected $curlParams = [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_FAILONERROR => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_VERBOSE => false,
+    ];
 
     /**
      * Initializes the service request object.
@@ -66,10 +89,20 @@ class DefaultServiceRequest implements ServiceRequestInterface
      * @param string $accessToken
      * @param string $tokenType
      */
-    public function __construct($accessToken, $tokenType = 'OAuth')
+    public function __construct($accessToken, $tokenType = "OAuth")
     {
         $this->accessToken = $accessToken;
         $this->tokenType = $tokenType;
+    }
+
+    /**
+     * Get the hostname of the spreadsheet service
+     * 
+     * @return string
+     */
+    public function getServiceUrl()
+    {
+        return $this->serviceUrl;
     }
 
     /**
@@ -148,6 +181,53 @@ class DefaultServiceRequest implements ServiceRequestInterface
     }
 
     /**
+     * Get the value for verifying the peers ssl certificate.
+     * 
+     * @return bool
+     */
+    public function getSslVerifyPeer()
+    {
+        return $this->curlParams[CURLOPT_SSL_VERIFYPEER];
+    }
+    
+    /**
+     * Verify the peer"s ssl certificate
+     * 
+     * @param bool $sslVerifyPeer
+     * 
+     * @return DefaultServiceRequest
+     */
+    public function setSslVerifyPeer($sslVerifyPeer)
+    {
+        $this->curlParams[CURLOPT_SSL_VERIFYPEER] = (bool) $sslVerifyPeer;
+        return $this;
+    }
+
+    /**
+     * Get currently set curl params
+     * 
+     * @return array
+     */
+    public function getCurlParams()
+    {
+        return $this->curlParams;
+    }
+
+    /**
+     * Add an extra curl parameter or override an existing one
+     * 
+     * @param string $name  'CURLOPT_*' constant
+     * @param mixed  $value
+     *
+     * @return DefaultServiceRequest
+     */
+    public function addCurlParam($name, $value)
+    {
+        $this->curlParams[$name] = $value;
+        return $this;
+    }
+
+    /**
      * Perform a get request
      * 
      * @param string $url
@@ -157,7 +237,7 @@ class DefaultServiceRequest implements ServiceRequestInterface
     public function get($url)
     {
         $ch = $this->initRequest($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         return $this->execute($ch);
     }
 
@@ -172,11 +252,11 @@ class DefaultServiceRequest implements ServiceRequestInterface
     public function post($url, $postData)
     {   
         $headers = array(
-            'Content-Type: application/atom+xml',
-            'Content-Length: ' . strlen($postData),
+            "Content-Type: application/atom+xml",
+            "Content-Length: " . strlen($postData),
         );
         $ch = $this->initRequest($url, $headers);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         return $this->execute($ch);
     }
@@ -192,11 +272,11 @@ class DefaultServiceRequest implements ServiceRequestInterface
     public function put($url, $postData)
     {
         $headers = array(
-            'Content-Type: application/atom+xml',
-            'Content-Length: ' . strlen($postData),
+            "Content-Type: application/atom+xml",
+            "Content-Length: " . strlen($postData),
         );
         $ch = $this->initRequest($url, $headers);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         return $this->execute($ch);
     }
@@ -211,7 +291,7 @@ class DefaultServiceRequest implements ServiceRequestInterface
     public function delete($url)
     {
         $ch = $this->initRequest($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         return $this->execute($ch);
     }
 
@@ -225,20 +305,12 @@ class DefaultServiceRequest implements ServiceRequestInterface
      */
     protected function initRequest($url, $requestHeaders = array())
     {
-        $curlParams = array (
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_FAILONERROR => false,
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_VERBOSE => false,
-        );
-
-        if(substr($url, 0, 4) !== 'http') {
+        if(substr($url, 0, 4) !== "http") {
             $url = $this->serviceUrl . $url;
         }
 
         $ch = curl_init();
-        curl_setopt_array($ch, $curlParams);
+        curl_setopt_array($ch, $this->curlParams);
         curl_setopt($ch, CURLOPT_URL, $url);
 
         $headers = array();
@@ -260,32 +332,34 @@ class DefaultServiceRequest implements ServiceRequestInterface
      * 
      * @return string the xml response
      *
-     * @throws \Google\Spreadsheet\Exception If the was a problem with the request.
-     *                                       Will throw an exception if the response
-     *                                       code is 300 or greater
-     *                                       
-     * @throws \Google\Spreadsheet\UnauthorizedException
+     * @throws UnauthorizedException
+     * @throws BadRequestException
+     *
+     * @codeCoverageIgnore
      */
     protected function execute($ch)
     {
         $ret = curl_exec($ch);
 
         $info = curl_getinfo($ch);
-        $httpCode = (int)$info['http_code'];
+        $httpCode = (int)$info["http_code"];
 
         if ($httpCode > 299) {
             switch ($httpCode) {
                 case 401:
-                    throw new UnauthorizedException('Access token is invalid', 401);
+                    throw new UnauthorizedException("Access token is invalid", 401);
+                    break;
+                case 403:
+                    throw new UnauthorizedException($ret, 403);
                     break;
                 case 404:
-                    throw new UnauthorizedException('You need permission', 404);
+                    throw new UnauthorizedException("You need permission", 404);
                     break;
                 default:
-                    throw new Exception('Error in Google Request', $info['http_code']);
+                    throw new BadRequestException($ret, $info["http_code"]);
             }
         }
-
+        curl_close($ch);
         return $ret;
     }
 

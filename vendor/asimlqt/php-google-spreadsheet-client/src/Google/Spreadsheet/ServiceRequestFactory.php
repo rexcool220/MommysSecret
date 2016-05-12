@@ -16,6 +16,8 @@
  */
 namespace Google\Spreadsheet;
 
+use Google\Spreadsheet\Exception\Exception;
+
 /**
  * ServiceRequestFactory
  *
@@ -25,10 +27,13 @@ namespace Google\Spreadsheet;
  */
 class ServiceRequestFactory
 {
+    /**
+     * @var ServiceRequestInterface
+     */
     private static $instance;
 
     /**
-     * [setInstance description]
+     * Set an instance of ServiceRequestInterface
      * 
      * @param ServiceRequestInterface $instance
      */
@@ -42,7 +47,7 @@ class ServiceRequestFactory
      * 
      * @return ServiceRequestInterface
      * 
-     * @throws \Google\Spreadsheet\Exception
+     * @throws Exception
      */
     public static function getInstance()
     {

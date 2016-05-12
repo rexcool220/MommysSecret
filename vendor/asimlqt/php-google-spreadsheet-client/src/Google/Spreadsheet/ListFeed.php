@@ -16,8 +16,6 @@
  */
 namespace Google\Spreadsheet;
 
-use SimpleXMLElement;
-
 /**
  * Worksheet Data.
  *
@@ -39,9 +37,8 @@ class ListFeed
      * 
      * @param string $xmlString
      */
-    public function __construct($xmlString)
+    public function __construct(\SimpleXMLElement $xml)
     {
-        $xml = new SimpleXMLElement($xmlString);
         $xml->registerXPathNamespace('gsx', 'http://schemas.google.com/spreadsheets/2006/extended');
         $this->xml = $xml;
     }
@@ -54,6 +51,16 @@ class ListFeed
     public function getXml()
     {
         return $this->xml;
+    }
+    
+    /**
+     * Get the feed id. Returns the full url.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->xml->id->__toString();
     }
     
     /**
@@ -75,24 +82,24 @@ class ListFeed
      */
     public function insert($row)
     {
-        $entry = '<entry xmlns="http://www.w3.org/2005/Atom" xmlns:gsx="http://schemas.google.com/spreadsheets/2006/extended">';
-        foreach($row as $colName => $value) {
-            $entry .= sprintf(
-                '<gsx:%s><![CDATA[%s]]></gsx:%s>',
-                $colName,
-                $value,
-                $colName
-            );
-        }
-        $entry .= '</entry>';
+        $entry = new \SimpleXMLElement("
+            <entry
+                xmlns=\"http://www.w3.org/2005/Atom\"
+                xmlns:gsx=\"http://schemas.google.com/spreadsheets/2006/extended\">
+            </entry>
+        ");
 
-        ServiceRequestFactory::getInstance()->post($this->getPostUrl(), $entry);
+        foreach($row as $colName => $value) {
+            $entry->addChild("xmlns:gsx:$colName", $value);
+        }
+
+        ServiceRequestFactory::getInstance()->post($this->getPostUrl(), $entry->asXML());
     }
 
     /**
      * Get the entries of this feed
      * 
-     * @return array \Google\Spreadsheet\ListEntry
+     * @return ListEntry[]
      */
     public function getEntries()
     {
@@ -111,6 +118,28 @@ class ListFeed
         }
         
         return $rows;
+    }
+
+    /**
+     * Get open search total results
+     * 
+     * @return int
+     */
+    public function getTotalResults()
+    {
+        $xml = $this->xml->children('openSearch', true);
+        return intval($xml->totalResults);
+    }
+
+    /**
+     * Get open search start index
+     * 
+     * @return int
+     */
+    public function getStartIndex()
+    {
+        $xml = $this->xml->children('openSearch', true);
+        return intval($xml->startIndex);
     }
 
 }

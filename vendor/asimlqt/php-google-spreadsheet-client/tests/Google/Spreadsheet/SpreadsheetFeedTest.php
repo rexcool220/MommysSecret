@@ -1,17 +1,60 @@
 <?php
-namespace Google\Spreadsheet;
+namespace GoogleSpreadsheet\Tests\Google\Spreadsheet;
 
-use PHPUnit_Framework_TestCase;
+use Google\Spreadsheet\SpreadsheetFeed;
+use Google\Spreadsheet\Spreadsheet;
 
-class SpreadsheetFeedTest extends PHPUnit_Framework_TestCase
+class SpreadsheetFeedTest extends TestBase
 {
+    private $spreadsheetFeed;
+
+    public function setUp()
+    {
+        $this->spreadsheetFeed = new SpreadsheetFeed(
+            $this->getSimpleXMLElement("spreadsheet-feed")
+        );
+    }
+
+    public function tearDown()
+    {
+        $this->spreadsheetFeed = null;
+    }
+
+    public function testGetXml()
+    {
+        $this->assertTrue(
+            $this->spreadsheetFeed->getXml() instanceof \SimpleXMLElement
+        );
+    }
+
+    public function testGetId()
+    {
+        $this->assertEquals(
+            "https://spreadsheets.google.com/feeds/spreadsheets/private/full",
+            $this->spreadsheetFeed->getId()
+        );
+    }
+
+    public function testGetEntries()
+    {
+        $this->assertEquals(2, count($this->spreadsheetFeed->getEntries()));
+    }
+
     public function testGetByTitle()
     {
-        $xml = file_get_contents(__DIR__.'/xml/spreadsheet-feed.xml');
-        $spreadsheetFeed = new SpreadsheetFeed($xml);
+        $this->assertTrue(
+            $this->spreadsheetFeed->getByTitle("Test Spreadsheet") instanceof Spreadsheet
+        );
+    }
 
-        $this->assertTrue($spreadsheetFeed->getByTitle('Test Spreadsheet') instanceof Spreadsheet);
-        $this->assertTrue(is_null($spreadsheetFeed->getByTitle('No Spreadsheet')));
+    /**
+     * @expectedException Google\Spreadsheet\Exception\SpreadsheetNotFoundException
+     */
+    public function testGetByTitleException()
+    {
+        $this->assertNull(
+            $this->spreadsheetFeed->getByTitle("No Spreadsheet")
+        );
     }
 
 }

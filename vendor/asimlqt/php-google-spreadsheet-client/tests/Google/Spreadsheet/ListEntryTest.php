@@ -1,44 +1,73 @@
 <?php
-namespace Google\Spreadsheet;
+namespace GoogleSpreadsheet\Tests\Google\Spreadsheet;
 
-use PHPUnit_Framework_TestCase;
+use Google\Spreadsheet\ListFeed;
+use Google\Spreadsheet\ServiceRequestFactory;
+use Google\Spreadsheet\DefaultServiceRequest;
 
-class ListEntryTest extends PHPUnit_Framework_TestCase
+class ListEntryTest extends TestBase
 {
+
+    public function testGetXml()
+    {
+        $listFeed = new ListFeed($this->getSimpleXMLElement("list-feed"));
+        $entry = current($listFeed->getEntries());
+        
+        $this->assertTrue($entry->getXml() instanceof \SimpleXMLElement);
+    }
     
     public function testGetEditUrl()
     {
-        $xml = file_get_contents(__DIR__.'/xml/list-feed.xml');
-        $listFeed = new ListFeed($xml);
+        $listFeed = new ListFeed($this->getSimpleXMLElement("list-feed"));
         $listEntry = current($listFeed->getEntries());
         
         $this->assertEquals(
-            'https://spreadsheets.google.com/feeds/list/G3345eEsfsk60/od6/private/full/cokwr/bnkj8i7jo6c',
+            "https://spreadsheets.google.com/feeds/list/G3345eEsfsk60/od6/private/full/cokwr/bnkj8i7jo6c",
             $listEntry->getEditUrl()
         );
     }
     
     public function testUpdate()
     {
-        $mockServiceRequest = $this->getMockBuilder('Google\Spreadsheet\DefaultServiceRequest')
-                ->setMethods(array("put"))
-                ->disableOriginalConstructor()
-                ->getMock();
+        $mockServiceRequest = $this->getMockBuilder(DefaultServiceRequest::class)
+            ->setMethods(["put"])
+            ->disableOriginalConstructor()
+            ->getMock();
         
         $mockServiceRequest->expects($this->once())
-            ->method('put')
+            ->method("put")
             ->with(
-                $this->equalTo('https://spreadsheets.google.com/feeds/list/G3345eEsfsk60/od6/private/full/cokwr/bnkj8i7jo6c'),
-                $this->stringContains('<gsx:nname><![CDATA[Asim]]></gsx:nname>')
+                $this->equalTo("https://spreadsheets.google.com/feeds/list/G3345eEsfsk60/od6/private/full/cokwr/bnkj8i7jo6c"),
+                $this->stringContains("<gsx:nname>Asim</gsx:nname>")
             );
         
         ServiceRequestFactory::setInstance($mockServiceRequest);
         
-        $listFeed = new ListFeed(file_get_contents(__DIR__.'/xml/list-feed.xml'));
+        $listFeed = new ListFeed($this->getSimpleXMLElement("list-feed"));
         $entry = current($listFeed->getEntries());
         $data = $entry->getValues();
         $data["nname"] = "Asim";
         $entry->update($data);
+    }
+
+    public function testDelete()
+    {
+        $mockServiceRequest = $this->getMockBuilder(DefaultServiceRequest::class)
+            ->setMethods(["delete"])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mockServiceRequest->expects($this->once())
+            ->method("delete")
+            ->with(
+                $this->equalTo("https://spreadsheets.google.com/feeds/list/G3345eEsfsk60/od6/private/full/cokwr/bnkj8i7jo6c")
+            );
+
+        ServiceRequestFactory::setInstance($mockServiceRequest);
+
+        $listFeed = new ListFeed($this->getSimpleXMLElement("list-feed"));
+        $entry = current($listFeed->getEntries());
+        $entry->delete();
     }
 
 }
