@@ -23,15 +23,11 @@
 	
 	$fb->setDefaultAccessToken($accessToken);
 	
-	$fbAccount = GetFBAccount($fb);
-	
-	$googleFormUrl = 'https://docs.google.com/forms/d/1kCA1gdJDOD0X0hPfHdW4E9z0k7HPuBl0AaimQLnpAnw/viewform?entry.743012400=';
+	$_SESSION['fbAccount'] = urlencode(GetFBAccount($fb));
 	
 	$customedGoogleForm = 'http://localhost/MommysSecret/CustomedGoogleForm.php';
 	
-	$RedirectUrl = $customedGoogleForm.'?CustomedGoogleForm='.$googleFormUrl.'&FbAccount='.urlencode($fbAccount);
-	
-	header("location: ".$RedirectUrl);
+	header("location: ".$customedGoogleForm);
 
 	function GetFBAccount($fb)
 	{

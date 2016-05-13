@@ -13,7 +13,6 @@ return array(
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Google\\Auth\\' => array($vendorDir . '/google/auth/src'),
-    'Google\\' => array($vendorDir . '/asimlqt/php-google-spreadsheet-client/src/Google'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Facebook\\' => array($vendorDir . '/facebook/php-sdk-v4/src/Facebook'),
 );

@@ -1,14 +1,28 @@
 <?php
-	$customedGoogleForm = $_GET['CustomedGoogleForm'];
+header("Content-Type:text/html; charset=utf-8");
+	if(!session_id()) {
+		session_start();
+	}
+	$customedGoogleForm = $_SESSION['googleFormUrl'];
 	
-	$fbAccount = $_GET['FbAccount'];
+	$fbAccount = $_SESSION['fbAccount'];
 	
-	$data = ObtainPageSource($customedGoogleForm.urlencode($fbAccount));
+	//$customedGoogleForm = 'https://docs.google.com/forms/d/1kCA1gdJDOD0X0hPfHdW4E9z0k7HPuBl0AaimQLnpAnw/viewform?entry.743012400=';
 	
-	$redirectUrl = "http://localhost/MommysSecret/Client.php?FbAccount=".urlencode($fbAccount);
+	$data = ObtainPageSource($customedGoogleForm.$fbAccount);
+	
+	$redirectUrl = "http://localhost/MommysSecret/Client.php";
 	
 	if(preg_match("/(?<=<form action=\")[^\"]*/", $data, $matches)) {
 		$googleSpreadsheetUrl = $matches[0];
+	}
+	else {
+		echo 'not matched';
+	}
+	
+	if(preg_match("/<form[\s\S]*form>/", $data, $matches)) {
+		$stringBetweenTagForm = $matches[0];
+		echo htmlspecialchars($temp);
 	}
 	else {
 		echo 'not matched';
@@ -22,7 +36,7 @@
 		."\" method=\"post\"
 		target=\"hidden_iframe\" onsubmit=\"submitted=true;\">";
 	
-	echo preg_replace("/(<form[^>]*>)/", $replacement, $data);
+	echo preg_replace("/(<form[^>]*>)/", $replacement, $stringBetweenTagForm);
 	
 	function ObtainPageSource($url)
 	{

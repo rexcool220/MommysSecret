@@ -2,8 +2,7 @@
   "require" : {
     "facebook/php-sdk-v4" : "^5.1",
     "google/apiclient": "~2.0@dev",
-    "guzzlehttp/guzzle": "~6.0",
-    "asimlqt/php-google-spreadsheet-client": "3.0.*"
+    "guzzlehttp/guzzle": "~6.0"
   }
 }
 
