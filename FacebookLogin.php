@@ -21,6 +21,10 @@
 	$loginUrl = $helper->getLoginUrl('http://localhost/MommysSecret/GetFBAccount.php', $permissions);
 	 
 	$_SESSION['googleFormUrl'] = $_GET['googleFormUrl'];
+	$_SESSION['fieldID'] = $_GET['fieldID'];
+	$_SESSION['facebookID'] = $_GET['facebookID'];
+	$_SESSION['groupID'] = $_GET['groupID'];
+	
 	
 	header("location: ".$loginUrl);
 ?>

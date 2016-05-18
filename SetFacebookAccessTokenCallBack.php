@@ -20,15 +20,28 @@
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
-	//echo $accessToken;
 	
 	$fb->setDefaultAccessToken($accessToken);
 	
-	$_SESSION['fbAccount'] = urlencode(GetFBAccount($fb));
-	
-	$customedGoogleForm = 'http://localhost/MommysSecret/CustomedGoogleForm.php';
-	
-	header("location: ".$customedGoogleForm);
+	if(GetFBAccount($fb) == '古振平')
+	{
+		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+		$connection = socket_connect($socket,'127.0.0.1', 1234);
+		$message = 'SetAccessToken,'.$accessToken;
+		// send string to server
+		socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
+		// get server response
+		if(socket_read ($socket, 1024) or die("Could not read server response\n") == true) {
+			echo 'AccessToken is set';
+		}
+		else {
+			echo 'AccessToken setting fail';
+		}
+	}
+	else
+	{
+		echo 'You are not admin';
+	}
 
 	function GetFBAccount($fb)
 	{

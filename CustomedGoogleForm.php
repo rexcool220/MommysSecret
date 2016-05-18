@@ -1,11 +1,18 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+include_once "./vendor/google/apiclient/examples/templates/base.php";
+
 header("Content-Type:text/html; charset=utf-8");
 	if(!session_id()) {
 		session_start();
 	}
+	
+	$_SESSION['spreadsheetCount'] = getSpreadSheetCount();
+	
 	$customedGoogleForm = $_SESSION['googleFormUrl'];
 	
-	$fbAccount = $_SESSION['fbAccount'];
+	$fbAccount =  $_SESSION['fbAccount'];
 	
 	//$customedGoogleForm = 'https://docs.google.com/forms/d/1kCA1gdJDOD0X0hPfHdW4E9z0k7HPuBl0AaimQLnpAnw/viewform?entry.743012400=';
 	
@@ -14,7 +21,7 @@ header("Content-Type:text/html; charset=utf-8");
 	$redirectUrl = "http://localhost/MommysSecret/Client.php";
 	
 	if(preg_match("/(?<=<form action=\")[^\"]*/", $data, $matches)) {
-		$googleSpreadsheetUrl = $matches[0];
+		$googleResponseUrl = $matches[0];
 	}
 	else {
 		echo 'not matched';
@@ -32,12 +39,11 @@ header("Content-Type:text/html; charset=utf-8");
 		<iframe name=\"hidden_iframe\" id=\"hidden_iframe\"
 		style=\"display:none;\" onload=\"if(submitted)
 		{window.location='".$redirectUrl."';}\"></iframe>
-		<form action=\"".$googleSpreadsheetUrl
+		<form action=\"".$googleResponseUrl
 		."\" method=\"post\"
 		target=\"hidden_iframe\" onsubmit=\"submitted=true;\">";
 	
 	echo preg_replace("/(<form[^>]*>)/", $replacement, $stringBetweenTagForm);
-	
 	function ObtainPageSource($url)
 	{
 		$ch = curl_init();
@@ -48,5 +54,63 @@ header("Content-Type:text/html; charset=utf-8");
 		$data = curl_exec($ch);
 		return $data;
 	}
-?>
+	
+	function getSpreadSheetCount()
+	{
+		try {
+			$fieldID = $_SESSION['fieldID'];
+			
+			$client = new Google_Client();
+			
+			putenv("GOOGLE_APPLICATION_CREDENTIALS=Mommyssecret-e24d4b121c15.json");
+			
+			if ($credentials_file = checkServiceAccountCredentialsFile()) {
+				// set the location manually
+				$client->setAuthConfig($credentials_file);
+			} elseif (getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
+				// use the application default credentials
+				$client->useApplicationDefaultCredentials();
+			} else {
+				echo missingServiceAccountDetailsWarning();
+				return;
+			}
+			
+			$client->setApplicationName("Sheets API Testing");
+			
+			$client->setScopes(['https://www.googleapis.com/auth/drive','https://spreadsheets.google.com/feeds']);
+			
+			$tokenArray = $client->fetchAccessTokenWithAssertion();
+			
+			$accessToken = $tokenArray["access_token"];
+			
+			$url = "https://spreadsheets.google.com/feeds/list/".$fieldID."/default/private/full";
+			
+			$method = 'GET';
+			
+			$headers = ["Authorization" => "Bearer $accessToken", "GData-Version" => "3.0"];
+			
+			$httpClient = new GuzzleHttp\Client(['headers' => $headers]);
+			
+			$resp = $httpClient->request($method, $url);
+			
+			$body = $resp->getBody()->getContents();
+			
+			$tableXML = simplexml_load_string($body);
+			
+			$count = 0;
+			foreach ($tableXML->entry as $entry) {
+				foreach ($entry->children('gsx', TRUE) as $column) {
+					if(($column->getName() == 'fbaccount')&&($column == urldecode($_SESSION['fbAccount']))) {
+						$count++;
+					}
+				}
+			}
+			
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
+		
+		return $count;
+	}
+ 
 	
