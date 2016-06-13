@@ -18,7 +18,7 @@ header("Content-Type:text/html; charset=utf-8");
 	
 	$data = ObtainPageSource($customedGoogleForm.$fbAccount);
 	
-	$redirectUrl = "http://localhost/MommysSecret/Client.php";
+	$redirectUrl = "http://MommysSecret.tw/PostToFB.php";
 	
 	if(preg_match("/(?<=<form action=\")[^\"]*/", $data, $matches)) {
 		$googleResponseUrl = $matches[0];
@@ -43,7 +43,10 @@ header("Content-Type:text/html; charset=utf-8");
 		."\" method=\"post\"
 		target=\"hidden_iframe\" onsubmit=\"submitted=true;\">";
 	
-	echo preg_replace("/(<form[^>]*>)/", $replacement, $stringBetweenTagForm);
+	$stringRefine = str_replace("<div style=\"text-align: center;\"", "<div style=\"text-align: left;\"",$data);
+	$stringRefine = preg_replace("/<div class=\"required-message\">[^>]+>/", '', $stringRefine); 
+	echo '<body topmargin="100" leftmargin="100">';
+	echo preg_replace("/(<form[^>]*>)/", $replacement, $stringRefine);
 	function ObtainPageSource($url)
 	{
 		$ch = curl_init();

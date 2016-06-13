@@ -10,7 +10,8 @@
 	]);
 	$helper = $fb->getRedirectLoginHelper();
 	try {
-		$accessToken = $helper->getAccessToken();
+		$accessToken = $helper->getAccessToken('http://MommysSecret.tw/GetFBAccount.php');
+		//$accessToken = $helper->getAccessToken();
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 		// When Graph returns an error
 		echo 'Graph returned an error: ' . $e->getMessage();
@@ -26,7 +27,9 @@
 	
 	$_SESSION['fbAccount'] = urlencode(GetFBAccount($fb));
 	
-	$customedGoogleForm = 'http://localhost/MommysSecret/CustomedGoogleForm.php';
+	$customedGoogleForm = 'http://MommysSecret.tw/CustomedGoogleForm.php';
+	
+	
 	
 	header("location: ".$customedGoogleForm);
 

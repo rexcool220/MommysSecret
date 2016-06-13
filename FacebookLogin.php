@@ -6,7 +6,7 @@
 	if($_GET['googleFormUrl'] == '')
 	{
 		echo 'Google form url is empty';
-		exit;
+		//exit;
 	}
 	
 	$fb = new Facebook\Facebook([
@@ -17,14 +17,15 @@
 	$helper = $fb->getRedirectLoginHelper();
 	
 	$permissions = ['email']; // optional
+	//$permissions = ['email','publish_actions','user_managed_groups']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://localhost/MommysSecret/GetFBAccount.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://MommysSecret.tw/GetFBAccount.php', $permissions);
 	 
 	$_SESSION['googleFormUrl'] = $_GET['googleFormUrl'];
 	$_SESSION['fieldID'] = $_GET['fieldID'];
 	$_SESSION['facebookID'] = $_GET['facebookID'];
 	$_SESSION['groupID'] = $_GET['groupID'];
 	
-	
+	//echo urldecode($loginUrl);
 	header("location: ".$loginUrl);
 ?>

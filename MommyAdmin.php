@@ -48,13 +48,13 @@ if(!empty($_POST)) {
     	echo 'Facebook開團網址錯誤<p>';
     	exit;
     }
-    $combinedUrl = 'localhost/MommysSecret/FacebookLogin.php?googleFormUrl='.
+    $combinedUrl = 'http://MommysSecret.tw/FacebookLogin.php?googleFormUrl='.
     $googleFormUrl.'&fieldID='.
     $googleFormResponseUrl.'&facebookID='.
     $FacebookID.'&groupID='.
     $groupID;
     
-    //echo $combinedUrl;
+    echo $combinedUrl;
 
 	$client = new Google_Client();
 
