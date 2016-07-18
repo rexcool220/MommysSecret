@@ -11,10 +11,11 @@
 	]);
 	$helper = $fb->getRedirectLoginHelper();
 	
-	$permissions = ['user_managed_groups','publish_actions']; // optional
+	$permissions = ['email']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/SetFacebookAccessTokenCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/GetBuyingInformationCallBack.php', $permissions);
 	
 	//echo urldecode($loginUrl);
+	$_SESSION['personal'] = $_GET['personal'];
 	header("location: ".$loginUrl);
 ?>

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
+require_once 'ConnectMySQL.php';
 include_once "./vendor/google/apiclient/examples/templates/base.php";
+
 if(!session_id()) {
 	session_start();
 }
@@ -16,7 +18,13 @@ $facebookID = $_SESSION['facebookID'];
 $groupID = $_SESSION['groupID'];
 $spreadsheetCount = $_SESSION['spreadsheetCount'];
 	
-$accessToken = 'EAAV5LCBqPXQBAMdDj83ZCk1RbL6SRX2TpYvjmtww8ED4LJGxVRJDmdZCDwiF5lyP09UJGdtRUfn1BxzHKkM8B8xEDbobSxfoi3eEZCQ6lcjAkRw8iB1PLAkIi2R2K0qAwSDQfC9O0TFVyMcgZCj4qJa8PpCC3U1kmWq8aikc1wZDZD';
+
+$sql = "SELECT * FROM AccessToken order by CreatTime Desc limit 0,1;";
+$result = mysql_query($sql,$con);
+$row = mysql_fetch_array( $result );
+
+
+$accessToken = $row['AccessToken'];
 								
 
 $fb->setDefaultAccessToken($accessToken);

@@ -1,8 +1,10 @@
 <?php
 	require_once __DIR__ . '/vendor/autoload.php';
+	require_once 'ConnectMySQL.php';
 	if(!session_id()) {
 	    session_start();
 	}
+	
 	$fb = new Facebook\Facebook([
     'app_id' => '1540605312908660',
 	'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
@@ -21,30 +23,19 @@
 		exit;
 	}
 	
-	$fb->setDefaultAccessToken($accessToken);
-	
-	if(GetFBAccount($fb) == '古振平')
+ 	$fb->setDefaultAccessToken($accessToken);
+	if(GetFacebookID($fb) == '1180667211952066')
 	{
-		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		$connection = socket_connect($socket,'127.0.0.1', 1234);
-		$message = 'SetAccessToken,'.$accessToken;
-		// send string to server
-		echo $accessToken;
-		//socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
-		
-		//if(socket_read ($socket, 1024) or die("Could not read server response\n") == true) {
-		//	echo 'AccessToken is set';
-		//}
-		//else {
-		//	echo 'AccessToken setting fail';
-		//}
+		$sql = "INSERT INTO AccessToken (AccessToken, CreatTime, ExpireTime) VALUES ('1AAV5LCBqPXQBAAWZCNTqTzCul53l5XwPeDNbaxxazcpJrASUiZC3HaepFeVieVJUVyjyvTf0AQwqS3o97rL9YKSIdDHSnM2L1H2KEM7LqM9fySRexJEvXzuD7vkBIEjkuiGKZAjMU1bAS8cocSlj9Y9UnvtjCAZD', CURRENT_TIMESTAMP, '0000-00-00 00:00:00');";
+		$result = mysql_query($sql,$con) or die("Fail to insert AccessToken to DB");
+		echo 'Insert AccessToken success';
 	}
 	else
 	{
 		echo 'You are not admin';
 	}
 
-	function GetFBAccount($fb)
+	function GetFacebookID($fb)
 	{
 		try {
 			$response = $fb->get('/me');
@@ -58,7 +49,7 @@
 			echo 'Facebook SDK returned an error: ' . $e->getMessage();
 			exit;
 		}
-		return $userNode->getName();
+		return $userNode['id'];
 	}
 ?>
 	

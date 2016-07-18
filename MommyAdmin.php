@@ -5,7 +5,7 @@
 ?>
 <html>
 <head>
-<title>A BASIC HTML FORM</title>
+<title>MommyAdmin</title>
 </head>
 <body>
 
