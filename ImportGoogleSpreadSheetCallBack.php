@@ -16,24 +16,11 @@ if(!session_id()) {
 if(!empty($_POST['ShippingInformation'])) {
 	$ShippingInformation = $_POST['ShippingInformation'];
 	if(preg_match("/(?<=https:\/\/docs.google.com\/spreadsheets\/d\/)[^\/]*/", $ShippingInformation, $matches)) {
-		$ShippingInformation = $matches[0];
+		$ssid = $matches[0];
 	}
 	else {
 		echo '登記表網址錯誤<p>';
 		exit;
-	}
-	if($_SESSION['personal'] == 'queenie')
- 	{
-		$sql = "TRUNCATE TABLE  `QueenieShippingRecord`";
- 	}
- 	else
- 	{
- 		$sql = "TRUNCATE TABLE  `ShippingRecord`";
- 	}
-	
-	$result = mysql_query($sql,$con);
-	if (!$result) {
-		die('Invalid query: ' . mysql_error());
 	}
 	
 	try {
@@ -60,57 +47,78 @@ if(!empty($_POST['ShippingInformation'])) {
 	
 		$accessToken = $tokenArray["access_token"];
 			
-			
-		//		Section 2: Uncomment to get list of worksheets
-		//$url = "https://spreadsheets.google.com/feeds/list/1ua3bJhO1zQOMmXHyezBxQoJ6zYq-y9amLNsDgAdavqo/od6/private/full";
-		$url = "https://spreadsheets.google.com/feeds/list/$ShippingInformation/default/private/full";
+		//Get wsid from URL
+		$url = "https://spreadsheets.google.com/feeds/worksheets/$ssid/private/full";
 		$method = 'GET';
 		$headers = ["Authorization" => "Bearer $accessToken"];
 		$httpClient = new GuzzleHttp\Client(['headers' => $headers]);
 		$resp = $httpClient->request($method, $url);
 		$body = $resp->getBody()->getContents();
 		$tableXML = simplexml_load_string($body);
-			
+		
+		foreach ($tableXML->entry as $entry)
+		{
+			$id = $entry->id;
+			$title = $entry->title;
+			if($title == "出貨匯款登記表單")
+			{
+				if(preg_match("/[a-zA-Z0-9]+$/", $id, $matches)) {
+					$wsid = $matches[0];
+				}
+			}
+		}
+		if(empty($wsid))
+		{
+			echo "wsid is empty";
+			exit;
+		}
+		//get list of worksheets
+		$url = "https://spreadsheets.google.com/feeds/list/$ssid/$wsid/private/full";
+		//$url = "https://spreadsheets.google.com/feeds/list/$ShippingInformation/default/private/full";
+		$method = 'GET';
+		$headers = ["Authorization" => "Bearer $accessToken"];
+		$httpClient = new GuzzleHttp\Client(['headers' => $headers]);
+		$resp = $httpClient->request($method, $url);
+		$body = $resp->getBody()->getContents();
+		$tableXML = simplexml_load_string($body);
+		
 		$serialNumber = 1;
 		foreach ($tableXML->entry as $entry)
 		{
+			$fieldCount = 0;
+			$field = array("", "", "", "", "", "", "", "");
+			foreach ($entry->children('gsx', TRUE) as $column)
+			{
+				$field[$fieldCount] = $column;
+				$fieldCount++;
+// 				echo $column;
+// 				echo "<br>";
+			}
+			
 			if($_SESSION['personal'] == 'queenie')
 			{
-				$sql = "INSERT INTO `QueenieShippingRecord` (`FB帳號`, `品項`, `單價`, `數量`, `匯款日期`, `出貨日期`, `SerailNumber`) VALUES (";
+				$sql = "INSERT INTO `QueenieShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`) 
+				VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\") 
+				ON DUPLICATE KEY UPDATE `FB帳號`=\"$field[1]\", `品項`=\"$field[2]\", `單價`=\"$field[3]\", `數量`=\"$field[4]\"";
 			}
 			else
 			{
-				$sql = "INSERT INTO `ShippingRecord` (`FB帳號`, `品項`, `單價`, `數量`, `匯款日期`, `出貨日期`, `SerailNumber`) VALUES (";
+				$sql = "INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`)
+				VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\")
+				ON DUPLICATE KEY UPDATE `FB帳號`=\"$field[1]\", `品項`=\"$field[2]\", `單價`=\"$field[3]\", `數量`=\"$field[4]\"";
+				
 			}
-			
-			
-			$fieldCount = 0;
-			foreach ($entry->children('gsx', TRUE) as $column)
-			{
-				if(($fieldCount == 4)||($fieldCount == 5))
-				{
-					$sql = "$sql STR_TO_DATE('$column', '%Y/%m/%d'),";
-				}
-				else if(($fieldCount == 0)||($fieldCount == 1)||($fieldCount == 2)||($fieldCount == 3))
-				{
-					$sql = "$sql\"$column\", ";
-				}
-				$fieldCount++;
-			}
-			$sql = "$sql'$serialNumber');";
+
 			$result = mysql_query($sql,$con);
 			if (!$result) {
 				echo "$sql<br>";
-				die('Invalid query: ' . mysql_error());
+				die('Invalid query:1 ' . mysql_error());
 			}
-			$serialNumber++;
 		}
-	
-	
+		echo "<h1>成功更新定單資料</h1>";
 	} catch (Exception $e) {
 		echo $e->getMessage();
 	}
-	mysql_close($con);
 }
 if(!empty($_POST['Members'])) {
 	$Members = $_POST['Members'];
@@ -175,7 +183,9 @@ if(!empty($_POST['Members'])) {
 			
 			//$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`) VALUES (";
 			
-			$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`) VALUES ('$field[0]', '$field[1]', '$field[2]', '$field[3]', '$field[4]', '$field[5]', '$field[6]', '$field[7]', '$field[8]') ON DUPLICATE KEY UPDATE `姓名`='$field[0]', `E-Mail`='$field[2]', `手機號碼`='$field[3]', `郵遞區號＋地址`='$field[4]',`全家店到店服務代號`='$field[5]', `寄送方式`='$field[6]', `運費`='$field[7]', `備註`='$field[8]'";
+			$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`) 
+				VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\", \"$field[5]\", \"$field[6]\", \"$field[7]\", \"$field[8]\") 
+				ON DUPLICATE KEY UPDATE `姓名`=\"$field[0]\", `E-Mail`=\"$field[2]\", `手機號碼`=\"$field[3]\", `郵遞區號＋地址`=\"$field[4]\",`全家店到店服務代號`=\"$field[5]\", `寄送方式`=\"$field[6]\", `運費`=\"$field[7]\", `備註`=\"$field[8]\"";
 			
 // 			$sql = substr($sql, 0, -2);
 // 			$sql = "$sql);";
@@ -184,12 +194,12 @@ if(!empty($_POST['Members'])) {
 			if (!$result) {
 				echo $sql;
 				echo "<br>";
-				die('Invalid query: ' . mysql_error());
+				die('Invalid query2: ' . mysql_error());
 			}
 		}
-	mysql_close($con);
+	echo "<h1>成功更新會員資料</h1>";
 }
-else 
+if(empty($_POST['Members']) && empty($_POST['ShippingInformation']))
 {
 	if(!$accessToken)
 	{
@@ -225,7 +235,14 @@ else
 		exit;
 	}
 	$fbAccount = $userNode->getName();
-	if(($fbAccount == 'Gill Fang')||($fbAccount == 'JoLyn Dai')||($fbAccount == '王雅琦')||($fbAccount == 'Queenie Tsan')||($fbAccount == '古振平'))
+	if(($fbAccount == 'Gill Fang')||
+		($fbAccount == 'JoLyn Dai')||
+		($fbAccount == '王雅琦')||
+		($fbAccount == 'Queenie Tsan')||
+		($fbAccount == '熊會買')||
+		($fbAccount == '熊栽')||
+		($fbAccount == '熊會算')||
+		($fbAccount == '古振平'))
 	{
 		echo "管理者 : $fbAccount";
 	}
@@ -234,6 +251,7 @@ else
 		echo "$fbAccount : 你不是管理者";
 		exit;
 	}
+	mysql_close($con);
 }
 ?>
 <form method="POST" action="">
