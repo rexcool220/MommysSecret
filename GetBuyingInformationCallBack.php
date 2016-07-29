@@ -20,7 +20,19 @@
 	$( function() {
 		$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });    	
 	} );
-  </script>
+	function validateForm() {
+	    var remiteDate = document.forms["RemitForm"]["remiteDate"].value;
+	    var remitLastFiveDigit = document.forms["RemitForm"]["remitLastFiveDigit"].value;
+	    var remitAmont = document.forms["RemitForm"]["remitAmont"].value;
+	    if (remiteDate == null || remiteDate == "" || remitLastFiveDigit == null || remitLastFiveDigit == "" || remitAmont == null || remitAmont == "")
+	    {
+	        alert("請檢查匯款日期、匯款金額、匯款末五碼都要填喔");
+	        return false;
+	    }
+	}
+	</script>
+	
+	
 </head>
 <body>
 <?php 
@@ -259,7 +271,7 @@
  			echo '<hr align="left" width="1200px" color="#000000" size="4" />';
  			echo $toRemitTable;
  			?>
- 		<form action="GetBuyingInformationCallBack.php" method="get">
+ 		<form name="RemitForm" action="GetBuyingInformationCallBack.php" onsubmit="return validateForm()" method="get">
  			 <input type="hidden" name="act" value="run">
  			 <input type="hidden" value="<?php echo $fbAccount;?>" name="fbAccount">
 		  	<p><input type="text" name="remiteDate" id="datepicker" placeholder="匯款日期"></p>

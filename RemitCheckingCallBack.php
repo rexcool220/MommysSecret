@@ -89,7 +89,7 @@ if (!$result) {
 }
 $remitCheckingTableCount = mysql_num_rows($result);
 
-$remitCheckingTable = "<table border='1'>
+$remitCheckingTable = "<table id=\"remitCheckingTable\">
 	<tr>
 	<th>匯款編號 </th>
 	<th>FB帳號</th>
@@ -99,6 +99,7 @@ $remitCheckingTable = "<table border='1'>
 	<th>匯款日期</th>
 	<th>Memo</th>
 	<th>已收款</th>
+	<th>管理員備註</th>				
 	<th></th>
 	</tr>";
 while($row = mysql_fetch_array($result))
@@ -114,6 +115,7 @@ while($row = mysql_fetch_array($result))
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['匯款日期'] . "</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['Memo'] . "</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>$isRemited</td>";
+	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['管理員備註'] . "</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>
 			
 	<form action=\"RemitCheckingCallBack.php\" method=\"get\">
@@ -146,9 +148,56 @@ if (!empty($_GET['RemitChecked'])) {
 	header("location: http://mommyssecret.tw/RemitCheckingCallBack.php");
 }
 
+if (!empty($_GET['remitNumberLink'])) {
+	$remitNumberLink = $_GET['remitNumberLink'];
+	$managerMemo = $_GET['managerMemo'];
+	if(preg_match("/(?<=remitNumber=)[0-9]+/", $remitNumberLink, $matches)) {
+		$remitNumber = $matches[0];
+	}
+	else {
+		echo 'Some thing error<p>';
+		exit;
+	}
+	$sql = "UPDATE `RemitRecord` SET `管理員備註` = '$managerMemo'  WHERE 匯款編號 = $remitNumber";
+	
+	$result = mysql_query($sql,$con);
+
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
+
+	header("location: http://mommyssecret.tw/RemitCheckingCallBack.php");
+}
+
 echo $remitCheckingTable;
+
+
 
 mysql_close($con);
 ?>
+<script>
+var table = document.getElementById("remitCheckingTable");
+if (table != null) {
+    for (var i = 0; i < table.rows.length; i++)
+	{
+		for (var j = 0; j < table.rows[i].cells.length; j++)
+		{    
+			if(j == 8)//管理員備註
+			{
+		        table.rows[i].cells[j].onclick = function ()
+		        {
+		            tableText(this);
+		        };
+			}
+		}
+    }
+}
+
+function tableText(tableCell) {
+    var memo = prompt("輸入管理員備註");
+	var remitNumberLink = table.rows[tableCell.parentNode.rowIndex].cells[0].innerHTML;
+	window.location.replace("http://mommyssecret.tw/RemitCheckingCallBack.php?managerMemo=" + memo + "&remitNumberLink=" + remitNumberLink);
+}
+</script>
 </body>
 </html>
