@@ -179,6 +179,23 @@
  	}
  	
  	$row = mysql_fetch_array($result);
+ 	
+ 	if(($row['姓名'] == null || $row['姓名'] == "") ||
+ 		($row['姓名'] == null || $row['姓名'] == "") ||
+ 		($row['FB帳號'] == null || $row['姓名'] == "") ||
+ 		($row['E-Mail'] == null || $row['姓名'] == "") ||
+ 		($row['手機號碼'] == null || $row['姓名'] == "") ||
+ 		($row['郵遞區號＋地址'] == null || $row['姓名'] == "") ||
+ 		($row['全家店到店服務代號'] == null || $row['姓名'] == "") ||
+ 		($row['寄送方式'] == null || $row['姓名'] == ""))
+ 	{
+ 		echo "redirect to member filling table";
+ 	}
+ 	if(($row['寄送方式'] == "合併寄貨") && (($row['合併寄送人帳號'] == null) || ($row['合併寄送人帳號'] == "")))
+ 	{
+ 		echo "redirect to member filling table";
+ 	}
+ 	
  	if($totalPrice > 6000)
  	{
  		$shippingFee = 0;
@@ -229,7 +246,7 @@
 		</tr>
 		<tr>
 		<th>登入的FB帳號</th>
-		<td>".$row['登入的FB帳號']."</td>
+		<td>".$fbAccount."</td>
 		</tr>
 		<tr>
 		<th>E-Mail</th>
@@ -251,6 +268,10 @@
 		<th>寄送方式 </th>
 		<td>".$row['寄送方式']."</td>
 		</tr>
+		<tr>
+		<th>合併寄送人帳號 </th>
+		<td>".$row['合併寄送人帳號']."</td>
+		</tr> 				
 		</table>";
  		
  		echo $MemberInformation; 		
