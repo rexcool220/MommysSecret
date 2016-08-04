@@ -9,7 +9,43 @@ if(!session_id()) {
 ?>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="MommysSecret.css">
+<style>
+#Default {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#Member {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 60%;
+}
+
+td, th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+tr:hover {background-color: #ddd;}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #ffe6e6;
+    color: #ea9399;
+}
+body {
+    background-image: url("MommysSecretBackGround.png");
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-size: 25%;
+    background-attachment: fixed;
+}
+</style>
 <title>匯款出貨確認表</title>
 </head>
 <body>
@@ -121,7 +157,7 @@ while($row = mysql_fetch_array($result))
 	<form action=\"RemitCheckingCallBack.php\" method=\"get\">
  		<input type=\"hidden\" name=\"RemitChecked\" value=\"run\">
  		<input type=\"hidden\" value=\"".$row['匯款編號']."\" name=\"remitNumber\">
- 		<input type=\"submit\" value=\"確認已匯款\" >
+ 		<input type=\"submit\" value=\"確認已匯款\">
  	</form>		
 	</td>";
 	$remitCheckingTable = $remitCheckingTable . "</tr>";
@@ -171,8 +207,6 @@ if (!empty($_GET['remitNumberLink'])) {
 
 echo $remitCheckingTable;
 
-
-
 mysql_close($con);
 ?>
 <script>
@@ -189,6 +223,13 @@ if (table != null) {
 		            tableText(this);
 		        };
 			}
+			if(j == 9)
+			{
+		        table.rows[i].cells[j].onclick = function ()
+		        {
+		            confirmRemited(this);
+		        };
+			}
 		}
     }
 }
@@ -197,6 +238,9 @@ function tableText(tableCell) {
     var memo = prompt("輸入管理員備註");
 	var remitNumberLink = table.rows[tableCell.parentNode.rowIndex].cells[0].innerHTML;
 	window.location.replace("http://mommyssecret.tw/RemitCheckingCallBack.php?managerMemo=" + memo + "&remitNumberLink=" + remitNumberLink);
+}
+function confirmRemited(tableCell) {
+    //alert("confirm");
 }
 </script>
 </body>

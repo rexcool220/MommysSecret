@@ -13,7 +13,7 @@ if(!session_id()) {
 <title>出貨確認表</title>
 </head>
 <body>
-<form method="get" action="">
+<form method="POST" action="">
 	<input type="text" value="" name="CustomerfbAccount" class="FBSearch" placeholder="FB帳號"><p>
 	<input type="submit" value="查詢"><p>
 </form>
@@ -21,9 +21,9 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-			'app_id' => '1540605312908660',
-			'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
-			'default_graph_version' => 'v2.6',
+		'app_id' => '1540605312908660',
+		'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
 	try {
@@ -53,6 +53,11 @@ if(!$accessToken)
 	}
 	$fb->setDefaultAccessToken($accessToken);
 }
+	?>
+		<script>
+			window.history.replaceState( {} , '出貨確認表', 'http://mommyssecret.tw/ShippingCheckingCallBack.php' );
+		</script>
+	<?php
 try {
 	$response = $fb->get('/me');
 	$userNode = $response->getGraphUser();
@@ -83,11 +88,11 @@ else
 	exit;
 }
 
-if(!empty($_GET['CustomerfbAccount'])) {
-	$CustomerfbAccount = $_GET['CustomerfbAccount'];
+if(!empty($_POST['CustomerfbAccount'])) {
+	$CustomerfbAccount = $_POST['CustomerfbAccount'];
 	
-	if (!empty($_GET["SerialNumbers"])) {
-		$SerialNumbers = $_GET["SerialNumbers"];
+	if (!empty($_POST["SerialNumbers"])) {
+		$SerialNumbers = $_POST["SerialNumbers"];
 		for($i=0;$i<Count($SerialNumbers);$i++) {
 			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbers[$i]'";
 			$result = mysql_query($sql,$con);
@@ -107,7 +112,7 @@ if(!empty($_GET['CustomerfbAccount'])) {
 		die('Invalid query: ' . mysql_error());
 	}
 	$toShippingTableCount = mysql_num_rows($result);
-	$toShippingTable = "<form action=\"ShippingCheckingCallBack.php\" method=\"get\">
+	$toShippingTable = "<form action=\"ShippingCheckingCallBack.php\" method=\"post\">
 		<input type='submit' value=\"確定出貨!\">
 		<input type=\"hidden\" value=\"$CustomerfbAccount\" name=\"CustomerfbAccount\">";
 	$toShippingTable = $toShippingTable . "<table>
@@ -127,6 +132,7 @@ if(!empty($_GET['CustomerfbAccount'])) {
 	$totalPrice = 0;
 	while($row = mysql_fetch_array($result))
 	{
+		$toShowShippingCheckBox = false;
 		if($row['出貨日期'] == "0000-00-00")
 		{
 			$row['出貨日期'] = "";
@@ -135,6 +141,11 @@ if(!empty($_GET['CustomerfbAccount'])) {
 		{
 			$row['匯款日期'] = "";
 		}
+		if($row['出貨日期'] == "")
+		{
+			$toShowShippingCheckBox = true;
+		}
+		
 		$isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 		
 		$subTotal = $row['單價'] * $row['數量'];
@@ -149,8 +160,15 @@ if(!empty($_GET['CustomerfbAccount'])) {
 		$toShippingTable = $toShippingTable . "<td>" . $isReceivedPayment . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['出貨日期'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['匯款編號'] . "</td>";
-		$toShippingTable = $toShippingTable . "<td>
-			<input type=\"checkbox\" name=\"SerialNumbers[]\" value=\"".$row['SerialNumber']."\" style=\"WIDTH: 40px; HEIGHT: 40px\">";
+		$toShippingTable = $toShippingTable . "<td>";
+		if($toShowShippingCheckBox == true)
+		{
+			$toShippingTable = $toShippingTable . "<input type=\"checkbox\" name=\"SerialNumbers[]\" value=\"".$row['SerialNumber']."\" style=\"WIDTH: 40px; HEIGHT: 40px\"></td>";
+		}
+		else
+		{
+			$toShippingTable = $toShippingTable . "</td>";
+		}
 // 		<input type=\"hidden\" name=\"shipping\" value=\"run\">
 // 		<input type=\"hidden\" value=\"$CustomerfbAccount\" name=\"CustomerfbAccount\">
 // 		<input type=\"hidden\" value=\"".$row['SerialNumber']."\" name=\"SerialNumber\">
@@ -221,27 +239,8 @@ if(!empty($_GET['CustomerfbAccount'])) {
 		</table>";
 		
 	echo $MemberInformation;
-// 	echo '姓名 :'.$row['姓名'].'<br>';
-// 	echo 'FB帳號 :'.$row['FB帳號'].'<br>';
-// 	echo 'E-Mail : '.$row['E-Mail'].'<br>';
-// 	echo '手機號碼 : '.$row['手機號碼'].'<br>';
-// 	echo '郵遞區號＋地址 : '.$row['郵遞區號＋地址'].'<br>';
-// 	echo '全家店到店服務代號 : '.$row['全家店到店服務代號'].'<br>';
-// 	echo '寄送方式 : '.$row['寄送方式'].'<br>';
 	
 	echo $toShippingTable;
-	
-// 	if (!empty($_GET['shipping'])) {
-// 		$SerialNumber = $_GET['SerialNumber'];
-	
-// 		$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumber'";
-// 		$result = mysql_query($sql,$con);
-	
-// 		if (!$result) {
-// 			die('Invalid query: ' . mysql_error());
-// 		}
-// 		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerfbAccount=$CustomerfbAccount");
-// 	}
 	
 	$conn->close();
  	

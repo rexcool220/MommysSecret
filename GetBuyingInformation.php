@@ -16,6 +16,6 @@
 	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/GetBuyingInformationCallBack.php', $permissions);
 	
 	//echo urldecode($loginUrl);
-	$_SESSION['personal'] = $_GET['personal'];
+	$_SESSION['personal'] = $_POST['personal'];
 	header("location: ".$loginUrl);
 ?>

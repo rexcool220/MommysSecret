@@ -11,7 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="MommysSecret.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Mommy's Secret + File</title>
+	<title>個人資料</title>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="/resources/demos/style.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -112,10 +112,12 @@
 </head>
 <body>
 <?php 
+if(!$accessToken)
+{
 	$fb = new Facebook\Facebook([
-    'app_id' => '1540605312908660',
-	'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
-	'default_graph_version' => 'v2.6',
+	    'app_id' => '1540605312908660',
+		'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
 	try {
@@ -144,6 +146,14 @@
 		exit;
 	}
  	$fb->setDefaultAccessToken($accessToken);
+ 	
+}
+ 	?>
+ 		<script>
+ 			window.history.replaceState( {} , '個人資料', 'http://mommyssecret.tw/MemberInformationCallBack.php' );
+ 		</script>
+ 	<?php 	
+ 	
  	$fbAccount = GetFBAccount($fb);
  	
  	$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
@@ -156,50 +166,50 @@
  	$row = mysql_fetch_array($result);
 
  	$MemberInformation = "
-	<form name=\"MemberInformationForm\" action=\"MemberInformationCallBack.php\" onsubmit=\"return validateForm()\" method=\"get\">
+	<form name=\"MemberInformationForm\" action=\"MemberInformationCallBack.php\" onsubmit=\"return validateForm()\" method=\"POST\">
    	<input type=\"hidden\" name=\"act\" value=\"run\">
 	<table id=\"Member\">
     <tr>
 		<th>FB帳號</th> 			
 	    <td>
-				<input type=\"text\" name=\"fbAccount\" readonly=\"readonly\" value=\"".$fbAccount."\"style=\"width:100%;\">
-	    </td>	
+				<input type=\"text\" name=\"fbAccount\" readonly=\"readonly\" value=\"".$fbAccount."\"style=\"width:300px;\">
+	    </td>	    				
 	</tr>	    	    		
 	<tr>
-		<th>姓名(*必填)</th>
+		<th>姓名<font color=\"red\">*</font></th>
 	    <td>
-			<input type=\"text\" name=\"MemberName\" value=\"".$row['姓名']."\"style=\"width:100%;\">	    	    		
+			<input type=\"text\" name=\"MemberName\" value=\"".$row['姓名']."\"style=\"width:300px;\">	    	    		
 	    </td>			
 	</tr>
     <tr>
-		<th>E-Mail(*必填)</th> 
+		<th>E-Mail<font color=\"red\">*</font></th> 
 	    <td>
-			<input type=\"text\" name=\"EMail\" title=\"請填寫登錄FB的Mail，因為本名或是FB帳號有可能重複，請留Mail方便我們再次確認喔!\" value=\"".$row['E-Mail']."\"style=\"width:100%;\">
+			<input type=\"text\" name=\"EMail\" title=\"請填寫登錄FB的Mail，因為本名或是FB帳號有可能重複，請留Mail方便我們再次確認喔!\" value=\"".$row['E-Mail']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
     <tr>
-		<th>手機號碼(*必填)</th>       		
+		<th>手機號碼<font color=\"red\">*</font></th>       		
 	    <td>
-			<input type=\"text\" name=\"PhoneNumber\" value=\"".$row['手機號碼']."\"style=\"width:100%;\">
+			<input type=\"text\" name=\"PhoneNumber\" value=\"".$row['手機號碼']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
 	<tr>		
-		<th>郵遞區號＋地址(*必填)</th>         		
+		<th>郵遞區號＋地址<font color=\"red\">*</font></th>         		
 	    <td>
-			<input type=\"text\" name=\"Address\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['郵遞區號＋地址']."\"style=\"width:100%;\">
+			<input type=\"text\" name=\"Address\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['郵遞區號＋地址']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
 	<tr>			
-		<th>全家店到店服務代號(*必填)<br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
+		<th>全家店到店服務代號<font color=\"red\">*</font><br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
 				
 	    <td>
-			<input type=\"text\" name=\"FamilyNumber\" title=\"全家店到店服務代號（5碼）＋店名  ex:10833全家文化店\" value=\"".$row['全家店到店服務代號']."\"style=\"width:100%;\">
+			<input type=\"text\" name=\"FamilyNumber\" title=\"全家店到店服務代號（5碼）＋店名  ex:10833全家文化店\" value=\"".$row['全家店到店服務代號']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
 	<tr>			
-		<th>寄送方式(*必填)</th>         		
+		<th>指定的寄送方式<font color=\"red\">*</font></th>         		
 	    <td>
-			<select id=\"ShippingWayId\" onchange=\"myFunction()\" name=\"ShippingWay\">
+			<select id=\"ShippingWayId\" onchange=\"myFunction()\" name=\"ShippingWay\" style=\"width:300px;\">
 	    		<option selected>".$row['寄送方式']."</option>
 				<option value=\"店到店\">店到店</option>
 				<option value=\"貨運\">貨運</option>
@@ -213,42 +223,41 @@
 		<tr>			
 		<th>運費</th>         		
 	    <td>
-			<input type=\"text\" id=\"ShippingFeeId\" name=\"ShippingFee\" readonly=\"readonly\" value=\"".$row['運費']."\"style=\"width:100%;\">
+			<input type=\"text\" id=\"ShippingFeeId\" name=\"ShippingFee\" readonly=\"readonly\" value=\"".$row['運費']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
 	<tr>			
-		<th>合併寄送帳號(請合併出貨姊妹的同意喔!)</th>         		
+		<th>合併寄送帳號(請先徵求合併出貨姊妹的同意喔!)</th>         		
 	    <td>
-  			<input id=\"AgentAccount\" type=\"text\" name=\"AgentAccount\" title=\"合併寄送指由<<同一個人匯款收貨>>，XXX會幫我匯款收貨(請留XXX的FB帳號)謝謝喔!\" value=\"".$row['合併寄送人帳號']."\"style=\"width:100%;\">
+  			<input id=\"AgentAccount\" type=\"text\" name=\"AgentAccount\" title=\"合併寄送指由<<同一個人匯款收貨>>，XXX會幫我匯款收貨(請留XXX的FB帳號)謝謝喔!\" value=\"".$row['合併寄送人帳號']."\"style=\"width:300px;\">
 	    </td>	
 	</tr> 	 			
 	<tr>			
 		<th>備註</th>         		
 	    <td>
-			<input type=\"text\" name=\"Memo\" value=\"".$row['備註']."\"style=\"width:100%;\">
+			<input type=\"text\" name=\"Memo\" value=\"".$row['備註']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
-		
-	</table>
+	</table>			
  	<input type=\"submit\" value=\"確認\">
  	</form>";
  	
- 	if (!empty($_GET['act'])) {
- 		$MemberName = $_GET['MemberName'];
- 		$EMail = $_GET['EMail'];
- 		$PhoneNumber = $_GET['PhoneNumber'];
- 		$Address = $_GET['Address'];
- 		$FamilyNumber = $_GET['FamilyNumber'];
- 		$ShippingWay = $_GET['ShippingWay'];
-		$ShippingFee = $_GET['ShippingFee'];
-		$Memo = $_GET['Memo'];
-		$AgentAccount = $_GET['AgentAccount'];
+ 	if (!empty($_POST['act'])) {
+ 		$MemberName = $_POST['MemberName'];
+ 		$EMail = $_POST['EMail'];
+ 		$PhoneNumber = $_POST['PhoneNumber'];
+ 		$Address = $_POST['Address'];
+ 		$FamilyNumber = $_POST['FamilyNumber'];
+ 		$ShippingWay = $_POST['ShippingWay'];
+		$ShippingFee = $_POST['ShippingFee'];
+		$Memo = $_POST['Memo'];
+		$AgentAccount = $_POST['AgentAccount'];
  		
  		$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
  		VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
  		ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\", `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";		
  		$result = mysql_query($sql,$con);
- 		echo $sql;
+//  		echo $sql;
  		if (!$result) {
  			echo $sql;
  			echo "<br>";

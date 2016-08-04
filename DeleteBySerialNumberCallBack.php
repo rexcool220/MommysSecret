@@ -49,6 +49,11 @@ if(!$accessToken)
 	}
 	$fb->setDefaultAccessToken($accessToken);
 }
+?>
+ 		<script>
+ 			window.history.replaceState( {} , '刪除定單', 'http://mommyssecret.tw/DeleteBySerialNumberCallBack.php' );
+ 		</script>
+ <?php 	
 try {
 	$response = $fb->get('/me');
 	$userNode = $response->getGraphUser();
@@ -79,7 +84,7 @@ else
 	exit;
 }
 ?>
-<form method="get" action="">
+<form method="POST" action="">
 	定單編號：<input type="text" value="" name="SerialNumber" style="width: 600px;"><p>
 	<input type="submit" value="查詢"><p>
 </form>
@@ -88,8 +93,8 @@ else
 </html>
 <?php 
 
-if(!empty($_GET['SerialNumber'])) {
-	$SerialNumber = $_GET['SerialNumber'];
+if(!empty($_POST['SerialNumber'])) {
+	$SerialNumber = $_POST['SerialNumber'];
 	$sql = "SELECT * FROM `ShippingRecord` WHERE SerialNumber = '$SerialNumber';";
 
 	$result = mysql_query($sql,$con);
@@ -125,7 +130,7 @@ if(!empty($_GET['SerialNumber'])) {
 		$SelectedTable = $SelectedTable . "<td>" . $row['匯款編號'] . "</td>";
 		$SelectedTable = $SelectedTable . "<td>
 			
-		<form action=\"DeleteBySerialNumberCallBack.php\" method=\"get\">
+		<form action=\"DeleteBySerialNumberCallBack.php\" method=\"POST\">
 	 		<input type=\"hidden\" name=\"act\" value=\"run\">
 	 		<input type=\"hidden\" value=\"".$row['SerialNumber']."\" name=\"SerialNumber\">
 	 		<input type=\"submit\" value=\"確認刪除\">
@@ -136,8 +141,8 @@ if(!empty($_GET['SerialNumber'])) {
 	$SelectedTable = $SelectedTable . "</table>";
 }
 
-if (!empty($_GET['act'])) {
- 	$SerialNumber = $_GET['SerialNumber'];
+if (!empty($_POST['act'])) {
+ 	$SerialNumber = $_POST['SerialNumber'];
 
 	$sql = "DELETE FROM `ShippingRecord` WHERE `SerialNumber` = '$SerialNumber'";
 	$result = mysql_query($sql,$con);
@@ -145,7 +150,7 @@ if (!empty($_GET['act'])) {
 	if (!$result) {
 		die('Invalid query: ' . mysql_error());
 	}
-	header("location: http://mommyssecret.tw/DeleteBySerialNumberCallBack.php?SerialNumber=$SerialNumber");
+	header("location: http://mommyssecret.tw/DeleteBySerialNumberCallBack.php");
 }
 
 echo $SelectedTable;

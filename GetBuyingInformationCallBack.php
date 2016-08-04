@@ -20,15 +20,16 @@
 	$( function() {
 		$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });    	
 	} );
-	function validateForm() {
-	    var remiteDate = document.forms["RemitForm"]["remiteDate"].value;
-	    var remitLastFiveDigit = document.forms["RemitForm"]["remitLastFiveDigit"].value;
-	    var remitAmont = document.forms["RemitForm"]["remitAmont"].value;
-	    if (remiteDate == null || remiteDate == "" || remitLastFiveDigit == null || remitLastFiveDigit == "" || remitAmont == null || remitAmont == "")
-	    {
-	        alert("請檢查匯款日期、匯款金額、匯款末五碼都要填喔");
-	        return false;
-	    }
+	function validateForm() 
+	{
+		    var remiteDate = document.forms["RemitForm"]["remiteDate"].value;
+		    var remitLastFiveDigit = document.forms["RemitForm"]["remitLastFiveDigit"].value;
+		    var remitAmont = document.forms["RemitForm"]["remitAmont"].value;
+		    if (remiteDate == null || remiteDate == "" || remitLastFiveDigit == null || remitLastFiveDigit == "" || remitAmont == null || remitAmont == "")
+		    {
+		        alert("請檢查匯款日期、匯款金額、匯款末五碼都要填喔");
+		        return false;
+		    }
 	}
 	</script>
 	
@@ -36,10 +37,12 @@
 </head>
 <body>
 <?php 
+if(!$accessToken)
+{
 	$fb = new Facebook\Facebook([
-    'app_id' => '1540605312908660',
-	'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
-	'default_graph_version' => 'v2.6',
+	    'app_id' => '1540605312908660',
+		'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
 	try {
@@ -68,6 +71,12 @@
 		exit;
 	}
  	$fb->setDefaultAccessToken($accessToken);
+}
+	?>
+		<script>
+			window.history.replaceState( {} , '購買清單', 'http://mommyssecret.tw/GetBuyingInformationCallBack.php' );
+		</script>
+	<?php
  	$fbAccount = GetFBAccount($fb);
  	$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
  	
@@ -179,44 +188,49 @@
  	}
  	
  	$row = mysql_fetch_array($result);
+ 	$name = $row['姓名'];
+ 	$eMail = $row['E-Mail'];
+ 	$phoneNumber = $row['手機號碼'];
+ 	$address = $row['郵遞區號＋地址'];
+ 	$familyNumber = $row['全家店到店服務代號'];
+ 	$shippingWay = $row['寄送方式'];
+ 	$shippingFee = $row['運費'];
+ 	$agentAccount = $row['合併寄送人帳號'];
+ 	$memberFlag = true;
  	
- 	if(($row['姓名'] == null || $row['姓名'] == "") ||
- 		($row['姓名'] == null || $row['姓名'] == "") ||
- 		($row['FB帳號'] == null || $row['姓名'] == "") ||
- 		($row['E-Mail'] == null || $row['姓名'] == "") ||
- 		($row['手機號碼'] == null || $row['姓名'] == "") ||
- 		($row['郵遞區號＋地址'] == null || $row['姓名'] == "") ||
- 		($row['全家店到店服務代號'] == null || $row['姓名'] == "") ||
- 		($row['寄送方式'] == null || $row['姓名'] == ""))
+ 	if(($name == null || $name == "") ||
+ 		($eMail == null || $eMail == "") ||
+ 		($phoneNumber == null || $phoneNumber == "") ||
+ 		($address == null || $address == "") ||
+ 		($familyNumber == null || $familyNumber == "") ||
+ 		($shippingWay == null || $shippingWay == "") ||
+ 		($shippingFee == null || $shippingFee == "") ||
+ 		(($shippingWay == "合併寄貨") && (($agentAccount == null) || ($agentAccount == ""))))
  	{
- 		echo "redirect to member filling table";
- 	}
- 	if(($row['寄送方式'] == "合併寄貨") && (($row['合併寄送人帳號'] == null) || ($row['合併寄送人帳號'] == "")))
- 	{
- 		echo "redirect to member filling table";
+ 		$memberFlag = false;//表示不要讓客戶匯款
  	}
  	
  	if($totalPrice > 6000)
  	{
- 		$shippingFee = 0;
+ 		$actualShippingFee = 0;
  	}
  	else {
- 		$shippingFee = $row['運費'];
+ 		$actualShippingFee = $shippingFee;
  	}
  	if($totalPrice == 0)
  	{
  		$moneyToBePaid = 0;
- 		$shippingFee = 0;
+ 		$actualShippingFee = 0;
  	}
  	else
  	{
- 		$moneyToBePaid = $totalPrice + $shippingFee;
+ 		$moneyToBePaid = $totalPrice + $actualShippingFee;
  	}
- 	if (!empty($_GET['act'])) {
- 		$remitDate = $_GET['remiteDate'];
- 		$remitLastFiveDigit = $_GET['remitLastFiveDigit'];
- 		$remitAmont = $_GET['remitAmont'];
- 		$memo = $_GET['memo'];
+ 	if (!empty($_POST['act'])) {
+ 		$remitDate = $_POST['remiteDate'];
+ 		$remitLastFiveDigit = $_POST['remitLastFiveDigit'];
+ 		$remitAmont = $_POST['remitAmont'];
+ 		$memo = $_POST['memo'];
  	
  		$sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`應匯款金額`)
  		VALUES (NULL ,  '$remitLastFiveDigit',  '$remitDate',  '$memo',  '0',  '$remitAmont',  '$fbAccount' ,'$moneyToBePaid');";
@@ -272,42 +286,45 @@
 		<th>合併寄送人帳號 </th>
 		<td>".$row['合併寄送人帳號']."</td>
 		</tr> 				
-		</table>";
+		</table>
+ 		<input type=\"button\" value=\"修改個人資料\" onclick=\"window.open('http://mommyssecret.tw/MemberInformation.php')\" />
+		<br><br>";
  		
- 		echo $MemberInformation; 		
-//  		echo '姓名 :'.$row['姓名'].'<br>';
-//  		echo 'FB帳號 :'.$row['FB帳號'].'<br>';
-//  		echo '登入的FB帳號 :'.$fbAccount.'<br>';
-//  		echo 'E-Mail : '.$row['E-Mail'].'<br>';
-//  		echo '手機號碼 : '.$row['手機號碼'].'<br>';
-//  		echo '郵遞區號＋地址 : '.$row['郵遞區號＋地址'].'<br>';
-//  		echo '全家店到店服務代號 : '.$row['全家店到店服務代號'].'<br>';
-//  		echo '寄送方式 : '.$row['寄送方式'].'<br>';
+ 		echo $MemberInformation;	
+
  	
- 		if($toRemitTableCount > 0)
+ 		if($memberFlag == true)
+ 		{
+	 		if($toRemitTableCount > 0)
+	 		{
+	 			echo '<b><font size="6">';
+	 			echo "購買金額 : $totalPrice + 運費 : $actualShippingFee = 合計匯款金額 : $moneyToBePaid";
+	 			echo '</font></b>';
+	 			echo '<hr align="left" width="1200px" color="#000000" size="4" />';
+	 			echo $toRemitTable;
+	 			?>
+			 		<form name="RemitForm" action="GetBuyingInformationCallBack.php" onsubmit="return validateForm()" method="POST">
+			 			<input type="hidden" name="act" value="run">
+			 			<input type="hidden" value="<?php echo $fbAccount;?>" name="fbAccount">
+					  	<p><input type="text" name="remiteDate" id="datepicker" placeholder="匯款日期"></p>
+					  	<p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
+					  	<p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
+					  	<p><input type="text" name="memo" placeholder="Memo"></p>
+					  	<input type="submit" value="確認已匯款">
+			 		</form>
+	 			<?php
+	 		}
+			else 
+			{
+				echo $remitedTable;
+			}
+ 		}
+ 		else 
  		{
  			echo '<b><font size="6">';
- 			echo "購買金額 : $totalPrice + 運費 : $shippingFee = 合計匯款金額 : $moneyToBePaid";
+ 			echo "您的會員資料不完整，請填寫完所有欄位後再做匯款喔 :)";
  			echo '</font></b>';
- 			echo '<hr align="left" width="1200px" color="#000000" size="4" />';
- 			echo $toRemitTable;
- 			?>
- 		<form name="RemitForm" action="GetBuyingInformationCallBack.php" onsubmit="return validateForm()" method="get">
- 			 <input type="hidden" name="act" value="run">
- 			 <input type="hidden" value="<?php echo $fbAccount;?>" name="fbAccount">
-		  	<p><input type="text" name="remiteDate" id="datepicker" placeholder="匯款日期"></p>
-		  	<p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
-		  	<p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
-		  	<p><input type="text" name="memo" placeholder="Memo"></p>
-		  	<input type="submit" value="確認已匯款">
- 		</form>
- 			
- 		<?php
  		}
-		else 
-		{
-			echo $remitedTable;
-		}
  	}
  	$conn->close();
  	 	
