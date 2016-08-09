@@ -138,20 +138,29 @@ if(!empty($_GET['remitNumber'])) {
 		<td>".$row['寄送方式']."</td>
 		</tr>
 		</table>";
-		
+
+	$sql = "SELECT 匯款金額 FROM `RemitRecord` WHERE 匯款編號 = '$remitNumber'";
+	$result = mysql_query($sql,$con);
+	
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}	
+	$row = mysql_fetch_array($result);
+	
+	$remitAmountTable = "<br><br><table width=60%>
+		<tr>
+		<th>應收</th>
+		<td>".$moneyToBePaid."</td>
+		</tr>
+		<tr>
+		<th>實收</th>
+		<td>".$row['匯款金額']."</td>
+		</tr>			
+		</table><br><br>";	
+	
 	echo $MemberInformation;
-// 	echo '姓名 :'.$row['姓名'].'<br>';
-// 	echo 'FB帳號 :'.$row['FB帳號'].'<br>';
-// 	echo '登入的FB帳號 :'.$fbAccount.'<br>';
-// 	echo 'E-Mail : '.$row['E-Mail'].'<br>';
-// 	echo '手機號碼 : '.$row['手機號碼'].'<br>';
-// 	echo '郵遞區號＋地址 : '.$row['郵遞區號＋地址'].'<br>';
-// 	echo '全家店到店服務代號 : '.$row['全家店到店服務代號'].'<br>';
-// 	echo '寄送方式 : '.$row['寄送方式'].'<br>';
-// 	echo '<b><font size="6">';
-// 	echo "購買金額 : $totalPrice + 運費 : $shippingFee = 合計匯款金額 : $moneyToBePaid";
-// 	echo '</font></b>';
-// 	echo '<hr align="left" width="1200px" color="#000000" size="4" />';
+	
+	echo $remitAmountTable;
 	
 	echo $RemitTable;
 	

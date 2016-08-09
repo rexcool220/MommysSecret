@@ -251,7 +251,7 @@ if(!$accessToken)
  	{
  		$MemberInformation = "<table id=\"Member\">
 		<tr>
-		<th>姓名</th>
+		<th>真實姓名</th>
 		<td>".$row['姓名']."</td>
 		</tr>
 		<tr>
@@ -275,7 +275,7 @@ if(!$accessToken)
 		<td>".$row['郵遞區號＋地址']."</td>
 		</tr>
 		<tr>
-		<th>全家店到店服務代號 </th>
+		<th>全家店到店 店名+地址</th>
 		<td>".$row['全家店到店服務代號']."</td>
 		</tr>
 		<tr>

@@ -38,7 +38,7 @@
 <body>
 <?php 
 	
- 	$fbAccount = 'Orange Tai';
+ 	$fbAccount = 'Tanya Yeh';
  	$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
  	
  	$result = mysql_query($sql,$con);

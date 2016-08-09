@@ -176,7 +176,7 @@ if(!$accessToken)
 	    </td>	    				
 	</tr>	    	    		
 	<tr>
-		<th>姓名<font color=\"red\">*</font></th>
+		<th>真實姓名<font color=\"red\">*</font></th>
 	    <td>
 			<input type=\"text\" name=\"MemberName\" value=\"".$row['姓名']."\"style=\"width:300px;\">	    	    		
 	    </td>			
@@ -200,10 +200,10 @@ if(!$accessToken)
 	    </td>	
 	</tr>
 	<tr>			
-		<th>全家店到店服務代號<font color=\"red\">*</font><br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
+		<th>全家店到店 店名+地址<font color=\"red\">*</font><br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
 				
 	    <td>
-			<input type=\"text\" name=\"FamilyNumber\" title=\"全家店到店服務代號（5碼）＋店名  ex:10833全家文化店\" value=\"".$row['全家店到店服務代號']."\"style=\"width:300px;\">
+			<input type=\"text\" name=\"FamilyNumber\" title=\"ex:全家板橋松柏店 新北市板橋區松柏街13號\" value=\"".$row['全家店到店服務代號']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
 	<tr>			
