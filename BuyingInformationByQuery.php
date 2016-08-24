@@ -1,52 +1,136 @@
-<?php
-	require_once __DIR__ . '/vendor/autoload.php';
-	require_once 'ConnectMySQL.php';
-	header("Content-Type:text/html; charset=utf-8");
+<?php 
+require_once __DIR__ . '/vendor/autoload.php';
+
+header("Content-Type:text/html; charset=utf-8");
+
+if(!session_id()) {
+	session_start();
+}
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
 <html>
+
 <head>
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css">
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>購買清單</title>
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" href="/resources/demos/style.css">
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-	<script>
+<link rel="stylesheet" type="text/css" href="MommysSecret.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>購買清單</title>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script>
 	$( function() {
 		$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });    	
 	} );	
-  </script>	
+</script>	
+<title>MommysSecret</title>
+
 </head>
-<body>	
+
+<body>
+
 <?php
-if (!empty($_GET['act']))
+if(!$accessToken)
 {
-	$remitDate = $_GET['remiteDate'];
-	$remitLastFiveDigit = $_GET['remitLastFiveDigit'];
-	$remitAmont = $_GET['remitAmont'];
-	$memo = $_GET['memo'];
-	$fbAccount = $_GET['fbAccount'];
-
-	$sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號`)
-	VALUES (NULL ,  '$remitLastFiveDigit',  '$remitDate',  '$memo',  '0',  '$remitAmont',  '$fbAccount');";
-	$result = mysql_query($sql,$con);
-
-	if (!$result) {
-		die('Invalid query: ' . mysql_error());
+	$fb = new Facebook\Facebook([
+			'app_id' => '1540605312908660',
+			'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+			'default_graph_version' => 'v2.6',
+	]);
+	$helper = $fb->getRedirectLoginHelper();
+	try {
+		$accessToken = $helper->getAccessToken();
+	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		// When Graph returns an error
+		echo 'Graph returned an error: ' . $e->getMessage();
+		exit;
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		// When validation fails or other local issues
+		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+		exit;
 	}
-
-	$sql = "UPDATE `ShippingRecord` SET `匯款日期` = '$remitDate', `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) ";
-	$result = mysql_query($sql,$con);
-	if (!$result) {
-		die('Invalid query: ' . mysql_error());
+	
+	if(empty($accessToken)&&!empty($_SESSION['accessToken']))
+	{
+		$accessToken = $_SESSION['accessToken'];
 	}
-	header("location: http://mommyssecret.tw/BuyingInformationByQuery.php?fbAccount=".$fbAccount);
+	else if(!empty($accessToken))
+	{
+		$_SESSION['accessToken'] = $accessToken;
+	}
+	else if(!empty($accessToken)&&!empty($_SESSION['accessToken']))
+	{
+		echo "accessToken error";
+		exit;
+	}
+	$fb->setDefaultAccessToken($accessToken);
 }
-else 
-{
-	?>
+?>
+	<script>
+		window.history.replaceState( {} , 'BuyingInformationByQuery', 'http://mommyssecret.tw/BuyingInformationByQuery.php' );
+	</script>
+<?php	
+	
+	try {
+		$response = $fb->get('/me');
+		$userNode = $response->getGraphUser();
+	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		// When Graph returns an error
+		echo 'Graph returned an error: ' . $e->getMessage();
+		exit;
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		// When validation fails or other local issues
+		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+		exit;
+	}
+	$fbAccount = $userNode->getName();
+	if(($fbAccount == 'Gill Fang')||
+			($fbAccount == 'JoLyn Dai')||
+			($fbAccount == '王雅琦')||
+			($fbAccount == 'Queenie Tsan')||
+			($fbAccount == '熊會買')||
+			($fbAccount == '熊哉')||
+			($fbAccount == '熊會算')||
+			($fbAccount == '古振平'))
+	{
+// 	 	echo "管理者 : $fbAccount";
+	}
+	else
+	{
+		echo "$fbAccount : 你不是管理者";
+		exit;
+	}	
+
+	include('ConnectMySQL.php');
+	
+	if (!empty($_POST['act']))
+	{
+		$remitDate = $_POST['remiteDate'];
+		$remitLastFiveDigit = $_POST['remitLastFiveDigit'];
+		$remitAmont = $_POST['remitAmont'];
+		$memo = $_POST['memo'];
+		$memberFBAccount = $_POST['memberFBAccount'];
+	
+		$sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號`)
+		VALUES (NULL ,  '$remitLastFiveDigit',  '$remitDate',  '$memo',  '0',  '$remitAmont',  '$memberFBAccount');";
+		$result = mysql_query($sql,$con);
+	
+		if (!$result) {
+			die('Invalid query: ' . mysql_error());
+		}
+	
+		$sql = "UPDATE `ShippingRecord` SET `匯款日期` = '$remitDate', `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FB帳號 = '$memberFBAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) ";
+		$result = mysql_query($sql,$con);
+		if (!$result) {
+			die('Invalid query: ' . mysql_error());
+		}
+		header("location: http://mommyssecret.tw/BuyingInformationByQuery.php");
+	}
+	else
+	{
+		?>
 	<script type="text/javascript">
 	$( function() {
 		var availableAccount =
@@ -71,14 +155,23 @@ else
   	} );
 	</script>
   	<?php		
-	echo "<form method=\"get\" action=\"\">
-			<input id=\"AvailibleAccount\" type=\"text\" value=\"\" name=\"fbAccount\" class=\"FBSearch\" placeholder=\"FB帳號\"><p>
+	echo "<form method=\"post\" action=\"\">
+			<input id=\"AvailibleAccount\" type=\"text\" value=\"\" name=\"memberFBAccount\" class=\"FBSearch\" placeholder=\"FB帳號\"><p>
 			<input type=\"submit\" value=\"查詢\"><p>
 			</form>";
-	if(!empty($_GET['fbAccount']))
+	if(isset($_POST['memberFBAccount']) || isset($_SESSION['memberFBAccount']))
 	{
-		$fbAccount = $_GET['fbAccount'];
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期  is NULL);";
+		if(isset($_POST['memberFBAccount']))
+		{
+			$_SESSION['memberFBAccount'] = $_POST['memberFBAccount'];
+			$memberFBAccount = $_POST['memberFBAccount'];
+		}
+		elseif (isset($_SESSION['memberFBAccount']))
+		{
+			$memberFBAccount = $_SESSION['memberFBAccount'];
+		}
+		
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$memberFBAccount' AND (匯款日期 = '0000-00-00' || 匯款日期  is NULL);";
 		
 		$result = mysql_query($sql,$con);
 		
@@ -130,7 +223,7 @@ else
 		}
 		$toRemitTable = $toRemitTable . "</table>";
 		
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FB帳號 = '$fbAccount');";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$memberFBAccount' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FB帳號 = '$memberFBAccount');";
 		
 		$result = mysql_query($sql,$con);
 		
@@ -180,7 +273,7 @@ else
 		}
 		$remitedTable = $remitedTable . "</table>";
 		
-		$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
+		$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$memberFBAccount';";
 		$result = mysql_query($sql,$con);
 		
 		if (!$result)
@@ -250,9 +343,9 @@ else
 			echo '<hr align="left" width="1200px" color="#000000" size="4" />';
 			echo $toRemitTable;
 		?>
-		<form action="BuyingInformationByQuery.php" method="get">
+		<form action="BuyingInformationByQuery.php" method="post">
 		  <input type="hidden" name="act" value="run">
-		  <input type="hidden" value="<?php echo $fbAccount;?>" name="fbAccount">
+		  <input type="hidden" value="<?php echo $memberFBAccount;?>" name="memberFBAccount">
 		  <p><input type="text" name="remiteDate" id="datepicker" placeholder="匯款日期"></p>
 		  <p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
 		  <p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
@@ -267,25 +360,25 @@ else
 		}
 	}
 }
-	$conn->close();
+$conn->close();
  	
-	function GetFBAccount($fb)
-	{
-		try {
-			$response = $fb->get('/me');
-			$userNode = $response->getGraphUser();
-		} catch(Facebook\Exceptions\FacebookResponseException $e) {
-			// When Graph returns an error
-			echo 'Graph returned an error: ' . $e->getMessage();
-			exit;
-		} catch(Facebook\Exceptions\FacebookSDKException $e) {
-			// When validation fails or other local issues
-			echo 'Facebook SDK returned an error: ' . $e->getMessage();
-			exit;
-		}
-		return $userNode->getName();
+function GetFBAccount($fb)
+{
+	try {
+		$response = $fb->get('/me');
+		$userNode = $response->getGraphUser();
+	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		// When Graph returns an error
+		echo 'Graph returned an error: ' . $e->getMessage();
+		exit;
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		// When validation fails or other local issues
+		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+		exit;
 	}
+	return $userNode->getName();
+}	
+
 ?>
 </body>
 </html>
-	

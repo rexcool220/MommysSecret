@@ -145,6 +145,8 @@ else
 			<th>E-Mail</th>
 			<th>手機號碼</th>
 			<th>郵遞區號＋地址</th>
+			<th>常用地址1</th>
+			<th>常用地址2</th>						
 			<th>全家店到店服務代號</th>
 			<th>寄送方式</th>
 			<th>運費</th>
@@ -177,6 +179,10 @@ else
 	echo '<td>' . $row['手機號碼'] . '</td>';
 	
 	echo '<td>' . $row['郵遞區號＋地址'] . '</td>';
+
+	echo '<td>' . $row['常用地址1'] . '</td>';
+	
+	echo '<td>' . $row['常用地址2'] . '</td>';	
 	
 	echo '<td>' . $row['全家店到店服務代號'] . '</td>';
 	

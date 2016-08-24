@@ -88,10 +88,23 @@ else
 	exit;
 }
 
-if(!empty($_POST['CustomerfbAccount'])) {
-	$CustomerfbAccount = $_POST['CustomerfbAccount'];
+if(isset($_SESSION['CustomerfbAccount']))
+{
+	$CustomerfbAccount = $_SESSION['CustomerfbAccount'];
+}
+
+
+if(isset($_POST['CustomerfbAccount'])) {
 	
-	if (!empty($_POST["SerialNumbers"])) {
+	$CustomerfbAccount = $_POST['CustomerfbAccount'];
+
+	$_SESSION['CustomerfbAccount'] = $_POST['CustomerfbAccount'];
+	
+}
+
+if(isset($CustomerfbAccount)) {
+	
+	if (isset($_POST["SerialNumbers"])) {
 		$SerialNumbers = $_POST["SerialNumbers"];
 		for($i=0;$i<Count($SerialNumbers);$i++) {
 			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbers[$i]'";

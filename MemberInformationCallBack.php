@@ -24,6 +24,8 @@
 	    var EMail = document.forms["MemberInformationForm"]["EMail"].value;
 	    var PhoneNumber = document.forms["MemberInformationForm"]["PhoneNumber"].value;
 	    var Address = document.forms["MemberInformationForm"]["Address"].value;
+	    var Address1 = document.forms["MemberInformationForm"]["Address1"].value;
+	    var Address2 = document.forms["MemberInformationForm"]["Address2"].value;
 	    var FamilyNumber = document.forms["MemberInformationForm"]["FamilyNumber"].value;
 	    var ShippingWay = document.forms["MemberInformationForm"]["ShippingWay"].value;
 	    var ShippingFee = document.forms["MemberInformationForm"]["ShippingFee"].value;
@@ -154,6 +156,14 @@ if(!$accessToken)
  		</script>
  	<?php 	
  	
+ 	if(isset($_SESSION['Completed']))
+ 	{
+ 		echo '<script language="javascript">';
+		echo 'alert("已填寫成功")';
+		echo '</script>';
+ 		unset($_SESSION['Completed']);
+ 	}
+ 	
  	$fbAccount = GetFBAccount($fb);
  	
  	$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
@@ -199,6 +209,18 @@ if(!$accessToken)
 			<input type=\"text\" name=\"Address\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['郵遞區號＋地址']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>
+	<tr>		
+		<th>常用地址1</th>         		
+	    <td>
+			<input type=\"text\" name=\"Address1\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['常用地址1']."\"style=\"width:300px;\">
+	    </td>	
+	</tr>
+	<tr>		
+		<th>常用地址2</th>         		
+	    <td>
+			<input type=\"text\" name=\"Address2\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['常用地址2']."\"style=\"width:300px;\">
+	    </td>	
+	</tr>	    		
 	<tr>			
 		<th>全家店到店 店名+地址<font color=\"red\">*</font><br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
 				
@@ -247,15 +269,17 @@ if(!$accessToken)
  		$EMail = $_POST['EMail'];
  		$PhoneNumber = $_POST['PhoneNumber'];
  		$Address = $_POST['Address'];
+ 		$Address1 = $_POST['Address1'];
+ 		$Address2 = $_POST['Address2'];
  		$FamilyNumber = $_POST['FamilyNumber'];
  		$ShippingWay = $_POST['ShippingWay'];
 		$ShippingFee = $_POST['ShippingFee'];
 		$Memo = $_POST['Memo'];
 		$AgentAccount = $_POST['AgentAccount'];
  		
- 		$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
- 		VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
- 		ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\", `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";		
+ 		$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `常用地址1`, `常用地址2`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
+ 		VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$Address\", \"$Address1\", \"$Address2\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
+ 		ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\", `郵遞區號＋地址`=\"$Address\", `常用地址1`=\"$Address1\", `常用地址2`=\"$Address2\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";		
  		$result = mysql_query($sql,$con);
 //  		echo $sql;
  		if (!$result) {
@@ -263,6 +287,8 @@ if(!$accessToken)
  			echo "<br>";
  			die('Invalid query2: ' . mysql_error());
  		}
+ 		
+ 		$_SESSION['Completed'] = true;
  		
  		header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
  	}

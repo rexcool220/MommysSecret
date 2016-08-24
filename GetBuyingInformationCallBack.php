@@ -77,6 +77,14 @@ if(!$accessToken)
 			window.history.replaceState( {} , '購買清單', 'http://mommyssecret.tw/GetBuyingInformationCallBack.php' );
 		</script>
 	<?php
+	if(isset($_SESSION['Completed']))
+	{
+		echo '<script language="javascript">';
+		echo 'alert("已收到您匯款資料，待對帳")';
+		echo '</script>';
+		unset($_SESSION['Completed']);
+	}
+	
  	$fbAccount = GetFBAccount($fb);
  	$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
  	
@@ -245,6 +253,9 @@ if(!$accessToken)
  		if (!$result) {
  			die('Invalid query: ' . mysql_error());
  		}
+ 		
+ 		$_SESSION['Completed'] = true;
+ 		
  		header("location: http://mommyssecret.tw/GetBuyingInformationCallBack.php");
  	}
  	else 

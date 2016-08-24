@@ -170,6 +170,8 @@ echo "<tr>
 		<th>E-Mail</th>
 		<th>手機號碼</th>
 		<th>郵遞區號＋地址</th>
+		<th>常用地址1</th>
+		<th>常用地址2</th>
 		<th>全家店到店服務代號</th>
 		<th>寄送方式</th>
 		<th>運費</th>
@@ -208,6 +210,10 @@ echo '<td>' . mysql_result($result, $i, 'E-Mail') . '</td>';
 echo '<td>' . mysql_result($result, $i, '手機號碼') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '郵遞區號＋地址') . '</td>';
+
+echo '<td>' . mysql_result($result, $i, '常用地址1') . '</td>';
+
+echo '<td>' . mysql_result($result, $i, '常用地址2') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '全家店到店服務代號') . '</td>';
 

@@ -121,6 +121,10 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 	
 	<strong>郵遞區號＋地址:</strong> <input type="text" name="郵遞區號＋地址" value="<?php echo $address; ?>" /><br/>
 	
+	<strong>常用地址1:</strong> <input type="text" name="常用地址1" value="<?php echo $address1; ?>" /><br/>
+	
+	<strong>常用地址2:</strong> <input type="text" name="常用地址2" value="<?php echo $address2; ?>" /><br/>
+	
 	<strong>全家店到店服務代號: *</strong> <input type="text" name="全家店到店服務代號" value="<?php echo $familyNumber; ?>" /><br/>
 	
 	<strong>寄送方式: *</strong> <input type="text" name="寄送方式" value="<?php echo $shippingWay; ?>" /><br/>
@@ -162,6 +166,10 @@ if (isset($_POST['submit']))
 	$phoneNumber = $_POST['手機號碼'];
 	
 	$address = $_POST['郵遞區號＋地址'];
+	
+	$address1 = $_POST['常用地址1'];
+	
+	$address2 = $_POST['常用地址2'];
 	
 	$familyNumber = $_POST['全家店到店服務代號'];
 	
