@@ -22,7 +22,7 @@ Allows user to create a new entry in the database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $error)
+function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $address1, $address2, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $error)
 
 {
 
@@ -206,7 +206,7 @@ else
 
 // echo $sql;
 
-mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$shippingAgent')")
+mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `常用地址1`, `常用地址2`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$address1', '$address2', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$shippingAgent')")
 
 or die(mysql_error());
 
