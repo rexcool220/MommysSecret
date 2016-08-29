@@ -1,0 +1,30 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(http://fonts.googleapis.com/css?family=Federo);
+
+input[type=button], input[type=submit], input[type=reset] {
+    background-color: #99ff99;
+    border: none;
+    color: #804000;
+    padding: 16px 32px;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 150%;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+}
+#AdminTable {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border: 0px;
+    width:30%; 
+    margin-left:35%; 
+    margin-right:35%;
+}
+
+body {
+    background-image: url("MommysSecretBackGround.png");
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: 25%;
+    background-attachment: fixed;
+}

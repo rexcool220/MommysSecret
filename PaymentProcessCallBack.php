@@ -65,19 +65,16 @@ if(!session_id()) {
 
 	
 	function validateRemitForm() {
-	    var remiteDate = document.forms["RemitForm"]["remiteDate"].value;
 	    var remitLastFiveDigit = document.forms["RemitForm"]["remitLastFiveDigit"].value;
 	    var remitAmont = document.forms["RemitForm"]["remitAmont"].value;
 	    
-	    if (remiteDate == null || remiteDate == "" ||
-	    		remitLastFiveDigit == null || remitLastFiveDigit == "" ||
+	    if (remitLastFiveDigit == null || remitLastFiveDigit == "" ||
 	    		remitAmont == null || remitAmont == "")
 	    {
 	        alert("請檢查欄位");
 	        return false;
 	    }
-	}
-	
+	}	
 	function myFunction() {
 	    var shippingFee = 0;
 		if(document.getElementById("ShippingWayId").value == "店到店")
@@ -163,16 +160,55 @@ if(!session_id()) {
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
-	$fbAccount = $userNode->getName();	
+	$fbAccount = $userNode->getName();
+	$FBID = $userNode->getId();
+	if(isset($_SESSION["completed"]))
+	{
+	    echo "<script type='text/javascript'>alert('已收到您匯款資料，待對帳')</script>";
+	    unset($_SESSION["completed"]);
+	}
+	
+    if (isset($_POST['CheckOut'])) {
+        $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
+        $remitAmont = $_POST['remitAmont'];
+        $memo = $_POST['memo'];
+        $moneyToBePaid = $_POST['moneyToBePaid'];
+        	
+        if ($remitLastFiveDigit == "")
+        {
+            echo "<script type='text/javascript'>alert('remitLastFiveDigit')</script>";
+        }
+        elseif ($remitAmont == "")
+        {
+            echo "<script type='text/javascript'>alert('remitAmont')</script>";
+        }
+        else
+        {		    
+    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`應匯款金額`)
+    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount' ,'$moneyToBePaid');";
+    	    $result = mysql_query($sql,$con);
+    	    	
+    	    if (!$result) {
+    	        die('Invalid query: ' . mysql_error());
+    	    }
+    	    	
+    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
+    	    $result = mysql_query($sql,$con);
+    	    if (!$result) {
+    	        die('Invalid query: ' . mysql_error());
+    	    }
+            $_SESSION["completed"] = true;   
+     		header("location: http://mommyssecret.tw/PaymentProcessCallBack.php");
+        }		
+    }
 ?>
-
 <div class="container">
   <h2>訂單列表</h2>
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#home">會員資料</a></li>
-    <li><a data-toggle="tab" href="#menu1" class="inactiveLink">購買清單</a></li>
-    <li><a data-toggle="tab" href="#menu2" class="inactiveLink">寄送地址</a></li>
-    <li><a data-toggle="tab" href="#menu3"class="inactiveLink">結帳</a></li>
+    <li class="active"><a data-toggle="tab" href="#home"><span style="font-size: 200%">會員資料</span></a></li>
+    <li><a data-toggle="tab" href="#menu1" class="inactiveLink"><span style="font-size: 200%">購買清單</span></a></li>
+    <li><a data-toggle="tab" href="#menu2" class="inactiveLink"><span style="font-size: 200%">寄送地址</span></a></li>
+    <li><a data-toggle="tab" href="#menu3"class="inactiveLink"><span style="font-size: 200%">結帳</span></a></li>
   </ul>
 
   <div class="tab-content">
@@ -182,24 +218,31 @@ if(!session_id()) {
     		    $MemberName = $_POST['MemberName'];
     		    $EMail = $_POST['EMail'];
     		    $PhoneNumber = $_POST['PhoneNumber'];
-    		    	
-    		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`)
-    		    VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\")
-    		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\"";
-    		
-    		    $result = mysql_query($sql,$con);
-    		    if (!$result) {
-    		        echo $sql;
-    		        echo "<br>";
-    		        die('Invalid query2: ' . mysql_error());
+    		    
+    		    if(($MemberName == "")||($EMail == "")||($PhoneNumber == ""))
+    		    {
+    		        echo "<script type='text/javascript'>alert('請檢查欄位')</script>";
     		    }
-    		    	
-    		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
-    		    ?>
- 			 		<script>
- 			 			alert("更改成功");
- 			 		</script>
-		 		<?php
+    		    else
+    		    {
+        		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `FBID`)
+        		    VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$FBID\")
+        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\", `FBID`=\"$FBID\"";
+        		
+        		    $result = mysql_query($sql,$con);
+        		    if (!$result) {
+        		        echo $sql;
+        		        echo "<br>";
+        		        die('Invalid query2: ' . mysql_error());
+        		    }
+        		    	
+        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
+        		    ?>
+     			 		<script>
+     			 			alert("更改成功");
+     			 		</script>
+    		 		<?php
+    		    }
 		 	}			
 			$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
 		 	$result = mysql_query($sql,$con);
@@ -219,7 +262,13 @@ if(!session_id()) {
 			    <td>
 						<input type=\"text\" name=\"fbAccount\" readonly=\"readonly\" value=\"".$fbAccount."\"style=\"width:300px;\">
 			    </td>	    				
-			</tr>	    	    		
+			</tr>
+		    <tr>
+				<th>FBID</th> 			
+			    <td>
+						<input type=\"text\" name=\"FBID\" readonly=\"readonly\" value=\"".$FBID."\"style=\"width:300px;\">
+			    </td>	    				
+			</tr>		    
 			<tr>
 				<th>真實姓名<font color=\"red\">*</font></th>
 			    <td>
@@ -299,7 +348,7 @@ if(!session_id()) {
 			}
 			$toRemitTable = $toRemitTable . "</table>";
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FB帳號 = '$fbAccount');";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FB帳號 = '$fbAccount') AND 出貨日期 = '0000-00-00';";
 			//$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND 出貨日期 = '0000-00-00';";
 			
 			$result = mysql_query($sql,$con);
@@ -433,27 +482,52 @@ if(!session_id()) {
     		    $ShippingWay = $_POST['ShippingWay'];
     		    $ShippingFee = $_POST['ShippingFee'];
     		    $Memo = $_POST['Memo'];
-    		    $AgentAccount = $_POST['AgentAccount'];
-    		    	
-    		    $sql = "INSERT INTO `Members` (`FB帳號`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
-    		    VALUES (\"$fbAccount\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
-    		    ON DUPLICATE KEY UPDATE `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";
-    		
-    		    $result = mysql_query($sql,$con);
-    		    if (!$result) {
-    		        echo $sql;
-    		        echo "<br>";
-    		        die('Invalid query2: ' . mysql_error());
-    		    }
-    		    	
-    		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
-    		    ?>
- 			 		<script>
- 			 			alert("更改成功");
- 			 			$('.nav-tabs a[href="#menu2"]').tab('show')
- 			 		</script>
-		 		<?php
-		 	}			
+    		    $AgentAccount = $_POST['AgentAccount'];    		    
+    		    
+		        if ($Address == "")
+		        {
+		            echo "<script type='text/javascript'>alert('Address')</script>";
+		        }
+		        elseif ($FamilyNumber == "")
+		        {
+		            echo "<script type='text/javascript'>alert('FamilyNumber')</script>";
+		        }
+		        elseif ($ShippingWay == "")
+	            {
+	                echo "<script type='text/javascript'>alert('ShippingWay')</script>";
+		        }
+		        elseif ($ShippingFee == "")
+		        {
+		            echo "<script type='text/javascript'>alert('ShippingFee')</script>";
+		        }
+		        elseif (($ShippingWay == "合併寄貨") && ($AgentAccount == ""))
+		        {
+		            echo "<script type='text/javascript'>alert('AgentAccount')</script>";
+		        }
+		        else 
+		        {
+        		    $sql = "INSERT INTO `Members` (`FB帳號`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
+        		    VALUES (\"$fbAccount\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
+        		    ON DUPLICATE KEY UPDATE `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";
+        		
+        		    $result = mysql_query($sql,$con);
+        		    if (!$result) {
+        		        echo $sql;
+        		        echo "<br>";
+        		        die('Invalid query2: ' . mysql_error());
+        		    }
+        		    	
+        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
+        		    ?>
+     			 		<script>
+     			 			alert("更改成功");
+     			 			$('.nav-tabs a[href="#menu2"]').tab('show')
+     			 		</script>
+    		 		<?php
+		        }
+		 	}
+	 	?>
+		 	<?php
 			$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
 		 	$result = mysql_query($sql,$con);
 		 	
@@ -547,36 +621,7 @@ if(!session_id()) {
             ?>
     </div>
     <div id="menu3" class="tab-pane fade"><br>
-		<?php 
-		if (isset($_POST['CheckOut'])) {
-		    $remitDate = $_POST['remiteDate'];
-		    $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
-		    $remitAmont = $_POST['remitAmont'];
-		    $memo = $_POST['memo'];
-		    	
-		    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`應匯款金額`)
-		    VALUES (NULL ,  '$remitLastFiveDigit',  '$remitDate',  '$memo',  '0',  '$remitAmont',  '$fbAccount' ,'$moneyToBePaid');";
-		    $result = mysql_query($sql,$con);
-		    	
-		    if (!$result) {
-		        die('Invalid query: ' . mysql_error());
-		    }
-		    	
-		    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = '$remitDate', `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
-		    $result = mysql_query($sql,$con);
-		    if (!$result) {
-		        die('Invalid query: ' . mysql_error());
-		    }
-		    //header("location: http://mommyssecret.tw/PaymentProcessCallBack.php");
-		    ?>
-		 		<script>
-		 			alert("已收到您匯款資料，待對帳");
-		 			window.location.reload();
-
-		 		</script>
-	 		<?php		    
-		}		
-		
+		<?php
 		
 		$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
 			
@@ -730,7 +775,7 @@ if(!session_id()) {
 		 		<form name="RemitForm" action="PaymentProcessCallBack.php" onsubmit="return validateRemitForm()" method="POST">
 		 			<input type="hidden" name="CheckOut" value="run">
 		 			<input type="hidden" value="<?php echo $fbAccount;?>" name="fbAccount">
-				  	<p><input type="text" name="remiteDate" id="datepicker" placeholder="匯款日期"></p>
+		 			<input type="hidden" value="<?php echo $moneyToBePaid;?>" name="moneyToBePaid">
 				  	<p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
 				  	<p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
 				  	<p><input type="text" name="memo" placeholder="Memo"></p>
@@ -741,12 +786,11 @@ if(!session_id()) {
  		}
  		else 
  		{
- 		    
      		echo "<h3>已收到您的資料待對帳</h3>";
     	 	echo $remitedTable;
  		}
 		?>
-    </div>
+    </div>    
   </div>
 </div>
 

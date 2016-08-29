@@ -109,7 +109,8 @@ else
 			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
 			($fbAccount == '熊會算')||
-			($fbAccount == '古振平'))
+    		($fbAccount == '古振平')||
+            ($fbAccount == 'Keira Lin'))
 	{
 		// 	echo "管理者 : $fbAccount";
 	}

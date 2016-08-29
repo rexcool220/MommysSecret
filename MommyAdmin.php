@@ -15,7 +15,7 @@ if(!session_id()) {
 
 <head>
 
-<link rel="stylesheet" type="text/css" href="Admin.css?20160816">
+<link rel="stylesheet" type="text/css" href="Admin.css?20160830">
 
 <title>MommysSecret</title>
 
@@ -111,7 +111,8 @@ else
 			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
 			($fbAccount == '熊會算')||
-			($fbAccount == '古振平'))
+    		($fbAccount == '古振平')||
+            ($fbAccount == 'Keira Lin'))
 	{
 // 	 	echo "管理者 : $fbAccount";
 	}

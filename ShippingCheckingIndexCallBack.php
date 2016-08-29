@@ -74,7 +74,8 @@ if(($fbAccount == 'Gill Fang')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
 		($fbAccount == '熊會算')||
-		($fbAccount == '古振平'))
+		($fbAccount == '古振平')||
+        ($fbAccount == 'Keira Lin'))
 {
 // 	echo "管理者 : $fbAccount";
 }
@@ -84,20 +85,35 @@ else
 	exit;
 }
 	
+// 	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.出貨日期, RemitRecord.匯款編號, RemitRecord.Memo, RemitRecord.管理員備註
+// FROM  `RemitRecord` ,  `ShippingRecord` 
+// WHERE ShippingRecord.匯款編號 = RemitRecord.匯款編號
+// AND ShippingRecord.FB帳號
+// IN (
+
+// SELECT DISTINCT ShippingRecord.FB帳號
+// FROM  `ShippingRecord` 
+// WHERE ShippingRecord.確認收款 =1
+// AND ShippingRecord.出貨日期 =  '0000-00-00'
+// )
+// GROUP BY RemitRecord.匯款編號
+// ORDER BY ShippingRecord.出貨日期  ASC , ShippingRecord.匯款日期 ASC;";
+	
 	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.出貨日期, RemitRecord.匯款編號, RemitRecord.Memo, RemitRecord.管理員備註
-FROM  `RemitRecord` ,  `ShippingRecord` 
+FROM  `RemitRecord` ,  `ShippingRecord`
 WHERE ShippingRecord.匯款編號 = RemitRecord.匯款編號
 AND ShippingRecord.FB帳號
 IN (
 
 SELECT DISTINCT ShippingRecord.FB帳號
-FROM  `ShippingRecord` 
+FROM  `ShippingRecord`
 WHERE ShippingRecord.確認收款 =1
 AND ShippingRecord.出貨日期 =  '0000-00-00'
 )
 GROUP BY RemitRecord.匯款編號
-ORDER BY ShippingRecord.出貨日期  ASC , ShippingRecord.匯款日期 ASC;";
-	
+ORDER BY RemitRecord.匯款編號 ";
+
+
 	$result = mysql_query($sql,$con);
 	
 	if (!$result) {

@@ -22,7 +22,7 @@ Allows user to create a new entry in the database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $address1, $address2, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $error)
+function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address,  $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error)
 
 {
 
@@ -115,15 +115,13 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 	
 	<strong>FB帳號: *</strong> <input type="text" name="FB帳號" value="<?php echo $FBAccount; ?>" /><br/>
 	
+	<strong>FBID: *</strong> <input type="text" name="FBID" value="<?php echo $FBID; ?>" /><br/>
+	
 	<strong>E-Mail:</strong> <input type="text" name="E-Mail" value="<?php echo $eMail; ?>" /><br/>
 	
 	<strong>手機號碼:</strong> <input type="text" name="手機號碼" value="<?php echo $phoneNumber; ?>" /><br/>
 	
 	<strong>郵遞區號＋地址:</strong> <input type="text" name="郵遞區號＋地址" value="<?php echo $address; ?>" /><br/>
-	
-	<strong>常用地址1:</strong> <input type="text" name="常用地址1" value="<?php echo $address1; ?>" /><br/>
-	
-	<strong>常用地址2:</strong> <input type="text" name="常用地址2" value="<?php echo $address2; ?>" /><br/>
 	
 	<strong>全家店到店服務代號: *</strong> <input type="text" name="全家店到店服務代號" value="<?php echo $familyNumber; ?>" /><br/>
 	
@@ -161,15 +159,13 @@ if (isset($_POST['submit']))
 		
 	$FBAccount = $_POST['FB帳號'];
 	
+	$FBID = $_POST['FBID'];
+	
 	$eMail = $_POST['E-Mail'];
 	
 	$phoneNumber = $_POST['手機號碼'];
 	
 	$address = $_POST['郵遞區號＋地址'];
-	
-	$address1 = $_POST['常用地址1'];
-	
-	$address2 = $_POST['常用地址2'];
 	
 	$familyNumber = $_POST['全家店到店服務代號'];
 	
@@ -193,7 +189,7 @@ if (isset($_POST['submit']))
 
 	// if either field is blank, display the form again
 	
-	renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $error);
+	renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error);
 	}
 
 else
@@ -202,11 +198,11 @@ else
 
 // save the data to the database
 
-// $sql = "INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$itemName', '$price', '$amount')";	
+// $sql = "INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$itemName', '$price', '$amount')"; , $FBID
 
 // echo $sql;
 
-mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `常用地址1`, `常用地址2`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$address1', '$address2', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$shippingAgent')")
+mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`, `FBID`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$shippingAgent', '$FBID')")
 
 or die(mysql_error());
 

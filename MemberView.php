@@ -109,7 +109,8 @@ else
 			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
 			($fbAccount == '熊會算')||
-			($fbAccount == '古振平'))
+    		($fbAccount == '古振平')||
+            ($fbAccount == 'Keira Lin'))
 	{
 		// 	echo "管理者 : $fbAccount";
 	}
@@ -142,11 +143,10 @@ else
 	echo "<tr>
 			<th>姓名</th>
 			<th>FB帳號</th>
+		    <th>FBID</th>
 			<th>E-Mail</th>
 			<th>手機號碼</th>
-			<th>郵遞區號＋地址</th>
-			<th>常用地址1</th>
-			<th>常用地址2</th>						
+			<th>郵遞區號＋地址</th>				
 			<th>全家店到店服務代號</th>
 			<th>寄送方式</th>
 			<th>運費</th>
@@ -174,15 +174,13 @@ else
 	
 	echo '<td>' . $row['FB帳號'] . '</td>';
 	
+	echo '<td>' . $row['FBID'] . '</td>';
+	
 	echo '<td>' . $row['E-Mail'] . '</td>';
 	
 	echo '<td>' . $row['手機號碼'] . '</td>';
 	
-	echo '<td>' . $row['郵遞區號＋地址'] . '</td>';
-
-	echo '<td>' . $row['常用地址1'] . '</td>';
-	
-	echo '<td>' . $row['常用地址2'] . '</td>';	
+	echo '<td>' . $row['郵遞區號＋地址'] . '</td>';	
 	
 	echo '<td>' . $row['全家店到店服務代號'] . '</td>';
 	

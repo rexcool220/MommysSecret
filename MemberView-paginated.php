@@ -64,7 +64,8 @@ if(($fbAccount == 'Gill Fang')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
 		($fbAccount == '熊會算')||
-		($fbAccount == '古振平'))
+		($fbAccount == '古振平')||
+        ($fbAccount == 'Keira Lin'))
 {
 	// 	echo "管理者 : $fbAccount";
 }
@@ -167,11 +168,10 @@ echo "<table border='1' cellpadding='10'>";
 echo "<tr>
 		<th>姓名</th>
 		<th>FB帳號</th>
+        <th>FBID</th>
 		<th>E-Mail</th>
 		<th>手機號碼</th>
 		<th>郵遞區號＋地址</th>
-		<th>常用地址1</th>
-		<th>常用地址2</th>
 		<th>全家店到店服務代號</th>
 		<th>寄送方式</th>
 		<th>運費</th>
@@ -205,15 +205,13 @@ echo '<td>' . mysql_result($result, $i, '姓名') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, 'FB帳號') . '</td>';
 
+echo '<td>' . mysql_result($result, $i, 'FBID') . '</td>';
+
 echo '<td>' . mysql_result($result, $i, 'E-Mail') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '手機號碼') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '郵遞區號＋地址') . '</td>';
-
-echo '<td>' . mysql_result($result, $i, '常用地址1') . '</td>';
-
-echo '<td>' . mysql_result($result, $i, '常用地址2') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '全家店到店服務代號') . '</td>';
 

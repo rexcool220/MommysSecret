@@ -22,7 +22,7 @@ Allows user to edit specific entry in database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $address1, $address2, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $error)
+function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID,  $error)
 
 {
 
@@ -118,15 +118,13 @@ function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $address
 	
 	<strong>FB帳號: *</strong> <input type="text" name="FB帳號" value="<?php echo $FBAccount; ?>" /><br/>
 	
+	<strong>FBID: *</strong> <input type="text" name="FBID" value="<?php echo $FBID; ?>" /><br/>
+	
 	<strong>E-Mail:</strong> <input type="text" name="E-Mail" value="<?php echo $eMail; ?>" /><br/>
 	
 	<strong>手機號碼:</strong> <input type="text" name="手機號碼" value="<?php echo $phoneNumber; ?>" /><br/>
 	
 	<strong>郵遞區號＋地址:</strong> <input type="text" name="郵遞區號＋地址" value="<?php echo $address; ?>" /><br/>
-	
-	<strong>常用地址1:</strong> <input type="text" name="常用地址1" value="<?php echo $address1; ?>" /><br/>
-	
-	<strong>常用地址2:</strong> <input type="text" name="常用地址2" value="<?php echo $address2; ?>" /><br/>
 	
 	<strong>全家店到店服務代號: *</strong> <input type="text" name="全家店到店服務代號" value="<?php echo $familyNumber; ?>" /><br/>
 	
@@ -164,15 +162,13 @@ if (isset($_POST['submit']))
 	
 	$FBAccount = $_POST['FB帳號'];
 	
+	$FBID = $_POST['FBID'];
+	
 	$eMail = $_POST['E-Mail'];
 	
 	$phoneNumber = $_POST['手機號碼'];
 	
 	$address = $_POST['郵遞區號＋地址'];
-	
-	$address1 = $_POST['常用地址1'];
-	
-	$address2 = $_POST['常用地址2'];
 	
 	$familyNumber = $_POST['全家店到店服務代號'];
 	
@@ -198,7 +194,7 @@ if (isset($_POST['submit']))
 		
 		//error, display form
 		
-		renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $address1, $address2, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $error);
+		renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error);
 	
 	}
 	
@@ -207,13 +203,8 @@ if (isset($_POST['submit']))
 	{
 	
 		// save the data to the database
-		
-		
-// 		$sql = "UPDATE `Members` SET `姓名`=\"$name\", `E-Mail`=\"$eMail\", `手機號碼`=\"$phoneNumber\",`郵遞區號＋地址`=\"$address\",`全家店到店服務代號`=\"$familyNumber\",`寄送方式`=\"$shippingWay\",`運費`=\"$shippingFee\",`備註`=\"$memo\",`合併寄送人帳號`=\"$shippingAgent\" WHERE `FB帳號`=\"$FBAccount\"";
-		
-// 		echo $sql;
 			
-		mysql_query("UPDATE `Members` SET `姓名`=\"$name\", `E-Mail`=\"$eMail\", `手機號碼`=\"$phoneNumber\",`郵遞區號＋地址`=\"$address\",`常用地址1`=\"$address1\",`常用地址2`=\"$address2\",`全家店到店服務代號`=\"$familyNumber\",`寄送方式`=\"$shippingWay\",`運費`=\"$shippingFee\",`備註`=\"$memo\",`合併寄送人帳號`=\"$shippingAgent\" WHERE `FB帳號`=\"$FBAccount\"")
+		mysql_query("UPDATE `Members` SET `姓名`=\"$name\", `E-Mail`=\"$eMail\", `手機號碼`=\"$phoneNumber\",`郵遞區號＋地址`=\"$address\",`全家店到店服務代號`=\"$familyNumber\",`寄送方式`=\"$shippingWay\",`運費`=\"$shippingFee\",`備註`=\"$memo\",`合併寄送人帳號`=\"$shippingAgent\",`FBID`=\"$FBID\" WHERE `FB帳號`=\"$FBAccount\"")
 		
 		or die(mysql_error());
 		
@@ -261,15 +252,13 @@ else
 			
 			$FBAccount = $row['FB帳號'];
 			
+			$FBID = $row['FBID'];
+			
 			$eMail = $row['E-Mail'];
 			
 			$phoneNumber = $row['手機號碼'];
 			
 			$address = $row['郵遞區號＋地址'];
-			
-			$address1 = $row['常用地址1'];
-			
-			$address2 = $row['常用地址2'];
 			
 			$familyNumber = $row['全家店到店服務代號'];
 			
@@ -284,7 +273,7 @@ else
 			
 			// show form
 			
-			renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $address1, $address2, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $error);
+			renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error);
 		
 		}
 		
