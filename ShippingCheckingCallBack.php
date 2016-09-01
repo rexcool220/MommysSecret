@@ -13,10 +13,10 @@ if(!session_id()) {
 <title>出貨確認表</title>
 </head>
 <body>
-<form method="POST" action="">
-	<input type="text" value="" name="CustomerfbAccount" class="FBSearch" placeholder="FB帳號"><p>
-	<input type="submit" value="查詢"><p>
-</form>
+<!-- <form method="POST" action=""> -->
+<!-- 	<input type="text" value="" name="CustomerfbAccount" class="FBSearch" placeholder="FB帳號"><p> -->
+<!-- 	<input type="submit" value="查詢"><p> -->
+<!-- </form> -->
 <?php
 if(!$accessToken)
 {
@@ -89,21 +89,21 @@ else
 	exit;
 }
 
-if(isset($_SESSION['CustomerfbAccount']))
+if(isset($_SESSION['CustomerFBID']))
 {
-	$CustomerfbAccount = $_SESSION['CustomerfbAccount'];
+	$CustomerFBID = $_SESSION['CustomerFBID'];
 }
 
 
-if(isset($_POST['CustomerfbAccount'])) {
+if(isset($_POST['CustomerFBID'])) {
 	
-	$CustomerfbAccount = $_POST['CustomerfbAccount'];
+	$CustomerFBID = $_POST['CustomerFBID'];
 
-	$_SESSION['CustomerfbAccount'] = $_POST['CustomerfbAccount'];
+	$_SESSION['CustomerFBID'] = $_POST['CustomerFBID'];
 	
 }
 
-if(isset($CustomerfbAccount)) {
+if(isset($CustomerFBID)) {
 	
 	if (isset($_POST["SerialNumbers"])) {
 		$SerialNumbers = $_POST["SerialNumbers"];
@@ -115,10 +115,10 @@ if(isset($CustomerfbAccount)) {
 				die('Invalid query: ' . mysql_error());
 			}
 		}
-		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerfbAccount=$CustomerfbAccount");
+		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerFBID=$CustomerFBID");
 	}
 	
-	$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$CustomerfbAccount' ORDER BY 出貨日期;";
+	$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$CustomerFBID' ORDER BY 出貨日期;";
 	
 	$result = mysql_query($sql,$con);
 	
@@ -128,11 +128,12 @@ if(isset($CustomerfbAccount)) {
 	$toShippingTableCount = mysql_num_rows($result);
 	$toShippingTable = "<form action=\"ShippingCheckingCallBack.php\" method=\"post\">
 		<input type='submit' value=\"確定出貨!\">
-		<input type=\"hidden\" value=\"$CustomerfbAccount\" name=\"CustomerfbAccount\">";
+		<input type=\"hidden\" value=\"$CustomerFBID\" name=\"CustomerFBID\">";
 	$toShippingTable = $toShippingTable . "<table>
 	<tr>
   	<th>SN</th>
 	<th>FB帳號 </th>
+    <th>FBID </th>
 	<th>品項</th>
 	<th>單價</th>
 	<th>數量</th>
@@ -166,6 +167,7 @@ if(isset($CustomerfbAccount)) {
 		$toShippingTable = $toShippingTable . "<tr>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['SerialNumber'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['FB帳號'] . "</td>";
+		$toShippingTable = $toShippingTable . "<td>" . $row['FBID'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['品項'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['單價'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['數量'] . "</td>";
@@ -183,16 +185,12 @@ if(isset($CustomerfbAccount)) {
 		{
 			$toShippingTable = $toShippingTable . "</td>";
 		}
-// 		<input type=\"hidden\" name=\"shipping\" value=\"run\">
-// 		<input type=\"hidden\" value=\"$CustomerfbAccount\" name=\"CustomerfbAccount\">
-// 		<input type=\"hidden\" value=\"".$row['SerialNumber']."\" name=\"SerialNumber\">
-// 		<input type=\"submit\" value=\"準備出貨!\" >
 		$toShippingTable = $toShippingTable . "</tr>";
 		$totalPrice = $totalPrice + $subTotal;
 	}
 	$toShippingTable = $toShippingTable . "</table>";
 	$toShippingTable = $toShippingTable . "</form>";
-	$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$CustomerfbAccount';";
+	$sql = "SELECT * FROM `Members` WHERE FBID  = '$CustomerFBID';";
 	$result = mysql_query($sql,$con);
 	
 	if (!$result) {
@@ -227,8 +225,8 @@ if(isset($CustomerfbAccount)) {
 		<td>".$row['FB帳號']."</td>
 		</tr>
 		<tr>
-		<th>登入的FB帳號</th>
-		<td>".$row['登入的FB帳號']."</td>
+		<th>FBID</th>
+		<td>".$row['FBID']."</td>
 		</tr>
 		<tr>
 		<th>E-Mail</th>

@@ -99,13 +99,13 @@ else
 // GROUP BY RemitRecord.匯款編號
 // ORDER BY ShippingRecord.出貨日期  ASC , ShippingRecord.匯款日期 ASC;";
 	
-	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.出貨日期, RemitRecord.匯款編號, RemitRecord.Memo, RemitRecord.管理員備註
+	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, RemitRecord.Memo, RemitRecord.管理員備註
 FROM  `RemitRecord` ,  `ShippingRecord`
 WHERE ShippingRecord.匯款編號 = RemitRecord.匯款編號
-AND ShippingRecord.FB帳號
+AND ShippingRecord.FBID
 IN (
 
-SELECT DISTINCT ShippingRecord.FB帳號
+SELECT DISTINCT ShippingRecord.FBID
 FROM  `ShippingRecord`
 WHERE ShippingRecord.確認收款 =1
 AND ShippingRecord.出貨日期 =  '0000-00-00'
@@ -125,6 +125,7 @@ ORDER BY RemitRecord.匯款編號 ";
 	$ShippingCheckingIndex = "<table id=\"shippingCheckingIndex\" width=\"60%\">
 	<tr>
 	<th>FB帳號 </th>
+    <th>FBID</th>
 	<th>最近出貨日期</th>
 	<th>最新匯款編號</th>
 	<th>最新客戶備註</th>
@@ -135,6 +136,7 @@ ORDER BY RemitRecord.匯款編號 ";
 	{
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<tr>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['FB帳號'] . "</td>";
+		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['FBID'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['出貨日期'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['匯款編號'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['Memo'] . "</td>";
@@ -156,7 +158,7 @@ if (table != null) {
     	
 		for (var j = 0; j < table.rows[i].cells.length; j++)
 		{    
-			if(j == 0)//FB帳號
+			if(j == 1)//FBID
 			{
 		        table.rows[i].cells[j].onclick = function ()
 		        {
@@ -168,14 +170,7 @@ if (table != null) {
 }
 
 function tableText(tableCell) {
-// 	var win = window.open('http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerfbAccount=' +  tableCell.innerHTML, '_blank');
-// 	if (win) {
-// 	    //Browser has allowed it to be opened
-// 	    win.focus();
-// 	} else {
-// 	    //Browser has blocked it
-// 	    alert('Please allow popups for this website');
-// 	}
+
 	var form = document.createElement("form");
 	form.setAttribute("method", "post");
 	form.setAttribute("action", "http://mommyssecret.tw/ShippingCheckingCallBack.php");
@@ -183,7 +178,7 @@ function tableText(tableCell) {
 
 	var hiddenField = document.createElement("input"); 
 	hiddenField.setAttribute("type", "hidden");
-	hiddenField.setAttribute("name", "CustomerfbAccount");
+	hiddenField.setAttribute("name", "CustomerFBID");
 	hiddenField.setAttribute("value", tableCell.innerHTML);
 	form.appendChild(hiddenField);
 	document.body.appendChild(form);

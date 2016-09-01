@@ -159,7 +159,14 @@ else
 		 				<input type=\"submit\" value=\"會員結帳代查詢\">
 		 			</form>
 				</td>			
-			</tr>			
+			</tr>		
+			<tr>
+				<td>
+					<form action=\"NotRemitList.php\" method=\"get\" target=\"_blank\">
+		 				<input type=\"submit\" value=\"未匯款清單\">
+		 			</form>
+				</td>			
+			</tr>		    
 		</table>";
 		echo $AdminTable;
 		?>

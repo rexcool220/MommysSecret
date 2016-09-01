@@ -130,6 +130,7 @@ $remitCheckingTable = "<table id=\"remitCheckingTable\">
 	<tr>
 	<th>匯款編號 </th>
 	<th>FB帳號</th>
+    <th>FBID</th>
 	<th>匯款金額</th>
 	<th>應匯款金額</th>
 	<th>匯款末五碼</th>
@@ -146,6 +147,7 @@ while($row = mysql_fetch_array($result))
 	$remitCheckingTable = $remitCheckingTable . "<tr>";
 	$remitCheckingTable = $remitCheckingTable . "<td><a href=\"BuyingInformationByRemitNumber.php?remitNumber=".$row['匯款編號']."\" target=\"_blank\">".$row['匯款編號']."</a></td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['FB帳號'] . "</td>";
+	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['FBID'] . "</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['匯款金額'] . "</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['應匯款金額'] . "</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['匯款末五碼'] . "</td>";

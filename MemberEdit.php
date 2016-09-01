@@ -204,7 +204,7 @@ if (isset($_POST['submit']))
 	
 		// save the data to the database
 			
-		mysql_query("UPDATE `Members` SET `姓名`=\"$name\", `E-Mail`=\"$eMail\", `手機號碼`=\"$phoneNumber\",`郵遞區號＋地址`=\"$address\",`全家店到店服務代號`=\"$familyNumber\",`寄送方式`=\"$shippingWay\",`運費`=\"$shippingFee\",`備註`=\"$memo\",`合併寄送人帳號`=\"$shippingAgent\",`FBID`=\"$FBID\" WHERE `FB帳號`=\"$FBAccount\"")
+		mysql_query("UPDATE `Members` SET `姓名`=\"$name\", `E-Mail`=\"$eMail\", `手機號碼`=\"$phoneNumber\",`郵遞區號＋地址`=\"$address\",`全家店到店服務代號`=\"$familyNumber\",`寄送方式`=\"$shippingWay\",`運費`=\"$shippingFee\",`備註`=\"$memo\",`合併寄送人帳號`=\"$shippingAgent\",`FB帳號`=\"$FBAccount\" WHERE `FBID`=\"$FBID\"")
 		
 		or die(mysql_error());
 		

@@ -624,21 +624,28 @@ $FBID = array(
     
 // }
 
-foreach ($FBID as $fbAccount => $FBID) {
-    $sql = "select * from `Members` WHERE FB帳號 = '$fbAccount'";
-    
+    $sql = "Select * from RemitRecord";
+
     $result = mysql_query($sql,$con);
     if (!$result) {
+        echo "$fbAccount => $FBID<br>";
         die('Invalid query: ' . mysql_error());
         exit();
     }
     
-    if(mysql_num_rows($result) == 0)
+    while($row = mysql_fetch_array($result))
     {
-        echo "$fbAccount,$FBID<br>";
+        $fbAccount = $row[FB帳號];
+        $sql = "update RemitRecord set RemitRecord.FBID = (Select FBID from Members where FB帳號 = '$fbAccount') where FB帳號 = '$fbAccount'";
+        
+        $result1 = mysql_query($sql,$con);
+        if (!$result1) {
+            die('Invalid query: ' . mysql_error());
+            exit();
+        }
+        
     }
 
-}
 
 
 

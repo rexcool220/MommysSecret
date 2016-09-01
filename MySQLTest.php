@@ -145,7 +145,7 @@ if(!session_id()) {
 	}
 	?>
 			<script>
-				window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/PaymentProcessCallBack.php' );
+				window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/MySQLTest.php' );
 			</script>
 		<?php
 	try {
@@ -160,7 +160,14 @@ if(!session_id()) {
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
-	$fbAccount = $userNode->getName();	
+	$fbAccount = 'Tiffany tien';
+	$FBID = '1364567736893493';
+	if(isset($_SESSION["completed"]))
+	{
+	    echo "<script type='text/javascript'>alert('已收到您匯款資料，待對帳')</script>";
+	    unset($_SESSION["completed"]);
+	}
+	
     if (isset($_POST['CheckOut'])) {
         $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
         $remitAmont = $_POST['remitAmont'];
@@ -177,25 +184,21 @@ if(!session_id()) {
         }
         else
         {		    
-    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`應匯款金額`)
-    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount' ,'$moneyToBePaid');";
+    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`)
+    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount', '$FBID' ,'$moneyToBePaid');";
     	    $result = mysql_query($sql,$con);
     	    	
     	    if (!$result) {
     	        die('Invalid query: ' . mysql_error());
     	    }
     	    	
-    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
+    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
     	    $result = mysql_query($sql,$con);
     	    if (!$result) {
     	        die('Invalid query: ' . mysql_error());
     	    }
-    	    header("location: http://mommyssecret.tw/PaymentProcessCallBack.php");
-    	    ?>
-    	 		<script>
-    	 			alert("已收到您匯款資料，待對帳");
-    	 		</script>
-     		<?php		    
+            $_SESSION["completed"] = true;   
+     		header("location: http://mommyssecret.tw/MySQLTest.php");
         }		
     }
 ?>
@@ -222,9 +225,9 @@ if(!session_id()) {
     		    }
     		    else
     		    {
-        		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`)
-        		    VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\")
-        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\"";
+        		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `FBID`)
+        		    VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$FBID\")
+        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\"";
         		
         		    $result = mysql_query($sql,$con);
         		    if (!$result) {
@@ -241,7 +244,7 @@ if(!session_id()) {
     		 		<?php
     		    }
 		 	}			
-			$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
+			$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 		 	$result = mysql_query($sql,$con);
 		 	
 		 	if (!$result) {
@@ -251,7 +254,7 @@ if(!session_id()) {
 		 	$row = mysql_fetch_array($result);
 
 		 	$MemberInformation = "
-			<form name=\"MemberInformationForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateMemberForm()\" method=\"POST\">
+			<form name=\"MemberInformationForm\" action=\"MySQLTest.php\" onsubmit=\"return validateMemberForm()\" method=\"POST\">
 		   	<input type=\"hidden\" name=\"ModifyMember\" value=\"run\">
 			<table id=\"Member\">
 		    <tr>
@@ -259,7 +262,13 @@ if(!session_id()) {
 			    <td>
 						<input type=\"text\" name=\"fbAccount\" readonly=\"readonly\" value=\"".$fbAccount."\"style=\"width:300px;\">
 			    </td>	    				
-			</tr>	    	    		
+			</tr>
+		    <tr>
+				<th>FBID</th> 			
+			    <td>
+						<input type=\"text\" name=\"FBID\" readonly=\"readonly\" value=\"".$FBID."\"style=\"width:300px;\">
+			    </td>	    				
+			</tr>		    
 			<tr>
 				<th>真實姓名<font color=\"red\">*</font></th>
 			    <td>
@@ -287,7 +296,7 @@ if(!session_id()) {
     </div>
     <div id="menu1" class="tab-pane fade"><br>
 		<?php 
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -300,6 +309,7 @@ if(!session_id()) {
 				<tr>
 				<th>SN</th>
 				<th>FB帳號 </th>
+	            <th>FBID </th>
 				<th>品項</th>
 				<th>單價</th>
 				<th>數量</th>
@@ -326,6 +336,7 @@ if(!session_id()) {
 				$toRemitTable = $toRemitTable . "<tr>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
+				$toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
@@ -339,8 +350,7 @@ if(!session_id()) {
 			}
 			$toRemitTable = $toRemitTable . "</table>";
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FB帳號 = '$fbAccount') AND 出貨日期 = '0000-00-00';";
-			//$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND 出貨日期 = '0000-00-00';";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00';";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -354,6 +364,7 @@ if(!session_id()) {
             	<tr>
              	<th>SN</th>
             	<th>FB帳號 </th>
+    	        <th>FBID </th>
             	<th>品項</th>
             	<th>單價</th>
             	<th>數量</th>
@@ -378,6 +389,7 @@ if(!session_id()) {
 			    $remitedTable = $remitedTable . "<tr>";
 			    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
+			    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
@@ -393,8 +405,7 @@ if(!session_id()) {
 			
 			
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FB帳號 = '$fbAccount') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00';";
-			//$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND 出貨日期 = '0000-00-00';";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00';";
 				
 			$result = mysql_query($sql,$con);
 				
@@ -408,6 +419,7 @@ if(!session_id()) {
             	<tr>
              	<th>SN</th>
             	<th>FB帳號 </th>
+		        <th>FBID </th>
             	<th>品項</th>
             	<th>單價</th>
             	<th>數量</th>
@@ -432,6 +444,7 @@ if(!session_id()) {
 			    $waitShipping = $waitShipping . "<tr>";
 			    $waitShipping = $waitShipping . "<td>" . $row['SerialNumber'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['FB帳號'] . "</td>";
+			    $waitShipping = $waitShipping . "<td>" . $row['FBID'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['品項'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['單價'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['數量'] . "</td>";
@@ -443,9 +456,6 @@ if(!session_id()) {
 			    $waitShipping = $waitShipping . "</tr>";
 			}
 			$waitShipping = $waitShipping . "</table>";
-			
-			
-			
 			
 			if($toRemitTableCount > 0)
 			{
@@ -497,9 +507,9 @@ if(!session_id()) {
 		        }
 		        else 
 		        {
-        		    $sql = "INSERT INTO `Members` (`FB帳號`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
-        		    VALUES (\"$fbAccount\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
-        		    ON DUPLICATE KEY UPDATE `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";
+        		    $sql = "INSERT INTO `Members` (`FB帳號`, `FBID`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
+        		    VALUES (\"$fbAccount\", \"$FBID\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
+        		    ON DUPLICATE KEY UPDATE `FB帳號`=\"$fbAccount\",`郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";
         		
         		    $result = mysql_query($sql,$con);
         		    if (!$result) {
@@ -516,8 +526,10 @@ if(!session_id()) {
      			 		</script>
     		 		<?php
 		        }
-		 	}			
-			$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
+		 	}
+	 	?>
+		 	<?php
+			$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 		 	$result = mysql_query($sql,$con);
 		 	
 		 	if (!$result) {
@@ -527,7 +539,7 @@ if(!session_id()) {
 		 	$row = mysql_fetch_array($result);
 
 		 	$ShippingInformation = "
-			<form name=\"AddressInformationForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateShippingForm()\" method=\"POST\">
+			<form name=\"AddressInformationForm\" action=\"MySQLTest.php\" onsubmit=\"return validateShippingForm()\" method=\"POST\">
 		   	<input type=\"hidden\" name=\"ModifyAddress\" value=\"run\">
 			<table id=\"Address\">
 		    <tr>		
@@ -612,7 +624,7 @@ if(!session_id()) {
     <div id="menu3" class="tab-pane fade"><br>
 		<?php
 		
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
 			
 		$result = mysql_query($sql,$con);
 			
@@ -625,6 +637,7 @@ if(!session_id()) {
 				<tr>
 				<th>SN</th>
 				<th>FB帳號 </th>
+	            <th>FBID </th>
 				<th>品項</th>
 				<th>單價</th>
 				<th>數量</th>
@@ -651,6 +664,7 @@ if(!session_id()) {
 		    $toRemitTable = $toRemitTable . "<tr>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
+		    $toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
@@ -664,7 +678,7 @@ if(!session_id()) {
 		}
 		$toRemitTable = $toRemitTable . "</table>";
 			
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FB帳號 = '$fbAccount' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FB帳號 = '$fbAccount');";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID');";
 			
 		$result = mysql_query($sql,$con);
 			
@@ -676,6 +690,7 @@ if(!session_id()) {
 				<tr>
 			 	<th>SN</th>
 				<th>FB帳號 </th>
+	            <th>FBID </th>
 				<th>品項</th>
 				<th>單價</th>
 				<th>數量</th>
@@ -700,6 +715,7 @@ if(!session_id()) {
 		    $remitedTable = $remitedTable . "<tr>";
 		    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
+		    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
@@ -712,7 +728,7 @@ if(!session_id()) {
 		}
 		$remitedTable = $remitedTable . "</table>";
 			
-		$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
+		$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 		$result = mysql_query($sql,$con);
 		
 		if (!$result) {
@@ -761,9 +777,9 @@ if(!session_id()) {
 	        echo '<hr align="left" width="1200px" color="#000000" size="4" />';
 	        echo $toRemitTable;
 	        ?>
-		 		<form name="RemitForm" action="PaymentProcessCallBack.php" onsubmit="return validateRemitForm()" method="POST">
+		 		<form name="RemitForm" action="MySQLTest.php" onsubmit="return validateRemitForm()" method="POST">
 		 			<input type="hidden" name="CheckOut" value="run">
-		 			<input type="hidden" value="<?php echo $fbAccount;?>" name="fbAccount">
+		 			<input type="hidden" value="<?php echo $FBID;?>" name="FBID">
 		 			<input type="hidden" value="<?php echo $moneyToBePaid;?>" name="moneyToBePaid">
 				  	<p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
 				  	<p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
@@ -775,7 +791,6 @@ if(!session_id()) {
  		}
  		else 
  		{
- 		    
      		echo "<h3>已收到您的資料待對帳</h3>";
     	 	echo $remitedTable;
  		}
