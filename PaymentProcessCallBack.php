@@ -85,7 +85,7 @@ if(!session_id()) {
 		{
 			shippingFee = 90;
 		}
-		else if(document.getElementById("ShippingWayId").value == "Zoo")
+		else if(document.getElementById("ShippingWayId").value == "ZOo")
 		{
 			shippingFee = 20;
 		}
@@ -168,7 +168,7 @@ if(!session_id()) {
 	    unset($_SESSION["completed"]);
 	}
 	
-    if (isset($_POST['CheckOut'])) {
+    if (isset($_POST['CheckOut']) && empty($_SESSION["completed"])) {
         $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
         $remitAmont = $_POST['remitAmont'];
         $memo = $_POST['memo'];
@@ -270,7 +270,7 @@ if(!session_id()) {
 			    </td>	    				
 			</tr>		    
 			<tr>
-				<th>真實姓名<font color=\"red\">*</font></th>
+				<th>真實中文姓名<font color=\"red\">*</font></th>
 			    <td>
 					<input type=\"text\" name=\"MemberName\" value=\"".$row['姓名']."\"style=\"width:300px;\">	    	    		
 			    </td>			
@@ -562,7 +562,7 @@ if(!session_id()) {
     	    		<option selected>".$row['寄送方式']."</option>
     				<option value=\"店到店\">店到店</option>
     				<option value=\"貨運\">貨運</option>
-    				<option value=\"Zoo\">Zoo</option>
+    				<option value=\"ZOo\">ZOo</option>
     				<option value=\"Bon Vivant\">Bon Vivant</option>
     				<option value=\"印不停\">印不停</option>
     	    		<option value=\"合併寄貨\">合併寄貨</option>

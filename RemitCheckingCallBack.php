@@ -155,14 +155,27 @@ while($row = mysql_fetch_array($result))
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['Memo'] . "</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>$isRemited</td>";
 	$remitCheckingTable = $remitCheckingTable . "<td>" . $row['管理員備註'] . "</td>";
-	$remitCheckingTable = $remitCheckingTable . "<td>
-			
-	<form action=\"RemitCheckingCallBack.php\" method=\"get\">
- 		<input type=\"hidden\" name=\"RemitChecked\" value=\"run\">
- 		<input type=\"hidden\" value=\"".$row['匯款編號']."\" name=\"remitNumber\">
- 		<input type=\"submit\" value=\"確認已匯款\">
- 	</form>		
-	</td>";
+	if($row['已收款'] == false)
+	{
+    	$remitCheckingTable = $remitCheckingTable . "<td>    
+        	<form action=\"RemitCheckingCallBack.php\" method=\"get\">
+         		<input type=\"hidden\" name=\"RemitChecked\" value=\"run\">
+         		<input type=\"hidden\" value=\"".$row['匯款編號']."\" name=\"remitNumber\">
+         		<input type=\"submit\" value=\"確認已匯款\">
+         	</form>
+    	</td>";
+	}
+	else 
+	{
+	    $remitCheckingTable = $remitCheckingTable . "<td>
+        	<form action=\"RemitCheckingCallBack.php\" method=\"get\">
+            	<input type=\"hidden\" name=\"RemitUnchecked\" value=\"run\">
+            	<input type=\"hidden\" value=\"".$row['匯款編號']."\" name=\"remitNumber\">
+            	<input type=\"submit\" value=\"取消匯款\">
+     		</form>
+    	</td>";	
+	}
+	
 	$remitCheckingTable = $remitCheckingTable . "</tr>";
 }
 $remitCheckingTable = $remitCheckingTable . "</table>";
@@ -185,6 +198,26 @@ if (!empty($_GET['RemitChecked'])) {
 	}
 	
 	header("location: http://mommyssecret.tw/RemitCheckingCallBack.php");
+}
+
+if (!empty($_GET['RemitUnchecked'])) {
+    $remitNumber = $_GET['remitNumber'];
+
+    $sql = "UPDATE `RemitRecord` SET `已收款` = '0'  WHERE 匯款編號 = $remitNumber";
+    $result = mysql_query($sql,$con);
+
+    if (!$result) {
+        die('Invalid query: ' . mysql_error());
+    }
+
+    $sql = "UPDATE `ShippingRecord` SET `確認收款` = '0'  WHERE 匯款編號 = $remitNumber";
+    $result = mysql_query($sql,$con);
+
+    if (!$result) {
+        die('Invalid query: ' . mysql_error());
+    }
+
+    header("location: http://mommyssecret.tw/RemitCheckingCallBack.php");
 }
 
 if (!empty($_GET['remitNumberLink'])) {
@@ -219,20 +252,20 @@ if (table != null) {
 	{
 		for (var j = 0; j < table.rows[i].cells.length; j++)
 		{    
-			if(j == 8)//管理員備註
+			if(j == 9)//管理員備註
 			{
 		        table.rows[i].cells[j].onclick = function ()
 		        {
 		            tableText(this);
 		        };
 			}
-			if(j == 9)
-			{
-		        table.rows[i].cells[j].onclick = function ()
-		        {
-		            confirmRemited(this);
-		        };
-			}
+// 			if(j == 9)
+// 			{
+// 		        table.rows[i].cells[j].onclick = function ()
+// 		        {
+// 		            confirmRemited(this);
+// 		        };
+// 			}
 		}
     }
 }

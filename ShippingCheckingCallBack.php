@@ -104,21 +104,38 @@ if(isset($_POST['CustomerFBID'])) {
 }
 
 if(isset($CustomerFBID)) {
-	
-	if (isset($_POST["SerialNumbers"])) {
-		$SerialNumbers = $_POST["SerialNumbers"];
-		for($i=0;$i<Count($SerialNumbers);$i++) {
-			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbers[$i]'";
+//      var_dump($_POST["SerialNumbersChecked"]);
+//      var_dump($_POST["SerialNumbersAll"]);
+	if (isset($_POST["SerialNumbersAll"])) {
+		$SerialNumbersChecked = $_POST["SerialNumbersChecked"];
+		$SerialNumbersAll = $_POST["SerialNumbersAll"];
+		for($i=0;$i<Count($SerialNumbersChecked);$i++) {
+			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbersChecked[$i]'";
 			$result = mysql_query($sql,$con);
 	
 			if (!$result) {
 				die('Invalid query: ' . mysql_error());
 			}
 		}
+		foreach ($SerialNumbersAll as $serialNumber)
+		{
+		    if(in_array($serialNumber, $SerialNumbersChecked) == false)
+		    {
+		        $sql = "UPDATE `ShippingRecord` SET `出貨日期` = '0000-00-00'  WHERE SerialNumber = '$serialNumber'";
+		        $result = mysql_query($sql,$con);
+		        
+		        if (!$result) {
+		            die('Invalid query: ' . mysql_error());
+		        }
+		        
+		    }
+		}
 		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerFBID=$CustomerFBID");
 	}
 	
-	$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$CustomerFBID' ORDER BY 出貨日期;";
+	$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號  ORDER BY 出貨日期;";
+	
+	
 	
 	$result = mysql_query($sql,$con);
 	
@@ -142,23 +159,21 @@ if(isset($CustomerFBID)) {
 	<th>確認收款</th>
 	<th>出貨日期</th>
   	<th>匯款編號</th>
+    <th>匯款金額</th>
 	<th></th>
 	</tr>";
 	$totalPrice = 0;
 	while($row = mysql_fetch_array($result))
 	{
-		$toShowShippingCheckBox = false;
+		$checked = true;
 		if($row['出貨日期'] == "0000-00-00")
 		{
 			$row['出貨日期'] = "";
+			$checked = false;
 		}
 		if($row['匯款日期'] == "0000-00-00")
 		{
 			$row['匯款日期'] = "";
-		}
-		if($row['出貨日期'] == "")
-		{
-			$toShowShippingCheckBox = true;
 		}
 		
 		$isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
@@ -176,15 +191,17 @@ if(isset($CustomerFBID)) {
 		$toShippingTable = $toShippingTable . "<td>" . $isReceivedPayment . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['出貨日期'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['匯款編號'] . "</td>";
+		$toShippingTable = $toShippingTable . "<td>" . $row['匯款金額'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>";
-		if($toShowShippingCheckBox == true)
+		if($checked == false)
 		{
-			$toShippingTable = $toShippingTable . "<input type=\"checkbox\" name=\"SerialNumbers[]\" value=\"".$row['SerialNumber']."\" style=\"WIDTH: 40px; HEIGHT: 40px\"></td>";
+			$toShippingTable = $toShippingTable . "<input type=\"checkbox\" name=\"SerialNumbersChecked[]\" value=\"".$row['SerialNumber']."\" style=\"WIDTH: 40px; HEIGHT: 40px\">";
 		}
 		else
 		{
-			$toShippingTable = $toShippingTable . "</td>";
+			$toShippingTable = $toShippingTable . "<input type=\"checkbox\" name=\"SerialNumbersChecked[]\" value=\"".$row['SerialNumber']."\" checked style=\"WIDTH: 40px; HEIGHT: 40px\">";
 		}
+		$toShippingTable = $toShippingTable . "<input type=\"hidden\" name=\"SerialNumbersAll[]\" value=\"".$row['SerialNumber']."\" checked style=\"WIDTH: 40px; HEIGHT: 40px\"></td>";
 		$toShippingTable = $toShippingTable . "</tr>";
 		$totalPrice = $totalPrice + $subTotal;
 	}
