@@ -776,6 +776,7 @@ if(!session_id()) {
         				<th>出貨日期</th>
         				<th>匯款編號</th>
         				</tr>";
+        		$totalPrice = 0;
         		while($row = mysql_fetch_array($result))
         		{
         		    if($row['出貨日期'] == "0000-00-00")
@@ -801,6 +802,7 @@ if(!session_id()) {
         		    $remitedTable = $remitedTable . "<td>" . $row['出貨日期'] . "</td>";
         		    $remitedTable = $remitedTable . "<td>" . $row['匯款編號'] . "</td>";
         		    $remitedTable = $remitedTable . "</tr>";
+        		    $totalPrice = $totalPrice + $subTotal;
         		}
         		$remitedTable = $remitedTable . "</table>";
         			
@@ -867,7 +869,27 @@ if(!session_id()) {
          		}
          		else 
          		{
-             		echo "<h3>已收到您的資料待對帳</h3>";
+         		    if($totalPrice > 6000)
+         		    {
+         		        $actualShippingFee = 0;
+         		    }
+         		    else {
+         		        $actualShippingFee = $shippingFee;
+         		    }
+         		    if($totalPrice == 0)
+         		    {
+         		        $moneyToBePaid = 0;
+         		        $actualShippingFee = 0;
+         		    }
+         		    else
+         		    {
+         		        $moneyToBePaid = $totalPrice + $actualShippingFee;
+         		    }
+         		    echo '<b><font size="6">';
+         		    echo "已收到您的資料待對帳<br>";
+         		    echo "購買金額 : $totalPrice + 運費 : $actualShippingFee = 合計匯款金額 : $moneyToBePaid<br>";
+         		    echo '</font></b>';         		    
+             		
             	 	echo $remitedTable;
          		}
         		?>

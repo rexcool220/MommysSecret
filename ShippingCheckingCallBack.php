@@ -9,7 +9,14 @@ if(!session_id()) {
 ?>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="MommysSecret.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="MommysSecret.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
 <title>出貨確認表</title>
 </head>
 <body>
@@ -88,6 +95,57 @@ else
 	echo "$fbAccount : 你不是管理者";
 	exit;
 }
+
+?>
+	
+	<script type="text/javascript">
+	$( function() {
+		var availableAccount =
+		<?php
+		$sql = "SELECT FB帳號, FBID FROM `Members`;";
+		$result = mysql_query($sql,$con);
+		if (!$result) {
+			die('Invalid query: ' . mysql_error());
+		}
+		while($rows[]=mysql_fetch_array($result));
+		$prefix = '';
+		foreach ($rows as $r)
+		{
+			$AcountList .= $prefix . '"' . $r[FB帳號].",".$r[FBID] . '"';
+			$prefix = ', ';
+		}
+		echo "[$AcountList];";
+		?>
+	    $( "#AvailibleAccount" ).autocomplete({
+	      source: availableAccount
+	    });
+  	} );
+	</script>
+  	<?php		
+	echo "<br><form method=\"post\" action=\"\">
+			<input id=\"AvailibleAccount\" type=\"text\" value=\"\" name=\"memberFBAccountID\" class=\"FBSearch\" placeholder=\"FB帳號\"><p>
+			<input type=\"submit\" value=\"查詢\"><p>
+			</form>";
+
+if(isset($_POST['memberFBAccountID']) || isset($_SESSION['memberFBAccountID']))
+{
+    if(isset($_POST['memberFBAccountID']))
+    {
+        $_SESSION['memberFBAccountID'] = $_POST['memberFBAccountID'];
+        $memberFBAccountID = $_POST['memberFBAccountID'];
+    }
+    elseif (isset($_SESSION['memberFBAccountID']))
+    {
+        $memberFBAccountID = $_SESSION['memberFBAccountID'];
+    }
+     
+    $memberFBAccountIDArray = explode(',', $memberFBAccountID);
+     
+    $memberFBAccount = $memberFBAccountIDArray[0];
+    $CustomerFBID = $memberFBAccountIDArray[1];
+    $_SESSION['CustomerFBID'] = $CustomerFBID;
+}
+
 
 if(isset($_SESSION['CustomerFBID']))
 {

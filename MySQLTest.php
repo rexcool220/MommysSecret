@@ -15,7 +15,7 @@ if(!session_id()) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20160825">
+	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20160905">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
@@ -64,7 +64,9 @@ if(!session_id()) {
 	}
 
 	
-	function validateRemitForm() {
+	function validateRemitForm(form) {
+	    form.RemitButton.disabled = true;
+	    form.RemitButton.value = "處理中...";
 	    var remitLastFiveDigit = document.forms["RemitForm"]["remitLastFiveDigit"].value;
 	    var remitAmont = document.forms["RemitForm"]["remitAmont"].value;
 	    
@@ -72,6 +74,8 @@ if(!session_id()) {
 	    		remitAmont == null || remitAmont == "")
 	    {
 	        alert("請檢查欄位");
+	        form.RemitButton.disabled = false;
+	        form.RemitButton.value = "回報匯款";
 	        return false;
 	    }
 	}	
@@ -85,7 +89,7 @@ if(!session_id()) {
 		{
 			shippingFee = 90;
 		}
-		else if(document.getElementById("ShippingWayId").value == "Zoo")
+		else if(document.getElementById("ShippingWayId").value == "ZOo")
 		{
 			shippingFee = 20;
 		}
@@ -160,15 +164,16 @@ if(!session_id()) {
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
-	$fbAccount = 'Tiffany tien';
-	$FBID = '1364567736893493';
+	$fbAccount = $userNode->getName();
+	$FBID = $userNode->getId();
 	if(isset($_SESSION["completed"]))
 	{
 	    echo "<script type='text/javascript'>alert('已收到您匯款資料，待對帳')</script>";
 	    unset($_SESSION["completed"]);
 	}
 	
-    if (isset($_POST['CheckOut'])) {
+    if (isset($_POST['CheckOut']) && empty($_SESSION["completed"])) {
+        sleep(5);
         $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
         $remitAmont = $_POST['remitAmont'];
         $memo = $_POST['memo'];
@@ -270,7 +275,7 @@ if(!session_id()) {
 			    </td>	    				
 			</tr>		    
 			<tr>
-				<th>真實姓名<font color=\"red\">*</font></th>
+				<th>真實中文姓名<font color=\"red\">*</font></th>
 			    <td>
 					<input type=\"text\" name=\"MemberName\" value=\"".$row['姓名']."\"style=\"width:300px;\">	    	    		
 			    </td>			
@@ -562,7 +567,7 @@ if(!session_id()) {
     	    		<option selected>".$row['寄送方式']."</option>
     				<option value=\"店到店\">店到店</option>
     				<option value=\"貨運\">貨運</option>
-    				<option value=\"Zoo\">Zoo</option>
+    				<option value=\"ZOo\">ZOo</option>
     				<option value=\"Bon Vivant\">Bon Vivant</option>
     				<option value=\"印不停\">印不停</option>
     	    		<option value=\"合併寄貨\">合併寄貨</option>
@@ -777,14 +782,14 @@ if(!session_id()) {
 	        echo '<hr align="left" width="1200px" color="#000000" size="4" />';
 	        echo $toRemitTable;
 	        ?>
-		 		<form name="RemitForm" action="MySQLTest.php" onsubmit="return validateRemitForm()" method="POST">
+		 		<form name="RemitForm" action="MySQLTest.php" onsubmit="return validateRemitForm(this)" method="POST">
 		 			<input type="hidden" name="CheckOut" value="run">
 		 			<input type="hidden" value="<?php echo $FBID;?>" name="FBID">
 		 			<input type="hidden" value="<?php echo $moneyToBePaid;?>" name="moneyToBePaid">
 				  	<p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
 				  	<p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
 				  	<p><input type="text" name="memo" placeholder="Memo"></p>
-				  	<input type="submit" value="回報匯款">
+				  	<input type="submit" name="RemitButton" value="回報匯款">
 		 		</form>
  			<?php
  			
