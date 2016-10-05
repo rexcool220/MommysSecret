@@ -104,11 +104,8 @@ else
 	$fbAccount = $userNode->getName();
 	if(($fbAccount == 'Gill Fang')||
 			($fbAccount == 'JoLyn Dai')||
-			($fbAccount == '王雅琦')||
 			($fbAccount == 'Queenie Tsan')||
-			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
-			($fbAccount == '熊會算')||
     		($fbAccount == '古振平')||
             ($fbAccount == 'Keira Lin'))
 	{
@@ -126,7 +123,7 @@ else
 	
 	// get results from database
 	
-	$result = mysql_query("SELECT * FROM ShippingRecord")
+	$result = mysql_query("SELECT * FROM ShippingRecord order by SerialNumber")
 	
 	or die(mysql_error());
 	
@@ -142,6 +139,7 @@ else
 	
 	echo "<tr>
 			<th>FB帳號</th>
+			<th>FBID</th>
 			<th>品項</th>
 			<th>單價</th>
 			<th>數量</th>
@@ -169,6 +167,8 @@ else
 	echo "<tr>";
 	
 	echo '<td>' . $row['FB帳號'] . '</td>';
+	
+	echo '<td>' . $row['FBID'] . '</td>';
 	
 	echo '<td>' . $row['品項'] . '</td>';
 	

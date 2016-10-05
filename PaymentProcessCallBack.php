@@ -26,12 +26,10 @@ if(!session_id()) {
 	function validateMemberForm() {
 	    var MemberName = document.forms["MemberInformationForm"]["MemberName"].value;
 	    var fbAccount = document.forms["MemberInformationForm"]["fbAccount"].value;
-	    var EMail = document.forms["MemberInformationForm"]["EMail"].value;
 	    var PhoneNumber = document.forms["MemberInformationForm"]["PhoneNumber"].value;
 	    
 	    if (MemberName == null || MemberName == "" || 
 	    		fbAccount == null || fbAccount == "" || 
-	    	    EMail == null || EMail == "" ||
 	    	    PhoneNumber == null || PhoneNumber == "")
 	    {
 	        alert("請檢查欄位");
@@ -53,12 +51,6 @@ if(!session_id()) {
 	    	    Address == null || Address == "")
 	    {
 	        alert("請檢查欄位");
-	        return false;
-	    }
-
-	    if((ShippingWay == "合併寄貨") && ((AgentAccount == null) || (AgentAccount == "")))
-	    {
-	    	alert("合併寄貨需填寫合併寄送人帳號");
 	        return false;
 	    }
 	}
@@ -100,10 +92,6 @@ if(!session_id()) {
 		else if(document.getElementById("ShippingWayId").value == "印不停")
 		{
 			shippingFee = 20;
-		}
-		else if(document.getElementById("ShippingWayId").value == "合併寄貨")
-		{
-			shippingFee = 0;
 		}
 	    
 	    document.getElementById("ShippingFeeId").value = shippingFee;
@@ -173,11 +161,12 @@ if(!session_id()) {
 	}
 	
     if (isset($_POST['CheckOut']) && empty($_SESSION["completed"])) {
-        sleep(5);
         $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
         $remitAmont = $_POST['remitAmont'];
         $memo = $_POST['memo'];
         $moneyToBePaid = $_POST['moneyToBePaid'];
+        $rebateWillBeUpdate = $_POST['rebateWillBeUpdate'];
+        $rebateTobeDeduct = $_POST['rebateTobeDeduct'];
         	
         if ($remitLastFiveDigit == "")
         {
@@ -189,10 +178,9 @@ if(!session_id()) {
         }
         else
         {		    
-    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`)
-    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount', '$FBID' ,'$moneyToBePaid');";
+    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`,`PaidRebate`)
+    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount', '$FBID' ,'$moneyToBePaid', $rebateTobeDeduct);";
     	    $result = mysql_query($sql,$con);
-    	    	
     	    if (!$result) {
     	        die('Invalid query: ' . mysql_error());
     	    }
@@ -202,6 +190,14 @@ if(!session_id()) {
     	    if (!$result) {
     	        die('Invalid query: ' . mysql_error());
     	    }
+    	    
+    	    $sql = "UPDATE `Members` SET `Rebate` = '$rebateWillBeUpdate' WHERE FBID = '$FBID'";
+    	    $result = mysql_query($sql,$con);
+    	    if (!$result) {
+    	    	die('Invalid query: ' . mysql_error());
+    	    }
+    	    
+    	    
             $_SESSION["completed"] = true;   
      		header("location: http://mommyssecret.tw/PaymentProcessCallBack.php");
         }		
@@ -221,18 +217,17 @@ if(!session_id()) {
 		<?php 
     		if (isset($_POST['ModifyMember'])) {
     		    $MemberName = $_POST['MemberName'];
-    		    $EMail = $_POST['EMail'];
     		    $PhoneNumber = $_POST['PhoneNumber'];
     		    
-    		    if(($MemberName == "")||($EMail == "")||($PhoneNumber == ""))
+    		    if(($MemberName == "")||($PhoneNumber == ""))
     		    {
     		        echo "<script type='text/javascript'>alert('請檢查欄位')</script>";
     		    }
     		    else
     		    {
-        		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `FBID`)
-        		    VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$FBID\")
-        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\"";
+        		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `手機號碼`, `FBID`)
+        		    VALUES (\"$MemberName\", \"$fbAccount\", \"$PhoneNumber\", \"$FBID\")
+        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `手機號碼`=\"$PhoneNumber\"";
         		
         		    $result = mysql_query($sql,$con);
         		    if (!$result) {
@@ -281,12 +276,6 @@ if(!session_id()) {
 			    </td>			
 			</tr>
 		    <tr>
-				<th>E-Mail<font color=\"red\">*</font></th> 
-			    <td>
-					<input type=\"text\" name=\"EMail\" title=\"請填寫登錄FB的Mail，因為本名或是FB帳號有可能重複，請留Mail方便我們再次確認喔!\" value=\"".$row['E-Mail']."\"style=\"width:300px;\">
-			    </td>	
-			</tr>
-		    <tr>
 				<th>手機號碼<font color=\"red\">*</font></th>       		
 			    <td>
 					<input type=\"text\" name=\"PhoneNumber\" value=\"".$row['手機號碼']."\"style=\"width:300px;\">
@@ -301,7 +290,7 @@ if(!session_id()) {
     </div>
     <div id="menu1" class="tab-pane fade"><br>
 		<?php 
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) order by FB帳號;";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -355,7 +344,7 @@ if(!session_id()) {
 			}
 			$toRemitTable = $toRemitTable . "</table>";
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00';";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' order by FB帳號;";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -410,7 +399,7 @@ if(!session_id()) {
 			
 			
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00';";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00' order by FB帳號;";
 				
 			$result = mysql_query($sql,$con);
 				
@@ -506,15 +495,11 @@ if(!session_id()) {
 		        {
 		            echo "<script type='text/javascript'>alert('ShippingFee')</script>";
 		        }
-		        elseif (($ShippingWay == "合併寄貨") && ($AgentAccount == ""))
-		        {
-		            echo "<script type='text/javascript'>alert('AgentAccount')</script>";
-		        }
 		        else 
 		        {
-        		    $sql = "INSERT INTO `Members` (`FB帳號`, `FBID`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
-        		    VALUES (\"$fbAccount\", \"$FBID\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
-        		    ON DUPLICATE KEY UPDATE `FB帳號`=\"$fbAccount\",`郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";
+        		    $sql = "INSERT INTO `Members` (`FB帳號`, `FBID`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`)
+        		    VALUES (\"$fbAccount\", \"$FBID\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\")
+        		    ON DUPLICATE KEY UPDATE `FB帳號`=\"$fbAccount\",`郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\"";
         		
         		    $result = mysql_query($sql,$con);
         		    if (!$result) {
@@ -570,7 +555,6 @@ if(!session_id()) {
     				<option value=\"ZOo\">ZOo</option>
     				<option value=\"Bon Vivant\">Bon Vivant</option>
     				<option value=\"印不停\">印不停</option>
-    	    		<option value=\"合併寄貨\">合併寄貨</option>
     			</select>
     	    </td>	        		
         	</tr>
@@ -579,13 +563,7 @@ if(!session_id()) {
         	    <td>
         			<input type=\"text\" id=\"ShippingFeeId\" name=\"ShippingFee\" readonly=\"readonly\" value=\"".$row['運費']."\"style=\"width:300px;\">
         	    </td>	
-        	</tr>
-        	<tr>			
-        		<th>合併寄送帳號(請先徵求合併出貨姊妹的同意喔!)</th>         		
-        	    <td>
-          			<input id=\"AgentAccount\" type=\"text\" name=\"AgentAccount\" title=\"合併寄送指由<<同一個人匯款收貨>>，XXX會幫我匯款收貨(請留XXX的FB帳號)謝謝喔!\" value=\"".$row['合併寄送人帳號']."\"style=\"width:300px;\">
-        	    </td>	
-        	</tr> 	 			
+        	</tr>	 			
         	<tr>			
         		<th>備註</th>         		
         	    <td>
@@ -629,7 +607,7 @@ if(!session_id()) {
     <div id="menu3" class="tab-pane fade"><br>
 		<?php
 		
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) order by FB帳號;";
 			
 		$result = mysql_query($sql,$con);
 			
@@ -683,7 +661,7 @@ if(!session_id()) {
 		}
 		$toRemitTable = $toRemitTable . "</table>";
 			
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID');";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') order by FB帳號;";
 			
 		$result = mysql_query($sql,$con);
 			
@@ -742,13 +720,12 @@ if(!session_id()) {
 		
 		$row = mysql_fetch_array($result);
 		$name = $row['姓名'];
-		$eMail = $row['E-Mail'];
 		$phoneNumber = $row['手機號碼'];
 		$address = $row['郵遞區號＋地址'];
 		$familyNumber = $row['全家店到店服務代號'];
 		$shippingWay = $row['寄送方式'];
 		$shippingFee = $row['運費'];
-		$agentAccount = $row['合併寄送人帳號'];
+		$rebate = $row['Rebate'];
 		
 		if($totalPrice > 6000)
 		{
@@ -765,39 +742,135 @@ if(!session_id()) {
 		else
 		{
 		    $moneyToBePaid = $totalPrice + $actualShippingFee;
+		    if($totalPrice > 3000)
+		    {
+		    	$rebateToBeIncrease = $totalPrice * 2 / 100;
+		    }
+		    else
+		    {
+		    	$rebateToBeIncrease = 0;
+		    }
+		    if($moneyToBePaid >= $rebate)
+		    {
+		    	$rebateTobeDeduct = $rebate;
+		    	$rebateWillBeUpdate = $rebateToBeIncrease;
+		    	$moneyToBePaid = $moneyToBePaid - $rebate;
+		    }
+		    else 
+		    {
+		    	
+		    	$rebateTobeDeduct = $moneyToBePaid;
+		    	$rebateWillBeUpdate = $rebate - $rebateTobeDeduct + $rebateToBeIncrease;
+		    	$moneyToBePaid = 0;
+		    }
 		}
 		
-
 	    if($toRemitTableCount > 0)
 	    {
-	        echo '<b><font size="6">';
-	        echo "購買金額 : $totalPrice + 運費 : $actualShippingFee = 合計匯款金額 : $moneyToBePaid<br>";
-	        echo '</font></b>';
+	    	echo "<table style=\"font-size:24px;display: inline-block;\">
+	    	<tr>
+	    	<th>購買金額</th>
+	    	<td>$totalPrice</td>
+	    	</tr>
+	    	</table>";	
+	    		    		    	
+	        echo '<b><font size="32"> + </font></b>';
+	    	
+	    	echo "<table style=\"font-size:24px;display: inline-block;\">
+	    	<tr>
+	    	<th>運費</th>
+	    	<td>$actualShippingFee</td>
+	    	</tr>
+	    	</table>";
+	    	
+	    	echo '<b><font size="32"> - </font></b>';
+	    	
+	    	echo "<table style=\"font-size:24px;display: inline-block;\">
+	    	<tr>
+	    	<th>回饋金</th>
+	    	<td>$rebateTobeDeduct</td>
+	    	</tr>
+	    	</table>";
+	    	
+	    	echo '<b><font size="32"> = </font></b>';
+	    	
+	    	echo "<table style=\"font-size:24px;display: inline-block;\">
+	    	<tr>
+	    	<th>合計匯款金額</th>
+	    	<td>$moneyToBePaid</td>
+	    	</tr>
+	    	</table><br>";
+	    	
+	    	
+// 	        echo '<b><font size="6">';
+// 	        echo "購買金額 : $totalPrice + 運費 : $actualShippingFee - 回饋金 : $rebateTobeDeduct = 合計匯款金額 : $moneyToBePaid<br>";
+// 	        echo '</font></b>';
 	        
+	    	echo "<table style=\"font-size:22px;\">
+	    	<tr>
+	    	<th style=\"background-color: #ccff66; color: #804000;\">回饋金餘額</th>
+	    	<td title=\"回饋金餘額=溢付款/商品退款+前期購買金買3000元2%回饋-本期使用金額（未使用完畢遞延下期繼續折抵）\">$rebate</td>
+	    	</tr>
+	    	</table>";
+	    	
+	    	echo '<hr align="left" width="1200px" color="#000000" size="4" />';
+	    	
 	        echo '<b><font size="4">';
 	        echo "匯款帳號:郵局戶名:謝昀臻<br>
 			                    帳號:0002015-0385639";
 	        echo '</font></b>';
 	        
 	        echo '<hr align="left" width="1200px" color="#000000" size="4" />';
+	        
 	        echo $toRemitTable;
-	        ?>
-		 		<form name="RemitForm" action="PaymentProcessCallBack.php" onsubmit="return validateRemitForm(this)" method="POST">
-		 			<input type="hidden" name="CheckOut" value="run">
-		 			<input type="hidden" value="<?php echo $FBID;?>" name="FBID">
-		 			<input type="hidden" value="<?php echo $moneyToBePaid;?>" name="moneyToBePaid">
-				  	<p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
-				  	<p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
-				  	<p><input type="text" name="memo" placeholder="Memo"></p>
-				  	<input type="submit" name="RemitButton" value="回報匯款">
-		 		</form>
- 			<?php
- 			
+
+	        
+	        if(($address != "") && ($familyNumber != "") && ($shippingWay != "") && ($name != ""))
+	        {
+		 		echo "<form name=\"RemitForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateRemitForm(this)\" method=\"POST\">
+		 			<input type=\"hidden\" name=\"CheckOut\" value=\"run\">
+		        	<input type=\"hidden\" value=\"$FBID\" name=\"FBID\">
+		        	<input type=\"hidden\" value=\"$moneyToBePaid\" name=\"moneyToBePaid\">
+	    	    	<input type=\"hidden\" value=\"$rebateWillBeUpdate\" name=\"rebateWillBeUpdate\">
+	    	    	<input type=\"hidden\" value=\"$rebateTobeDeduct\" name=\"rebateTobeDeduct\">
+				  	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"匯款末五碼\"></p>
+				  	<p><input type=\"text\" name=\"remitAmont\" placeholder=\"匯款金額\"></p>
+				  	<p><input type=\"text\" name=\"memo\" placeholder=\"Memo\"></p>
+				  	<input type=\"submit\" name=\"RemitButton\" value=\"回報匯款\">
+		 		</form>";
+	        }
+	        else 
+	        {
+	        	echo '<b><font size="6">';
+	        	echo "請檢查會員資料和寄送地址，有欄位沒有填寫喔";
+	        	echo '</font></b>';
+	        	echo "<form name=\"RemitForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateRemitForm(this)\" method=\"POST\">
+	        	<fieldset disabled>
+	        	<input type=\"hidden\" name=\"CheckOut\" value=\"run\">
+	        	<input type=\"hidden\" value=\"$FBID\" name=\"FBID\">
+	        	<input type=\"hidden\" value=\"$moneyToBePaid\" name=\"moneyToBePaid\">
+	        	<input type=\"hidden\" value=\"$rebateWillBeUpdate\" name=\"rebateWillBeUpdate\">
+	        	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"匯款末五碼\"></p>
+	        	<p><input type=\"text\" name=\"remitAmont\" placeholder=\"匯款金額\"></p>
+	        	<p><input type=\"text\" name=\"memo\" placeholder=\"Memo\"></p>
+	        	<input type=\"submit\" name=\"RemitButton\" value=\"回報匯款\" style=\"background-color: #d6d6c2;\">
+	        	</fieldset>
+	        	</form>";	        	
+	        }
  		}
  		else 
  		{
      		echo "<h3>已收到您的資料待對帳</h3>";
+     		
+     		echo "<table style=\"font-size:22px;\">
+     		<tr>
+     		<th style=\"background-color: #ccff66; color: #804000;\">回饋金餘額</th>
+     		<td title=\"回饋金餘額=溢付款/商品退款+前期購買金買3000元2%回饋-本期使用金額（未使用完畢遞延下期繼續折抵）\">$rebate</td>
+     		</tr>
+     		</table><br>";
+     		
     	 	echo $remitedTable;
+    	 	
  		}
 		?>
     </div>    

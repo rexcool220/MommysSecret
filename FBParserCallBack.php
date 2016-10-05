@@ -93,45 +93,105 @@ if(!$accessToken)
 	    echo "$fbAccount : 你不是管理者";
 	    exit;
 	}
-	//get feed
+	
+	
+	$ssid = "145r0XELzQQUtjIFk7KqRBXJAEMFrRc9zn1xkuB3H_-4";
 
-	
-	try {
-	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message,comments&since=". date("Y-m-d", strtotime("-1 months")). "&offset=0");
-	} catch(Facebook\Exceptions\FacebookResponseException $e) {
-	    // When Graph returns an error
-	    echo 'Graph returned an error: ' . $e->getMessage();
-	    exit;
-	} catch(Facebook\Exceptions\FacebookSDKException $e) {
-	    // When validation fails or other local issues
-	    echo 'Facebook SDK returned an error: ' . $e->getMessage();
-	    exit;
+	$client = new Google_Client();
+
+	putenv("GOOGLE_APPLICATION_CREDENTIALS=Mommyssecret-e24d4b121c15.json");
+
+	if ($credentials_file = checkServiceAccountCredentialsFile()) {
+		// set the location manually
+		$client->setAuthConfig($credentials_file);
+	} elseif (getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
+		// use the application default credentials
+		$client->useApplicationDefaultCredentials();
+	} else {
+		echo missingServiceAccountDetailsWarning();
+		return;
 	}
-	$result = $response->getDecodedBody();
- 
-	$pagesEdge = $response->getGraphEdge();
+		
+	$client->setApplicationName("Parse Google form");
+
+	$client->setScopes(['https://www.googleapis.com/auth/drive','https://spreadsheets.google.com/feeds']);
+
+	$tokenArray = $client->fetchAccessTokenWithAssertion();
+
+	$googleAccessToken = $tokenArray["access_token"];
+		
+	//Get wsid from URL
+	$url = "https://spreadsheets.google.com/feeds/worksheets/$ssid/private/full";
+	$method = 'GET';
+	$headers = ["Authorization" => "Bearer $googleAccessToken"];
+	$httpClient = new GuzzleHttp\Client(['headers' => $headers]);
+	$resp = $httpClient->request($method, $url);
+	$body = $resp->getBody()->getContents();
+	$tableXML = simplexml_load_string($body);
 	
-	do {
-	    foreach ($pagesEdge as $page) {
-	        echo substr($page['message'], 0, 60);
-	        echo "<br>";
-	        echo $page['created_time']->format('Y-m-d');
-	        echo "<br>";
+	foreach ($tableXML->entry as $entry)
+	{
+		$id = $entry->id;
+		$title = $entry->title;
+		if($title == "點單表單")
+		{
+			if(preg_match("/[a-zA-Z0-9]+$/", $id, $matches)) {
+				$wsid = $matches[0];
+			}
+		}
+	}
+	if(empty($wsid))
+	{
+		echo "wsid is empty";
+		exit;
+	}
+	
+	$url = "https://spreadsheets.google.com/feeds/list/$ssid/$wsid/private/full";
+	$method = 'GET';
+	$headers = ["Authorization" => "Bearer $googleAccessToken"];
+	$httpClient = new GuzzleHttp\Client(['headers' => $headers]);
+	$resp = $httpClient->request($method, $url);
+	$body = $resp->getBody()->getContents();
+	$tableXML = simplexml_load_string($body);
+	
+	//get feed
+	
+// 	try {
+// 	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message,comments&since=". date("Y-m-d", strtotime("-1 months")). "&offset=0");
+// 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+// 	    // When Graph returns an error
+// 	    echo 'Graph returned an error: ' . $e->getMessage();
+// 	    exit;
+// 	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+// 	    // When validation fails or other local issues
+// 	    echo 'Facebook SDK returned an error: ' . $e->getMessage();
+// 	    exit;
+// 	}
+// 	$result = $response->getDecodedBody();
+ 
+// 	$pagesEdge = $response->getGraphEdge();
+	
+// 	do {
+// 	    foreach ($pagesEdge as $page) {
+// 	        echo substr($page['message'], 0, 60);
+// 	        echo "<br>";
+// 	        echo $page['created_time']->format('Y-m-d');
+// 	        echo "<br>";
 	        
-	        $comments = $page['comments'];
-	        do {
-	               for($i = 0; $i < count($comments); $i++)
-	               {
-	                   echo $comments[$i]["from"]["name"];
-	                   echo " ";
-	                   echo $comments[$i]["from"]["id"];
-	                   echo " ";
-	                   echo $comments[$i]["message"];
-	                   echo "<br>";
-	               }
-	        } while ($comments = $fb->next($comments));
-	    }
-	} while ($pagesEdge = $fb->next($pagesEdge));	
+// 	        $comments = $page['comments'];
+// 	        do {
+// 	               for($i = 0; $i < count($comments); $i++)
+// 	               {
+// 	                   echo $comments[$i]["from"]["name"];
+// 	                   echo " ";
+// 	                   echo $comments[$i]["from"]["id"];
+// 	                   echo " ";
+// 	                   echo $comments[$i]["message"];
+// 	                   echo "<br>";
+// 	               }
+// 	        } while ($comments = $fb->next($comments));
+// 	    }
+// 	} while ($pagesEdge = $fb->next($pagesEdge));	
 	
     
 		

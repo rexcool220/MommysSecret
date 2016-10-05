@@ -22,7 +22,7 @@ Allows user to edit specific entry in database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($FBAccount, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error)
+function renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error)
 
 {
 
@@ -77,7 +77,6 @@ function renderForm($FBAccount, $itemName, $price , $amount, $remitDate, $shippi
 	$fbAccount = $userNode->getName();
 	if(($fbAccount == 'Gill Fang')||
 			($fbAccount == 'JoLyn Dai')||
-			($fbAccount == '王雅琦')||
 			($fbAccount == 'Queenie Tsan')||
 			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
@@ -115,6 +114,8 @@ function renderForm($FBAccount, $itemName, $price , $amount, $remitDate, $shippi
 	<p><strong>SerialNumber:</strong> <?php echo $serialNumber; ?></p>
 	
 	<strong>FB帳號: *</strong> <input type="text" name="FB帳號" value="<?php echo $FBAccount; ?>" /><br/>
+	
+	<strong>FBID: *</strong> <input type="text" name="FBID" value="<?php echo $FBID; ?>" /><br/>
 	
 	<strong>品項: *</strong> <input type="text" name="品項" value="<?php echo $itemName; ?>" /><br/>
 	
@@ -157,6 +158,8 @@ if (isset($_POST['submit']))
 	
 	$FBAccount = $_POST['FB帳號'];
 	
+	$FBID = $_POST['FBID'];
+	
 	$itemName = $_POST['品項'];
 	
 	$price = $_POST['單價'];
@@ -175,7 +178,7 @@ if (isset($_POST['submit']))
 
 	// check that firstname/lastname fields are both filled in
 	
-	if ($FBAccount == '' || $itemName == '' || $price == '' || $amount == '' || $serialNumber == '')
+	if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $amount == '' || $serialNumber == '')
 	
 	{
 	
@@ -187,7 +190,7 @@ if (isset($_POST['submit']))
 		
 		//error, display form
 		
-		renderForm($FBAccount, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
+		renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
 	
 	}
 	
@@ -202,7 +205,7 @@ if (isset($_POST['submit']))
 		
 // 		echo $sql;
 			
-		mysql_query("UPDATE `ShippingRecord` SET FB帳號=\"$FBAccount\", 品項=\"$itemName\", 單價=\"$price\", 數量=\"$amount\", 匯款日期=\"$remitDate\", 出貨日期=\"$shippingDate\", 匯款編號=\"$remitNumber\", 確認收款=\"$isRemited\" WHERE SerialNumber=\"$serialNumber\"")
+		mysql_query("UPDATE `ShippingRecord` SET FB帳號=\"$FBAccount\", FBID=\"$FBID\", 品項=\"$itemName\", 單價=\"$price\", 數量=\"$amount\", 匯款日期=\"$remitDate\", 出貨日期=\"$shippingDate\", 匯款編號=\"$remitNumber\", 確認收款=\"$isRemited\" WHERE SerialNumber=\"$serialNumber\"")
 		
 		or die(mysql_error());
 		
@@ -250,6 +253,8 @@ else
 			
 			$FBAccount = $row['FB帳號'];
 			
+			$FBID = $row['FBID'];
+			
 			$itemName = $row['品項'];
 			
 			$price = $row['單價'];
@@ -266,7 +271,7 @@ else
 			
 			// show form
 			
-			renderForm($FBAccount, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
+			renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
 		
 		}
 		

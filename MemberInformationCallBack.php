@@ -21,17 +21,14 @@
 	function validateForm() {
 	    var MemberName = document.forms["MemberInformationForm"]["MemberName"].value;
 	    var fbAccount = document.forms["MemberInformationForm"]["fbAccount"].value;
-	    var EMail = document.forms["MemberInformationForm"]["EMail"].value;
 	    var PhoneNumber = document.forms["MemberInformationForm"]["PhoneNumber"].value;
 	    var Address = document.forms["MemberInformationForm"]["Address"].value;
 	    var FamilyNumber = document.forms["MemberInformationForm"]["FamilyNumber"].value;
 	    var ShippingWay = document.forms["MemberInformationForm"]["ShippingWay"].value;
 	    var ShippingFee = document.forms["MemberInformationForm"]["ShippingFee"].value;
-	    var AgentAccount = document.forms["MemberInformationForm"]["AgentAccount"].value;
 	    
 	    if (MemberName == null || MemberName == "" || 
 	    		fbAccount == null || fbAccount == "" || 
-	    	    EMail == null || EMail == "" ||
 	    	    PhoneNumber == null || PhoneNumber == "" ||
 	    	    Address == null || Address == "" ||
 	    	    FamilyNumber == null || FamilyNumber == "" ||
@@ -39,12 +36,6 @@
 	    	    ShippingFee == null || ShippingFee == "")
 	    {
 	        alert("請檢查欄位");
-	        return false;
-	    }
-
-	    if((ShippingWay == "合併寄貨") && ((AgentAccount == null) || (AgentAccount == "")))
-	    {
-	    	alert("合併寄貨需填寫合併寄送人帳號");
 	        return false;
 	    }
 	}
@@ -58,7 +49,7 @@
 		{
 			shippingFee = 90;
 		}
-		else if(document.getElementById("ShippingWayId").value == "Zoo")
+		else if(document.getElementById("ShippingWayId").value == "ZOo")
 		{
 			shippingFee = 20;
 		}
@@ -69,10 +60,6 @@
 		else if(document.getElementById("ShippingWayId").value == "印不停")
 		{
 			shippingFee = 20;
-		}
-		else if(document.getElementById("ShippingWayId").value == "合併寄貨")
-		{
-			shippingFee = 0;
 		}
 	    
 	    document.getElementById("ShippingFeeId").value = shippingFee;
@@ -152,7 +139,22 @@ if(!$accessToken)
  		<script>
  			window.history.replaceState( {} , '個人資料', 'http://mommyssecret.tw/MemberInformationCallBack.php' );
  		</script>
- 	<?php 	
+ 	<?php
+ 	
+ 	try {
+ 		$response = $fb->get('/me');
+ 		$userNode = $response->getGraphUser();
+ 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+ 		// When Graph returns an error
+ 		echo 'Graph returned an error: ' . $e->getMessage();
+ 		exit;
+ 	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+ 		// When validation fails or other local issues
+ 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+ 		exit;
+ 	}
+ 	$fbAccount = $userNode->getName();
+ 	$FBID = $userNode->getId();
  	
  	if(isset($_SESSION['Completed']))
  	{
@@ -160,11 +162,10 @@ if(!$accessToken)
 		echo 'alert("已填寫成功")';
 		echo '</script>';
  		unset($_SESSION['Completed']);
+ 		//header("location: https://www.facebook.com/MommySecret.Plan/?fref=ts");
  	}
  	
- 	$fbAccount = GetFBAccount($fb);
- 	
- 	$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
+	$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
  	$result = mysql_query($sql,$con);
  	
  	if (!$result) {
@@ -177,23 +178,23 @@ if(!$accessToken)
 	<form name=\"MemberInformationForm\" action=\"MemberInformationCallBack.php\" onsubmit=\"return validateForm()\" method=\"POST\">
    	<input type=\"hidden\" name=\"act\" value=\"run\">
 	<table id=\"Member\">
-    <tr>
+	<tr>
 		<th>FB帳號</th> 			
 	    <td>
 				<input type=\"text\" name=\"fbAccount\" readonly=\"readonly\" value=\"".$fbAccount."\"style=\"width:300px;\">
 	    </td>	    				
-	</tr>	    	    		
+	</tr>
+    <tr>
+		<th>FBID</th> 			
+	    <td>
+				<input type=\"text\" name=\"FBID\" readonly=\"readonly\" value=\"".$FBID."\"style=\"width:300px;\">
+	    </td>	    				
+	</tr>		    		
 	<tr>
 		<th>真實姓名<font color=\"red\">*</font></th>
 	    <td>
 			<input type=\"text\" name=\"MemberName\" value=\"".$row['姓名']."\"style=\"width:300px;\">	    	    		
 	    </td>			
-	</tr>
-    <tr>
-		<th>E-Mail<font color=\"red\">*</font></th> 
-	    <td>
-			<input type=\"text\" name=\"EMail\" title=\"請填寫登錄FB的Mail，因為本名或是FB帳號有可能重複，請留Mail方便我們再次確認喔!\" value=\"".$row['E-Mail']."\"style=\"width:300px;\">
-	    </td>	
 	</tr>
     <tr>
 		<th>手機號碼<font color=\"red\">*</font></th>       		
@@ -221,10 +222,9 @@ if(!$accessToken)
 	    		<option selected>".$row['寄送方式']."</option>
 				<option value=\"店到店\">店到店</option>
 				<option value=\"貨運\">貨運</option>
-				<option value=\"Zoo\">Zoo</option>
+				<option value=\"ZOo\">ZOo</option>
 				<option value=\"Bon Vivant\">Bon Vivant</option>
 				<option value=\"印不停\">印不停</option>
-	    		<option value=\"合併寄貨\">合併寄貨</option>
 			</select>
 	    </td>	        		
 	</tr>
@@ -233,13 +233,7 @@ if(!$accessToken)
 	    <td>
 			<input type=\"text\" id=\"ShippingFeeId\" name=\"ShippingFee\" readonly=\"readonly\" value=\"".$row['運費']."\"style=\"width:300px;\">
 	    </td>	
-	</tr>
-	<tr>			
-		<th>合併寄送帳號(請先徵求合併出貨姊妹的同意喔!)</th>         		
-	    <td>
-  			<input id=\"AgentAccount\" type=\"text\" name=\"AgentAccount\" title=\"合併寄送指由<<同一個人匯款收貨>>，XXX會幫我匯款收貨(請留XXX的FB帳號)謝謝喔!\" value=\"".$row['合併寄送人帳號']."\"style=\"width:300px;\">
-	    </td>	
-	</tr> 	 			
+	</tr>	 			
 	<tr>			
 		<th>備註</th>         		
 	    <td>
@@ -252,18 +246,16 @@ if(!$accessToken)
  	
  	if (!empty($_POST['act'])) {
  		$MemberName = $_POST['MemberName'];
- 		$EMail = $_POST['EMail'];
  		$PhoneNumber = $_POST['PhoneNumber'];
  		$Address = $_POST['Address'];
  		$FamilyNumber = $_POST['FamilyNumber'];
  		$ShippingWay = $_POST['ShippingWay'];
 		$ShippingFee = $_POST['ShippingFee'];
 		$Memo = $_POST['Memo'];
-		$AgentAccount = $_POST['AgentAccount'];
  		
- 		$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
- 		VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
- 		ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\", `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";		
+ 		$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `FBID`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`)
+ 		VALUES (\"$MemberName\", \"$fbAccount\", \"$FBID\", \"$PhoneNumber\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\")
+ 		ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `手機號碼`=\"$PhoneNumber\", `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\"";		
  		$result = mysql_query($sql,$con);
 //  		echo $sql;
  		if (!$result) {
@@ -309,23 +301,6 @@ if(!$accessToken)
  	?>
  	<?php
  	$conn->close();
- 	 	
- 	function GetFBAccount($fb)
- 	{
- 		try {
- 			$response = $fb->get('/me');
- 			$userNode = $response->getGraphUser();
- 		} catch(Facebook\Exceptions\FacebookResponseException $e) {
- 			// When Graph returns an error
- 			echo 'Graph returned an error: ' . $e->getMessage();
- 			exit;
- 		} catch(Facebook\Exceptions\FacebookSDKException $e) {
- 			// When validation fails or other local issues
- 			echo 'Facebook SDK returned an error: ' . $e->getMessage();
- 			exit;
- 		}
- 		return $userNode->getName();
- 	}
  ?>
 
 	

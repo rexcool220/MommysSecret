@@ -59,11 +59,9 @@ try {
 $fbAccount = $userNode->getName();
 if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平')||
         ($fbAccount == 'Keira Lin'))
 {
@@ -85,7 +83,7 @@ $per_page = 30;
 
 // figure out the total pages in the database
 
-$result = mysql_query("SELECT * FROM ShippingRecord");
+$result = mysql_query("SELECT * FROM ShippingRecord order by SerialNumber");
 
 $total_results = mysql_num_rows($result);
 
@@ -167,6 +165,7 @@ echo "<table border='1' cellpadding='10'>";
 
 echo "<tr>
 		<th>FB帳號</th>
+		<th>FBID</th>
 		<th>品項</th>
 		<th>單價</th>
 		<th>數量</th>
@@ -200,6 +199,8 @@ if ($i == $total_results) { break; }
 echo "<tr>";
 
 echo '<td>' . mysql_result($result, $i, 'FB帳號') . '</td>';
+
+echo '<td>' . mysql_result($result, $i, 'FBID') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '品項') . '</td>';
 

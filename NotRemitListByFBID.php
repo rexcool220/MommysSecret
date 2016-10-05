@@ -69,7 +69,6 @@ try {
 $fbAccount = $userNode->getName();
 if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||

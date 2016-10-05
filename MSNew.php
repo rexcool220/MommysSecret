@@ -22,7 +22,7 @@ Allows user to create a new entry in the database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($FBAccount, $itemName, $price , $amount, $serialNumber, $error)
+function renderForm($FBAccount, $FBID, $itemName, $price , $amount, $serialNumber, $error)
 
 {
 
@@ -78,7 +78,6 @@ try {
 $fbAccount = $userNode->getName();
 if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
@@ -112,6 +111,8 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 <div>
 
 <strong>FB帳號: *</strong> <input type="text" name="FB帳號" value="<?php echo $FBAccount; ?>" /><br/>
+
+<strong>FBID: *</strong> <input type="text" name="FBID" value="<?php echo $FBID; ?>" /><br/>
 
 <strong>品項: *</strong> <input type="text" name="品項" value="<?php echo $itemName; ?>" /><br/>
 
@@ -147,6 +148,8 @@ if (isset($_POST['submit']))
 
 $FBAccount = $_POST['FB帳號'];
 
+$FBID = $_POST['FBID'];
+
 $itemName = $_POST['品項'];
 
 $price = $_POST['單價'];
@@ -157,7 +160,7 @@ $serialNumber = $_POST['SerialNumber'];
 
 // check to make sure both fields are entered
 
-if ($FBAccount == '' || $itemName == '' || $price == '' || $amount == '' || $serialNumber == '')
+if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $amount == '' || $serialNumber == '')
 
 {
 
@@ -169,7 +172,7 @@ $error = 'ERROR: Please fill in all required fields!';
 
 // if either field is blank, display the form again
 
-renderForm($FBAccount, $itemName, $price , $amount, $serialNumber, $error);
+renderForm($FBAccount, $FBID, $itemName, $price , $amount, $serialNumber, $error);
 
 }
 
@@ -183,7 +186,7 @@ else
 
 // echo $sql;
 
-mysql_query("INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$itemName', '$price', '$amount')")
+mysql_query("INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `FBID`, `品項`, `單價`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$FBID', '$itemName', '$price', '$amount')")
 or die(mysql_error());
 
 // once saved, redirect back to the view page
@@ -200,7 +203,7 @@ else
 
 {
 
-renderForm('','','');
+renderForm('','','','');
 
 }
 

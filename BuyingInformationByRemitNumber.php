@@ -118,10 +118,6 @@ if(!empty($_GET['remitNumber'])) {
 		<td>".$row['登入的FB帳號']."</td>
 		</tr>
 		<tr>
-		<th>E-Mail</th>
-		<td>".$row['E-Mail']."</td>
-		</tr>
-		<tr>
 		<th>手機號碼</th>
 		<td>".$row['手機號碼']."</td>
 		</tr>
@@ -139,7 +135,7 @@ if(!empty($_GET['remitNumber'])) {
 		</tr>
 		</table>";
 
-	$sql = "SELECT 匯款金額 FROM `RemitRecord` WHERE 匯款編號 = '$remitNumber'";
+	$sql = "SELECT * FROM `RemitRecord` WHERE 匯款編號 = '$remitNumber'";
 	$result = mysql_query($sql,$con);
 	
 	if (!$result) {
@@ -154,8 +150,14 @@ if(!empty($_GET['remitNumber'])) {
 		</tr>
 		<tr>
 		<th>實收</th>
+		<td>".($row['匯款金額'] + $row['PaidRebate'])."</td>
+		</tr>
+		<th>現金支付</th>
 		<td>".$row['匯款金額']."</td>
-		</tr>			
+		</tr>									
+		<th>回饋金支付</th>
+		<td>".$row['PaidRebate']."</td>
+		</tr>					
 		</table><br><br>";	
 	
 	echo $MemberInformation;

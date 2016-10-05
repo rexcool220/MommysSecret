@@ -100,11 +100,9 @@ try {
 $fbAccount = $userNode->getName();
 if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平')||
         ($fbAccount == 'Keira Lin'))
 {
@@ -117,7 +115,7 @@ else
 }
 
 
-$sql = "SELECT * FROM  `RemitRecord` ORDER BY 匯款編號  DESC ;";
+$sql = "SELECT * FROM  `RemitRecord` ORDER BY 已收款 ASC,匯款編號  DESC ;";
 
 $result = mysql_query($sql,$con);
 

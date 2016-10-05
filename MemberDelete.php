@@ -44,11 +44,9 @@ try {
 $fbAccount = $userNode->getName();
 if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平'))
 {
 	// 	echo "管理者 : $fbAccount";
@@ -63,17 +61,17 @@ else
 
 // check if the 'id' variable is set in URL, and check that it is valid
 
-if (isset($_GET['FB帳號']))
+if (isset($_GET['FBID']))
 
 {
 
-$fbAccount = $_GET['FB帳號'];
+$FBID = $_GET['FBID'];
 
 
 
 // delete the entry
 
-$result = mysql_query("DELETE FROM Members WHERE FB帳號='$fbAccount'")
+$result = mysql_query("DELETE FROM Members WHERE FBID='$FBID'")
 
 or die(mysql_error());
 

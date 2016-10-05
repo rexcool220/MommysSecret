@@ -22,7 +22,7 @@ Allows user to create a new entry in the database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address,  $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error)
+function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address,  $familyNumber, $shippingWay, $shippingFee, $memo, $rebate, $FBID, $error)
 
 {
 
@@ -78,11 +78,9 @@ try {
 $loginFBAccount = $userNode->getName();
 if(($loginFBAccount == 'Gill Fang')||
 		($loginFBAccount == 'JoLyn Dai')||
-		($loginFBAccount == '王雅琦')||
 		($loginFBAccount == 'Queenie Tsan')||
 		($loginFBAccount == '熊會買')||
 		($loginFBAccount == '熊哉')||
-		($loginFBAccount == '熊會算')||
 		($loginFBAccount == '古振平'))
 {
 	// 	echo "管理者 : $loginFBAccount";
@@ -117,8 +115,6 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 	
 	<strong>FBID: *</strong> <input type="text" name="FBID" value="<?php echo $FBID; ?>" /><br/>
 	
-	<strong>E-Mail:</strong> <input type="text" name="E-Mail" value="<?php echo $eMail; ?>" /><br/>
-	
 	<strong>手機號碼:</strong> <input type="text" name="手機號碼" value="<?php echo $phoneNumber; ?>" /><br/>
 	
 	<strong>郵遞區號＋地址:</strong> <input type="text" name="郵遞區號＋地址" value="<?php echo $address; ?>" /><br/>
@@ -131,7 +127,7 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 	
 	<strong>備註:</strong> <input type="text" name="備註" value="<?php echo $memo; ?>" /><br/>
 	
-	<strong>合併寄送人帳號:</strong> <input type="text" name="合併寄送人帳號" value="<?php echo $shippingAgent; ?>" /><br/>
+	<strong>回饋金餘額:</strong> <input type="text" name="回饋金餘額" value="<?php echo $rebate; ?>" /><br/>
 	
 	<input type="submit" name="submit" value="Submit">
 
@@ -161,8 +157,6 @@ if (isset($_POST['submit']))
 	
 	$FBID = $_POST['FBID'];
 	
-	$eMail = $_POST['E-Mail'];
-	
 	$phoneNumber = $_POST['手機號碼'];
 	
 	$address = $_POST['郵遞區號＋地址'];
@@ -175,7 +169,7 @@ if (isset($_POST['submit']))
 	
 	$memo = $_POST['備註'];
 	
-	$shippingAgent = $_POST['合併寄送人帳號'];
+	$rebate = $_POST['回饋金餘額'];
 
 	// check that firstname/lastname fields are both filled in
 	
@@ -189,7 +183,7 @@ if (isset($_POST['submit']))
 
 	// if either field is blank, display the form again
 	
-	renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error);
+	renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $rebate, $FBID, $error);
 	}
 
 else
@@ -202,7 +196,7 @@ else
 
 // echo $sql;
 
-mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`, `FBID`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$shippingAgent', '$FBID')")
+mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `Rebate`, `FBID`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$rebate', '$FBID')")
 
 or die(mysql_error());
 

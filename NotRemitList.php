@@ -50,7 +50,6 @@ if(!session_id()) {
     $fbAccount = $userNode->getName();
     if(($fbAccount == 'Gill Fang')||
         ($fbAccount == 'JoLyn Dai')||
-        ($fbAccount == '王雅琦')||
         ($fbAccount == 'Queenie Tsan')||
         ($fbAccount == '熊會買')||
         ($fbAccount == '熊哉')||
@@ -65,16 +64,18 @@ if(!session_id()) {
         exit;
     }
 
-$sql = "SELECT FB帳號, FBID, MAX(匯款日期 ) 
+$sql = "SELECT FB帳號, FBID, MAX(匯款日期 ) , SUM(單價 ) 
 FROM  `ShippingRecord` 
-WHERE FBID
+WHERE  `匯款日期` =  '0000-00-00'
+AND FBID
 IN (
 
 SELECT DISTINCT FBID
 FROM  `ShippingRecord` 
 WHERE  `匯款日期` =  '0000-00-00'
 )
-GROUP BY FBID ORDER BY MAX(匯款日期 ) ASC";
+GROUP BY FBID
+ORDER BY MAX( 匯款日期 ) ASC";
 
 $result = mysql_query($sql,$con);
 if (!$result) {
@@ -94,6 +95,7 @@ $NotRemitList = "<table id=\"NotRemitList\" width=\"60%\">
 	<th>FB帳號 </th>
     <th>FBID</th>
 	<th>最近匯款日期</th>
+	<th>應付款金額</th>
 	</tr>";
 
 while($row = mysql_fetch_array($result))
@@ -102,6 +104,7 @@ while($row = mysql_fetch_array($result))
     $NotRemitList = $NotRemitList . "<td>" . $row['FB帳號'] . "</td>";
     $NotRemitList = $NotRemitList . "<td>" . $row['FBID'] . "</td>";
     $NotRemitList = $NotRemitList . "<td>" . $row['MAX(匯款日期 )'] . "</td>";
+    $NotRemitList = $NotRemitList . "<td>" . $row['SUM(單價 )'] . "</td>";
     $NotRemitList = $NotRemitList . "</tr>";
 }
 $NotRemitList = $NotRemitList . "</table>";

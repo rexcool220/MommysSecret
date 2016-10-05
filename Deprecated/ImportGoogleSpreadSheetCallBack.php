@@ -95,19 +95,14 @@ if(!empty($_POST['ShippingInformation'])) {
 // 				echo "<br>";
 			}
 			
-			if($_SESSION['personal'] == 'queenie')
-			{
-				$sql = "INSERT INTO `QueenieShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`) 
-				VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\") 
-				ON DUPLICATE KEY UPDATE `FB帳號`=\"$field[1]\", `品項`=\"$field[2]\", `單價`=\"$field[3]\", `數量`=\"$field[4]\"";
-			}
-			else
-			{
-				$sql = "INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`)
-				VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\")
-				ON DUPLICATE KEY UPDATE `FB帳號`=\"$field[1]\", `品項`=\"$field[2]\", `單價`=\"$field[3]\", `數量`=\"$field[4]\"";
+			
+// 		$sql = "INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `FBID`, `品項`, `單價`, `數量`)
+// 		VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\", \"$field[5]\")
+// 		ON DUPLICATE KEY UPDATE `FB帳號`=\"$field[1]\", `FBID`=\"$field[2]\", `品項`=\"$field[2]\", `單價`=\"$field[3]\", `數量`=\"$field[4]\"";
 				
-			}
+		$sql = "INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `FBID`, `品項`, `單價`, `數量`, `匯款日期`, `出貨日期`)
+		VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\", \"$field[5]\", \"$field[6]\", \"$field[7]\")
+		ON DUPLICATE KEY UPDATE `FB帳號`=\"$field[1]\", `FBID`=\"$field[2]\", `品項`=\"$field[3]\", `單價`=\"$field[4]\", `數量`=\"$field[5]\", `匯款日期`=\"$field[6]\", `出貨日期`=\"$field[7]\"";
 
 			$result = mysql_query($sql,$con);
 			if (!$result) {
@@ -235,14 +230,7 @@ if(empty($_POST['Members']) && empty($_POST['ShippingInformation']))
 		exit;
 	}
 	$fbAccount = $userNode->getName();
-	if(($fbAccount == 'Gill Fang')||
-		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
-		($fbAccount == 'Queenie Tsan')||
-		($fbAccount == '熊會買')||
-		($fbAccount == '熊栽')||
-		($fbAccount == '熊會算')||
-		($fbAccount == '古振平'))
+	if(($fbAccount == '古振平'))
 	{
 		echo "管理者 : $fbAccount";
 	}

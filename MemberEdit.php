@@ -22,7 +22,7 @@ Allows user to edit specific entry in database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID,  $error)
+function renderForm($name, $FBAccount, $FBID, $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $rebate, $error)
 
 {
 
@@ -77,11 +77,9 @@ function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyN
 	$loginFBAccount = $userNode->getName();
 	if(($loginFBAccount == 'Gill Fang')||
 			($loginFBAccount == 'JoLyn Dai')||
-			($loginFBAccount == '王雅琦')||
 			($loginFBAccount == 'Queenie Tsan')||
 			($loginFBAccount == '熊會買')||
 			($loginFBAccount == '熊哉')||
-			($loginFBAccount == '熊會算')||
 			($loginFBAccount == '古振平'))
 	{
 		// 	echo "管理者 : $loginFBAccount";
@@ -120,8 +118,6 @@ function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyN
 	
 	<strong>FBID: *</strong> <input type="text" name="FBID" value="<?php echo $FBID; ?>" /><br/>
 	
-	<strong>E-Mail:</strong> <input type="text" name="E-Mail" value="<?php echo $eMail; ?>" /><br/>
-	
 	<strong>手機號碼:</strong> <input type="text" name="手機號碼" value="<?php echo $phoneNumber; ?>" /><br/>
 	
 	<strong>郵遞區號＋地址:</strong> <input type="text" name="郵遞區號＋地址" value="<?php echo $address; ?>" /><br/>
@@ -134,7 +130,7 @@ function renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyN
 	
 	<strong>備註:</strong> <input type="text" name="備註" value="<?php echo $memo; ?>" /><br/>
 	
-	<strong>合併寄送人帳號:</strong> <input type="text" name="合併寄送人帳號" value="<?php echo $shippingAgent; ?>" /><br/>
+	<strong>回饋金餘額:</strong> <input type="text" name="Rebate" value="<?php echo $rebate; ?>" /><br/>
 	
 	<input type="submit" name="submit" value="Submit">
 	
@@ -164,8 +160,6 @@ if (isset($_POST['submit']))
 	
 	$FBID = $_POST['FBID'];
 	
-	$eMail = $_POST['E-Mail'];
-	
 	$phoneNumber = $_POST['手機號碼'];
 	
 	$address = $_POST['郵遞區號＋地址'];
@@ -178,7 +172,7 @@ if (isset($_POST['submit']))
 	
 	$memo = $_POST['備註'];
 	
-	$shippingAgent = $_POST['合併寄送人帳號'];
+	$rebate = $_POST['Rebate'];
 
 	// check that firstname/lastname fields are both filled in
 	
@@ -194,7 +188,7 @@ if (isset($_POST['submit']))
 		
 		//error, display form
 		
-		renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error);
+		renderForm($name, $FBAccount, $FBID, $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $rebate, $error);
 	
 	}
 	
@@ -204,11 +198,9 @@ if (isset($_POST['submit']))
 	
 		// save the data to the database
 			
-		mysql_query("UPDATE `Members` SET `姓名`=\"$name\", `E-Mail`=\"$eMail\", `手機號碼`=\"$phoneNumber\",`郵遞區號＋地址`=\"$address\",`全家店到店服務代號`=\"$familyNumber\",`寄送方式`=\"$shippingWay\",`運費`=\"$shippingFee\",`備註`=\"$memo\",`合併寄送人帳號`=\"$shippingAgent\",`FB帳號`=\"$FBAccount\" WHERE `FBID`=\"$FBID\"")
+		mysql_query("UPDATE `Members` SET `姓名`=\"$name\", `手機號碼`=\"$phoneNumber\",`郵遞區號＋地址`=\"$address\",`全家店到店服務代號`=\"$familyNumber\",`寄送方式`=\"$shippingWay\",`運費`=\"$shippingFee\",`備註`=\"$memo\",`Rebate`=\"$rebate\",`FB帳號`=\"$FBAccount\" WHERE `FBID`=\"$FBID\"")
 		
 		or die(mysql_error());
-		
-		
 		
 		// once saved, redirect back to the view page
 		
@@ -224,15 +216,15 @@ else
 
 {
 
-	if (isset($_GET['FB帳號']))
+	if (isset($_GET['FBID']))
 	
 	{
 	
 		// query db
 		
-		$FBAccount = $_GET['FB帳號'];
+		$FBID = $_GET['FBID'];
 		
-		$result = mysql_query("SELECT * FROM Members WHERE FB帳號='$FBAccount'")
+		$result = mysql_query("SELECT * FROM Members WHERE FBID='$FBID'")
 		
 		or die(mysql_error());
 		
@@ -254,8 +246,6 @@ else
 			
 			$FBID = $row['FBID'];
 			
-			$eMail = $row['E-Mail'];
-			
 			$phoneNumber = $row['手機號碼'];
 			
 			$address = $row['郵遞區號＋地址'];
@@ -268,12 +258,12 @@ else
 			
 			$memo = $row['備註'];
 			
-			$shippingAgent = $row['合併寄送人帳號'];
+			$rebate = $row['Rebate'];
 			
 			
 			// show form
 			
-			renderForm($name, $FBAccount, $eMail , $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $shippingAgent, $FBID, $error);
+			renderForm($name, $FBAccount, $FBID, $phoneNumber, $address, $familyNumber, $shippingWay, $shippingFee, $memo, $rebate, $error);
 		
 		}
 		

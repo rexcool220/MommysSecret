@@ -9,6 +9,7 @@ if(!session_id()) {
 ?>
 <html>
 <head>
+<meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" type="text/css" href="MommysSecret.css">
 <title>未出貨確認總表</title>
 </head>
@@ -69,11 +70,9 @@ try {
 $fbAccount = $userNode->getName();
 if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平')||
         ($fbAccount == 'Keira Lin'))
 {
@@ -99,8 +98,8 @@ else
 // GROUP BY RemitRecord.匯款編號
 // ORDER BY ShippingRecord.出貨日期  ASC , ShippingRecord.匯款日期 ASC;";
 	
-	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, RemitRecord.Memo, RemitRecord.管理員備註
-FROM  `RemitRecord` ,  `ShippingRecord`
+	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.Memo, RemitRecord.管理員備註
+FROM  `RemitRecord` ,  `ShippingRecord`, `Members`
 WHERE ShippingRecord.匯款編號 = RemitRecord.匯款編號
 AND ShippingRecord.FBID
 IN (
@@ -109,9 +108,9 @@ SELECT DISTINCT ShippingRecord.FBID
 FROM  `ShippingRecord`
 WHERE ShippingRecord.確認收款 =1
 AND ShippingRecord.出貨日期 =  '0000-00-00'
-)
+) AND ShippingRecord.FBID = Members.FBID
 GROUP BY RemitRecord.匯款編號
-ORDER BY RemitRecord.匯款編號 ";
+ORDER BY RemitRecord.匯款編號  DESC ";
 
 
 	$result = mysql_query($sql,$con);
@@ -128,6 +127,7 @@ ORDER BY RemitRecord.匯款編號 ";
     <th>FBID</th>
 	<th>最近出貨日期</th>
 	<th>最新匯款編號</th>
+	<th>出貨方式</th>
 	<th>最新客戶備註</th>
 	<th>最新管理員備註</th>
 	</tr>";
@@ -139,6 +139,7 @@ ORDER BY RemitRecord.匯款編號 ";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['FBID'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['出貨日期'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['匯款編號'] . "</td>";
+		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['寄送方式'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['Memo'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['管理員備註'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "</tr>";

@@ -59,11 +59,9 @@ try {
 $fbAccount = $userNode->getName();
 if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == '王雅琦')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平')||
         ($fbAccount == 'Keira Lin'))
 {
@@ -169,14 +167,13 @@ echo "<tr>
 		<th>姓名</th>
 		<th>FB帳號</th>
         <th>FBID</th>
-		<th>E-Mail</th>
 		<th>手機號碼</th>
 		<th>郵遞區號＋地址</th>
 		<th>全家店到店服務代號</th>
 		<th>寄送方式</th>
 		<th>運費</th>
 		<th>備註</th>
-		<th>合併寄送人帳號</th>
+		<th>回饋金餘額</th>
 		<th>
 		</th>
 		<th>
@@ -207,8 +204,6 @@ echo '<td>' . mysql_result($result, $i, 'FB帳號') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, 'FBID') . '</td>';
 
-echo '<td>' . mysql_result($result, $i, 'E-Mail') . '</td>';
-
 echo '<td>' . mysql_result($result, $i, '手機號碼') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '郵遞區號＋地址') . '</td>';
@@ -221,11 +216,11 @@ echo '<td>' . mysql_result($result, $i, '運費') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '備註') . '</td>';
 
-echo '<td>' . mysql_result($result, $i, '合併寄送人帳號') . '</td>';
+echo '<td>' . mysql_result($result, $i, 'Rebate') . '</td>';
 
-echo '<td><a href="MemberEdit.php?FB帳號=' . mysql_result($result, $i, 'FB帳號') . '">Edit</a></td>';
+echo '<td><a href="MemberEdit.php?FBID=' . mysql_result($result, $i, 'FBID') . '">Edit</a></td>';
 
-echo '<td><a href="MemberDelete.php?FB帳號=' . mysql_result($result, $i, 'FB帳號') . '">Delete</a></td>';
+echo '<td><a href="MemberDelete.php?FBID=' . mysql_result($result, $i, 'FBID') . '">Delete</a></td>';
 
 echo "</tr>";
 
