@@ -27,8 +27,18 @@
 </form>
 	
 <?php	
-if(!empty($_GET['remitNumber'])) {
+if(isset($_GET['remitNumber'])) {
 	$remitNumber = $_GET['remitNumber'];
+	
+	$sql = "SELECT * FROM  `RemitRecord` WHERE  `匯款編號` = '$remitNumber'";
+	$result = mysql_query($sql,$con);
+	
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
+	$row = mysql_fetch_array($result);
+	$FBID = $row['FBID'];
+	
 	$sql = "SELECT * FROM `ShippingRecord` WHERE 匯款編號 = '$remitNumber'";
 	$result = mysql_query($sql,$con);
 	
@@ -52,7 +62,6 @@ if(!empty($_GET['remitNumber'])) {
 	$totalPrice = 0;
 	while($row = mysql_fetch_array($result))
 	{
-		$fbAccount = $row['FB帳號'];
 		if($row['出貨日期'] == "0000-00-00")
 		{
 			$row['出貨日期'] = "";
@@ -80,7 +89,7 @@ if(!empty($_GET['remitNumber'])) {
 	
 	$RemitTable = $RemitTable . "</table>";
 	
-	$sql = "SELECT * FROM `Members` WHERE FB帳號  = '$fbAccount';";
+	$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 	$result = mysql_query($sql,$con);
 	
 	if (!$result) {
@@ -104,6 +113,8 @@ if(!empty($_GET['remitNumber'])) {
 	{
 		$moneyToBePaid = $totalPrice + $shippingFee;
 	}
+
+	
 	$MemberInformation = "<table id=\"Member\">
 		<tr>
 		<th>姓名</th>
@@ -113,6 +124,10 @@ if(!empty($_GET['remitNumber'])) {
 		<th>FB帳號</th>
 		<td>".$row['FB帳號']."</td>
 		</tr>
+		<tr>
+		<th>FBID</th>
+		<td>".$row['FBID']."</td>
+		</tr>				
 		<tr>
 		<th>登入的FB帳號</th>
 		<td>".$row['登入的FB帳號']."</td>

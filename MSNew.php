@@ -22,7 +22,7 @@ Allows user to create a new entry in the database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($FBAccount, $FBID, $itemName, $price , $amount, $serialNumber, $error)
+function renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $serialNumber, $error)
 
 {
 
@@ -81,7 +81,6 @@ if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平'))
 {
 	// 	echo "管理者 : $fbAccount";
@@ -117,6 +116,8 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 <strong>品項: *</strong> <input type="text" name="品項" value="<?php echo $itemName; ?>" /><br/>
 
 <strong>單價: *</strong> <input type="text" name="單價" value="<?php echo $price; ?>" /><br/>
+
+<strong>折扣: *</strong> <input type="text" name="折扣" value="<?php echo $discount; ?>" /><br/>
 
 <strong>數量: *</strong> <input type="text" name="數量" value="<?php echo $amount; ?>" /><br/>
 
@@ -154,13 +155,15 @@ $itemName = $_POST['品項'];
 
 $price = $_POST['單價'];
 
+$discount = $_POST['折扣'];
+
 $amount = $_POST['數量'];
 
 $serialNumber = $_POST['SerialNumber'];
 
 // check to make sure both fields are entered
 
-if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $amount == '' || $serialNumber == '')
+if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $discount == '' || $amount == '' || $serialNumber == '')
 
 {
 
@@ -172,7 +175,7 @@ $error = 'ERROR: Please fill in all required fields!';
 
 // if either field is blank, display the form again
 
-renderForm($FBAccount, $FBID, $itemName, $price , $amount, $serialNumber, $error);
+renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $serialNumber, $error);
 
 }
 
@@ -182,11 +185,7 @@ else
 
 // save the data to the database
 
-// $sql = "INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `品項`, `單價`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$itemName', '$price', '$amount')";	
-
-// echo $sql;
-
-mysql_query("INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `FBID`, `品項`, `單價`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$FBID', '$itemName', '$price', '$amount')")
+mysql_query("INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `FBID`, `品項`, `單價`, `Discount`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$FBID', '$itemName', '$price', '$discount', '$amount')")
 or die(mysql_error());
 
 // once saved, redirect back to the view page

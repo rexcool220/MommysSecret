@@ -22,7 +22,7 @@ Allows user to edit specific entry in database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error)
+function renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error)
 
 {
 
@@ -80,7 +80,6 @@ function renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, 
 			($fbAccount == 'Queenie Tsan')||
 			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
-			($fbAccount == '熊會算')||
 			($fbAccount == '古振平'))
 	{
 		// 	echo "管理者 : $fbAccount";
@@ -121,15 +120,17 @@ function renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, 
 	
 	<strong>單價: *</strong> <input type="text" name="單價" value="<?php echo $price; ?>" /><br/>
 	
+	<strong>折扣: *</strong> <input type="text" name="折扣" value="<?php echo $discount; ?>" /><br/>
+	
 	<strong>數量: *</strong> <input type="text" name="數量" value="<?php echo $amount; ?>" /><br/>
 	
-	<strong>匯款日期: *</strong> <input type="text" name="匯款日期" value="<?php echo $remitDate; ?>" /><br/>
+	<strong>匯款日期: </strong> <input type="text" name="匯款日期" value="<?php echo $remitDate; ?>" /><br/>
 	
-	<strong>出貨日期: *</strong> <input type="text" name="出貨日期" value="<?php echo $shippingDate; ?>" /><br/>
+	<strong>出貨日期: </strong> <input type="text" name="出貨日期" value="<?php echo $shippingDate; ?>" /><br/>
 	
-	<strong>匯款編號: *</strong> <input type="text" name="匯款編號" value="<?php echo $remitNumber; ?>" /><br/>
+	<strong>匯款編號: </strong> <input type="text" name="匯款編號" value="<?php echo $remitNumber; ?>" /><br/>
 	
-	<strong>確認收款: *</strong> <input type="text" name="確認收款" value="<?php echo $isRemited; ?>" /><br/>
+	<strong>確認收款: </strong> <input type="text" name="確認收款" value="<?php echo $isRemited; ?>" /><br/>
 	
 	<strong>SerialNumber: *</strong> <input type="text" name="SerialNumber" value="<?php echo $serialNumber; ?>" /><br/>
 	
@@ -164,6 +165,8 @@ if (isset($_POST['submit']))
 	
 	$price = $_POST['單價'];
 	
+	$discount = $_POST['折扣'];
+	
 	$amount = $_POST['數量'];
 	
 	$remitDate = $_POST['匯款日期'];
@@ -178,7 +181,7 @@ if (isset($_POST['submit']))
 
 	// check that firstname/lastname fields are both filled in
 	
-	if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $amount == '' || $serialNumber == '')
+	if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $discount == '' || $amount == '' || $serialNumber == '')
 	
 	{
 	
@@ -190,7 +193,7 @@ if (isset($_POST['submit']))
 		
 		//error, display form
 		
-		renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
+		renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
 	
 	}
 	
@@ -205,7 +208,7 @@ if (isset($_POST['submit']))
 		
 // 		echo $sql;
 			
-		mysql_query("UPDATE `ShippingRecord` SET FB帳號=\"$FBAccount\", FBID=\"$FBID\", 品項=\"$itemName\", 單價=\"$price\", 數量=\"$amount\", 匯款日期=\"$remitDate\", 出貨日期=\"$shippingDate\", 匯款編號=\"$remitNumber\", 確認收款=\"$isRemited\" WHERE SerialNumber=\"$serialNumber\"")
+		mysql_query("UPDATE `ShippingRecord` SET FB帳號=\"$FBAccount\", FBID=\"$FBID\", 品項=\"$itemName\", 單價=\"$price\", Discount=\"$discount\", 數量=\"$amount\", 匯款日期=\"$remitDate\", 出貨日期=\"$shippingDate\", 匯款編號=\"$remitNumber\", 確認收款=\"$isRemited\" WHERE SerialNumber=\"$serialNumber\"")
 		
 		or die(mysql_error());
 		
@@ -259,6 +262,8 @@ else
 			
 			$price = $row['單價'];
 			
+			$discount = $row['Discount'];
+			
 			$amount = $row['數量'];
 			
 			$remitDate = $row['匯款日期'];
@@ -271,7 +276,7 @@ else
 			
 			// show form
 			
-			renderForm($FBAccount, $FBID, $itemName, $price , $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
+			renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
 		
 		}
 		

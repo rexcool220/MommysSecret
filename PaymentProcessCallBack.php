@@ -306,6 +306,7 @@ if(!session_id()) {
 	            <th>FBID </th>
 				<th>品項</th>
 				<th>單價</th>
+				<th>折扣</th>
 				<th>數量</th>
 				<th>金額</th>
 				<th>匯款日期</th>
@@ -326,13 +327,14 @@ if(!session_id()) {
 				}
 				$isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 					
-				$subTotal = $row['單價'] * $row['數量'];
+				$subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
 				$toRemitTable = $toRemitTable . "<tr>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
+				$toRemitTable = $toRemitTable . "<td>" . $row['Discount'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['匯款日期'] . "</td>";
@@ -361,6 +363,7 @@ if(!session_id()) {
     	        <th>FBID </th>
             	<th>品項</th>
             	<th>單價</th>
+        		<th>折扣</th>
             	<th>數量</th>
             	<th>金額</th>
             	<th>匯款日期</th>
@@ -379,13 +382,14 @@ if(!session_id()) {
 			        $row['匯款日期'] = "";
 			    }
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = $row['單價'] * $row['數量'];
+			    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
 			    $remitedTable = $remitedTable . "<tr>";
 			    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
+			    $remitedTable = $remitedTable . "<td>" . $row['Discount'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['匯款日期'] . "</td>";
@@ -416,6 +420,7 @@ if(!session_id()) {
 		        <th>FBID </th>
             	<th>品項</th>
             	<th>單價</th>
+				<th>折扣</th>
             	<th>數量</th>
             	<th>金額</th>
             	<th>匯款日期</th>
@@ -434,13 +439,14 @@ if(!session_id()) {
 			        $row['匯款日期'] = "";
 			    }
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = $row['單價'] * $row['數量'];
+			    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
 			    $waitShipping = $waitShipping . "<tr>";
 			    $waitShipping = $waitShipping . "<td>" . $row['SerialNumber'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['FB帳號'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['FBID'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['品項'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['單價'] . "</td>";
+			    $waitShipping = $waitShipping . "<td>" . $row['Discount'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['數量'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $subTotal . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['匯款日期'] . "</td>";
@@ -623,6 +629,7 @@ if(!session_id()) {
 	            <th>FBID </th>
 				<th>品項</th>
 				<th>單價</th>
+				<th>折扣</th>
 				<th>數量</th>
 				<th>金額</th>
 				<th>匯款日期</th>
@@ -643,13 +650,14 @@ if(!session_id()) {
 		    }
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 		    	
-		    $subTotal = $row['單價'] * $row['數量'];
+		    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
 		    $toRemitTable = $toRemitTable . "<tr>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
+		    $toRemitTable = $toRemitTable . "<td>" . $row['Discount'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['匯款日期'] . "</td>";
@@ -676,6 +684,7 @@ if(!session_id()) {
 	            <th>FBID </th>
 				<th>品項</th>
 				<th>單價</th>
+        		<th>折扣</th>
 				<th>數量</th>
 				<th>金額</th>
 				<th>匯款日期</th>
@@ -694,13 +703,14 @@ if(!session_id()) {
 		        $row['匯款日期'] = "";
 		    }
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-		    $subTotal = $row['單價'] * $row['數量'];
+		    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
 		    $remitedTable = $remitedTable . "<tr>";
 		    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
+		    $remitedTable = $remitedTable . "<td>" . $row['Discount'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['匯款日期'] . "</td>";

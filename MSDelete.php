@@ -47,7 +47,6 @@ if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平'))
 {
 	// 	echo "管理者 : $fbAccount";

@@ -168,6 +168,7 @@ echo "<tr>
 		<th>FBID</th>
 		<th>品項</th>
 		<th>單價</th>
+		<th>折扣</th>
 		<th>數量</th>
 		<th>匯款日期</th>
 		<th>出貨日期</th>
@@ -205,6 +206,8 @@ echo '<td>' . mysql_result($result, $i, 'FBID') . '</td>';
 echo '<td>' . mysql_result($result, $i, '品項') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '單價') . '</td>';
+
+echo '<td>' . mysql_result($result, $i, 'Discount') . '</td>';
 
 echo '<td>' . mysql_result($result, $i, '數量') . '</td>';
 

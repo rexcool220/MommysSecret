@@ -106,11 +106,9 @@ else
 	$fbAccount = $userNode->getName();
 	if(($fbAccount == 'Gill Fang')||
 			($fbAccount == 'JoLyn Dai')||
-			($fbAccount == '王雅琦')||
 			($fbAccount == 'Queenie Tsan')||
 			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
-			($fbAccount == '熊會算')||
     		($fbAccount == '古振平')||
             ($fbAccount == 'Keira Lin'))
 	{
@@ -166,7 +164,14 @@ else
 		 				<input type=\"submit\" value=\"未匯款清單\">
 		 			</form>
 				</td>			
-			</tr>		    
+			</tr>		
+			<tr>
+				<td>
+					<form action=\"FBParser.php\" method=\"get\" target=\"_blank\">
+		 				<input type=\"submit\" value=\"點單系統\">
+		 			</form>
+				</td>			
+			</tr>				
 		</table>";
 		echo $AdminTable;
 		?>

@@ -53,7 +53,6 @@ if(!session_id()) {
         ($fbAccount == 'Queenie Tsan')||
         ($fbAccount == '熊會買')||
         ($fbAccount == '熊哉')||
-        ($fbAccount == '熊會算')||
         ($fbAccount == '古振平'))
     {
         // 	echo "管理者 : $fbAccount";
@@ -64,8 +63,8 @@ if(!session_id()) {
         exit;
     }
 
-$sql = "SELECT FB帳號, FBID, MAX(匯款日期 ) , SUM(單價 ) 
-FROM  `ShippingRecord` 
+$sql = "SELECT FB帳號, FBID, MAX(匯款日期 ) , SUM(單價*數量 ) 
+FROM  `ShippingRecord`
 WHERE  `匯款日期` =  '0000-00-00'
 AND FBID
 IN (
@@ -75,7 +74,7 @@ FROM  `ShippingRecord`
 WHERE  `匯款日期` =  '0000-00-00'
 )
 GROUP BY FBID
-ORDER BY MAX( 匯款日期 ) ASC";
+ORDER BY MAX( 匯款日期 ) ASC, SUM(單價*數量) DESC";
 
 $result = mysql_query($sql,$con);
 if (!$result) {
@@ -96,20 +95,26 @@ $NotRemitList = "<table id=\"NotRemitList\" width=\"60%\">
     <th>FBID</th>
 	<th>最近匯款日期</th>
 	<th>應付款金額</th>
+	<th></th>
 	</tr>";
 
+$accountList = "";
 while($row = mysql_fetch_array($result))
 {
     $NotRemitList = $NotRemitList . "<tr>";
     $NotRemitList = $NotRemitList . "<td>" . $row['FB帳號'] . "</td>";
     $NotRemitList = $NotRemitList . "<td>" . $row['FBID'] . "</td>";
     $NotRemitList = $NotRemitList . "<td>" . $row['MAX(匯款日期 )'] . "</td>";
-    $NotRemitList = $NotRemitList . "<td>" . $row['SUM(單價 )'] . "</td>";
+    $NotRemitList = $NotRemitList . "<td>" . $row['SUM(單價*數量 )'] . "</td>";
+    $NotRemitList = $NotRemitList . "<td><input type=\"checkbox\" name=\"NotRemitList\" value=\"".$row['FB帳號']."\" onclick=\"NotRemitListChecked(this)\" checked style=\"WIDTH: 40px; HEIGHT: 40px\">";
     $NotRemitList = $NotRemitList . "</tr>";
+    $accountList = $accountList . "\n@" . $row['FB帳號'];
 }
 $NotRemitList = $NotRemitList . "</table>";
 
 echo "<h3>共 $NotRemitListCount 人</h3>";
+
+echo "<textarea id=\"TobeInformTextarea\" rows=\"4\" cols=\"50\">".date("Y/m/d")."未匯款點點名，還有".$NotRemitListCount."人未匯款！！哭哭～～先tag一些喔！＃請大家趕快匯款，社團墊款資金有限，空間也有限 ＃不併月寄送收款 ＃有買車用頭枕，醬油，浴巾，巧克力粉等大又重的商品建議使用貨運，免得下期還要補收運費唷～：".$accountList."</textarea><br>";
 
 echo $NotRemitList;
 
@@ -152,5 +157,19 @@ function tableText(tableCell) {
 
 	form.submit();
 }
+function NotRemitListChecked(checkbox) {
+    if (checkbox.checked)
+    {
+    	document.getElementById('TobeInformTextarea').value = 
+        	document.getElementById('TobeInformTextarea').value + 
+			"\n@" + checkbox.value;
+    }
+    else
+    {
+        stringTobeFind = "\n@" + checkbox.value;
+    	document.getElementById('TobeInformTextarea').value = (document.getElementById('TobeInformTextarea').value).replace(stringTobeFind, "");
+    }
+}
+
 </script>
 

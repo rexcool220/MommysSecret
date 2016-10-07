@@ -142,6 +142,7 @@ else
 			<th>FBID</th>
 			<th>品項</th>
 			<th>單價</th>
+			<th>折扣</th>
 			<th>數量</th>
 			<th>匯款日期</th>
 			<th>出貨日期</th>
@@ -173,6 +174,8 @@ else
 	echo '<td>' . $row['品項'] . '</td>';
 	
 	echo '<td>' . $row['單價'] . '</td>';
+	
+	echo '<td>' . $row['Discount'] . '</td>';
 	
 	echo '<td>' . $row['數量'] . '</td>';
 	
