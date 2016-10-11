@@ -78,7 +78,7 @@ if(!$accessToken)
 	}
 	$fbAccount = $userNode->getName();
 	if(($fbAccount == '熊會買')||
-	    ($fbAccount == '熊哉'))
+		($fbAccount == '熊哉'))
 	{
 	    	 
 //         echo $userNode->getId();	

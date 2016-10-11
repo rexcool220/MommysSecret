@@ -1,808 +1,499 @@
-<?php
-require_once __DIR__ . '/vendor/autoload.php';
-include_once "./vendor/google/apiclient/examples/templates/base.php";
-require_once 'ConnectMySQL.php';
-header("Content-Type:text/html; charset=utf-8");
-if(!session_id()) {
-	session_start();
-}
-?>
-<!DOCTYPE html>
 <html>
+
 <head>
-	<title>PaymentProcess</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20160905">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
-	<script>
-	$( function() {
-		$( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });    	
-	} );
-	function validateMemberForm() {
-	    var MemberName = document.forms["MemberInformationForm"]["MemberName"].value;
-	    var fbAccount = document.forms["MemberInformationForm"]["fbAccount"].value;
-	    var EMail = document.forms["MemberInformationForm"]["EMail"].value;
-	    var PhoneNumber = document.forms["MemberInformationForm"]["PhoneNumber"].value;
-	    
-	    if (MemberName == null || MemberName == "" || 
-	    		fbAccount == null || fbAccount == "" || 
-	    	    EMail == null || EMail == "" ||
-	    	    PhoneNumber == null || PhoneNumber == "")
-	    {
-	        alert("請檢查欄位");
-	        return false;
-	    }
-	}
-	
-	function validateShippingForm() {
-	    var Address = document.forms["AddressInformationForm"]["Address"].value;
-	    var FamilyNumber = document.forms["AddressInformationForm"]["FamilyNumber"].value;
-	    var ShippingWay = document.forms["AddressInformationForm"]["ShippingWay"].value;
-	    var ShippingFee = document.forms["AddressInformationForm"]["ShippingFee"].value;
-	    var AgentAccount = document.forms["AddressInformationForm"]["AgentAccount"].value;
-	    
-	    if (Address == null || Address == "" ||
-	    	    FamilyNumber == null || FamilyNumber == "" ||
-	    	    ShippingWay == null || ShippingWay == "" ||
-	    	    ShippingFee == null || ShippingFee == "" ||
-	    	    Address == null || Address == "")
-	    {
-	        alert("請檢查欄位");
-	        return false;
-	    }
+<title>View Records</title>
 
-	    if((ShippingWay == "合併寄貨") && ((AgentAccount == null) || (AgentAccount == "")))
-	    {
-	    	alert("合併寄貨需填寫合併寄送人帳號");
-	        return false;
-	    }
-	}
-
-	
-	function validateRemitForm(form) {
-	    form.RemitButton.disabled = true;
-	    form.RemitButton.value = "處理中...";
-	    var remitLastFiveDigit = document.forms["RemitForm"]["remitLastFiveDigit"].value;
-	    var remitAmont = document.forms["RemitForm"]["remitAmont"].value;
-	    
-	    if (remitLastFiveDigit == null || remitLastFiveDigit == "" ||
-	    		remitAmont == null || remitAmont == "")
-	    {
-	        alert("請檢查欄位");
-	        form.RemitButton.disabled = false;
-	        form.RemitButton.value = "回報匯款";
-	        return false;
-	    }
-	}	
-	function myFunction() {
-	    var shippingFee = 0;
-		if(document.getElementById("ShippingWayId").value == "店到店")
-		{
-			shippingFee = 60;
-		}
-		else if(document.getElementById("ShippingWayId").value == "貨運")
-		{
-			shippingFee = 90;
-		}
-		else if(document.getElementById("ShippingWayId").value == "ZOo")
-		{
-			shippingFee = 20;
-		}
-		else if(document.getElementById("ShippingWayId").value == "Bon Vivant")
-		{
-			shippingFee = 20;
-		}
-		else if(document.getElementById("ShippingWayId").value == "印不停")
-		{
-			shippingFee = 20;
-		}
-		else if(document.getElementById("ShippingWayId").value == "合併寄貨")
-		{
-			shippingFee = 0;
-		}
-	    
-	    document.getElementById("ShippingFeeId").value = shippingFee;
-	}
-	</script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
 </head>
+
 <body>
-<?php 
-	if(!$accessToken)
-	{
-		$fb = new Facebook\Facebook([
-				'app_id' => '1540605312908660',
-				'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
-				'default_graph_version' => 'v2.6',
-		]);
-		$helper = $fb->getRedirectLoginHelper();
-		try {
-			$accessToken = $helper->getAccessToken();
-		} catch(Facebook\Exceptions\FacebookResponseException $e) {
-			// When Graph returns an error
-			echo 'Graph returned an error: ' . $e->getMessage();
-			exit;
-		} catch(Facebook\Exceptions\FacebookSDKException $e) {
-			// When validation fails or other local issues
-			echo 'Facebook SDK returned an error: ' . $e->getMessage();
-			exit;
-		}
-	
-		if(empty($accessToken)&&!empty($_SESSION['accessToken']))
-		{
-			$accessToken = $_SESSION['accessToken'];
-		}
-		else if(!empty($accessToken))
-		{
-			$_SESSION['accessToken'] = $accessToken;
-		}
-		else if(!empty($accessToken)&&!empty($_SESSION['accessToken']))
-		{
-			echo "accessToken error";
-			exit;
-		}
-		$fb->setDefaultAccessToken($accessToken);
-	}
-	?>
-			<script>
-				window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/MySQLTest.php' );
-			</script>
-		<?php
-	try {
-		$response = $fb->get('/me');
-		$userNode = $response->getGraphUser();
-	} catch(Facebook\Exceptions\FacebookResponseException $e) {
-		// When Graph returns an error
-		echo 'Graph returned an error: ' . $e->getMessage();
-		exit;
-	} catch(Facebook\Exceptions\FacebookSDKException $e) {
-		// When validation fails or other local issues
-		echo 'Facebook SDK returned an error: ' . $e->getMessage();
-		exit;
-	}
-	$fbAccount = $userNode->getName();
-	$FBID = $userNode->getId();
-	if(isset($_SESSION["completed"]))
-	{
-	    echo "<script type='text/javascript'>alert('已收到您匯款資料，待對帳')</script>";
-	    unset($_SESSION["completed"]);
-	}
-	
-    if (isset($_POST['CheckOut']) && empty($_SESSION["completed"])) {
-        sleep(5);
-        $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
-        $remitAmont = $_POST['remitAmont'];
-        $memo = $_POST['memo'];
-        $moneyToBePaid = $_POST['moneyToBePaid'];
-        	
-        if ($remitLastFiveDigit == "")
-        {
-            echo "<script type='text/javascript'>alert('remitLastFiveDigit')</script>";
-        }
-        elseif ($remitAmont == "")
-        {
-            echo "<script type='text/javascript'>alert('remitAmont')</script>";
-        }
-        else
-        {		    
-    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`)
-    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount', '$FBID' ,'$moneyToBePaid');";
-    	    $result = mysql_query($sql,$con);
-    	    	
-    	    if (!$result) {
-    	        die('Invalid query: ' . mysql_error());
-    	    }
-    	    	
-    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
-    	    $result = mysql_query($sql,$con);
-    	    if (!$result) {
-    	        die('Invalid query: ' . mysql_error());
-    	    }
-            $_SESSION["completed"] = true;   
-     		header("location: http://mommyssecret.tw/MySQLTest.php");
-        }		
-    }
-?>
-<div class="container">
-  <h2>訂單列表</h2>
-  <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#home"><span style="font-size: 200%">會員資料</span></a></li>
-    <li><a data-toggle="tab" href="#menu1" class="inactiveLink"><span style="font-size: 200%">購買清單</span></a></li>
-    <li><a data-toggle="tab" href="#menu2" class="inactiveLink"><span style="font-size: 200%">寄送地址</span></a></li>
-    <li><a data-toggle="tab" href="#menu3"class="inactiveLink"><span style="font-size: 200%">結帳</span></a></li>
-  </ul>
-
-  <div class="tab-content">
-    <div id="home" class="tab-pane fade in active"><br>
-		<?php 
-    		if (isset($_POST['ModifyMember'])) {
-    		    $MemberName = $_POST['MemberName'];
-    		    $EMail = $_POST['EMail'];
-    		    $PhoneNumber = $_POST['PhoneNumber'];
-    		    
-    		    if(($MemberName == "")||($EMail == "")||($PhoneNumber == ""))
-    		    {
-    		        echo "<script type='text/javascript'>alert('請檢查欄位')</script>";
-    		    }
-    		    else
-    		    {
-        		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `FBID`)
-        		    VALUES (\"$MemberName\", \"$fbAccount\", \"$EMail\", \"$PhoneNumber\", \"$FBID\")
-        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `E-Mail`=\"$EMail\", `手機號碼`=\"$PhoneNumber\"";
-        		
-        		    $result = mysql_query($sql,$con);
-        		    if (!$result) {
-        		        echo $sql;
-        		        echo "<br>";
-        		        die('Invalid query2: ' . mysql_error());
-        		    }
-        		    	
-        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
-        		    ?>
-     			 		<script>
-     			 			alert("更改成功");
-     			 		</script>
-    		 		<?php
-    		    }
-		 	}			
-			$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
-		 	$result = mysql_query($sql,$con);
-		 	
-		 	if (!$result) {
-		 		die('Invalid query: ' . mysql_error());
-		 	}
-		 	
-		 	$row = mysql_fetch_array($result);
-
-		 	$MemberInformation = "
-			<form name=\"MemberInformationForm\" action=\"MySQLTest.php\" onsubmit=\"return validateMemberForm()\" method=\"POST\">
-		   	<input type=\"hidden\" name=\"ModifyMember\" value=\"run\">
-			<table id=\"Member\">
-		    <tr>
-				<th>FB帳號</th> 			
-			    <td>
-						<input type=\"text\" name=\"fbAccount\" readonly=\"readonly\" value=\"".$fbAccount."\"style=\"width:300px;\">
-			    </td>	    				
-			</tr>
-		    <tr>
-				<th>FBID</th> 			
-			    <td>
-						<input type=\"text\" name=\"FBID\" readonly=\"readonly\" value=\"".$FBID."\"style=\"width:300px;\">
-			    </td>	    				
-			</tr>		    
-			<tr>
-				<th>真實中文姓名<font color=\"red\">*</font></th>
-			    <td>
-					<input type=\"text\" name=\"MemberName\" value=\"".$row['姓名']."\"style=\"width:300px;\">	    	    		
-			    </td>			
-			</tr>
-		    <tr>
-				<th>E-Mail<font color=\"red\">*</font></th> 
-			    <td>
-					<input type=\"text\" name=\"EMail\" title=\"請填寫登錄FB的Mail，因為本名或是FB帳號有可能重複，請留Mail方便我們再次確認喔!\" value=\"".$row['E-Mail']."\"style=\"width:300px;\">
-			    </td>	
-			</tr>
-		    <tr>
-				<th>手機號碼<font color=\"red\">*</font></th>       		
-			    <td>
-					<input type=\"text\" name=\"PhoneNumber\" value=\"".$row['手機號碼']."\"style=\"width:300px;\">
-			    </td>	
-			</tr>
-			</table>			
-		 	<input type=\"submit\" value=\"修改個人資料\">
-		 	</form>";
-		 	
-            echo $MemberInformation;
-            ?>
-    </div>
-    <div id="menu1" class="tab-pane fade"><br>
-		<?php 
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
-			
-			$result = mysql_query($sql,$con);
-			
-			if (!$result) {
-				die('Invalid query: ' . mysql_error());
-			}
-			$toRemitTableCount = mysql_num_rows($result);
-			
-			$toRemitTable = "<table>
-				<tr>
-				<th>SN</th>
-				<th>FB帳號 </th>
-	            <th>FBID </th>
-				<th>品項</th>
-				<th>單價</th>
-				<th>數量</th>
-				<th>金額</th>
-				<th>匯款日期</th>
-				<th>確認收款</th>
-				<th>出貨日期</th>
-			  	<th>匯款編號</th>
-				</tr>";
-			$totalPrice = 0;
-			while($row = mysql_fetch_array($result))
-			{
-				if($row['出貨日期'] == "0000-00-00")
-				{
-					$row['出貨日期'] = "";
-				}
-				if($row['匯款日期'] == "0000-00-00")
-				{
-					$row['匯款日期'] = "";
-				}
-				$isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-					
-				$subTotal = $row['單價'] * $row['數量'];
-				$toRemitTable = $toRemitTable . "<tr>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['匯款日期'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $isReceivedPayment . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['出貨日期'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['匯款編號'] . "</td>";
-				$toRemitTable = $toRemitTable . "</tr>";
-				$totalPrice = $totalPrice + $subTotal;
-			}
-			$toRemitTable = $toRemitTable . "</table>";
-			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00';";
-			
-			$result = mysql_query($sql,$con);
-			
-			if (!$result) {
-			    die('Invalid query: ' . mysql_error());
-			}
-			
-			$remitedTableCount = mysql_num_rows($result);
-			
-			$remitedTable = "<table>
-            	<tr>
-             	<th>SN</th>
-            	<th>FB帳號 </th>
-    	        <th>FBID </th>
-            	<th>品項</th>
-            	<th>單價</th>
-            	<th>數量</th>
-            	<th>金額</th>
-            	<th>匯款日期</th>
-             	<th>確認收款</th>
-            	<th>出貨日期</th>
-            	<th>匯款編號</th>
-            	</tr>";
-			while($row = mysql_fetch_array($result))
-			{
-			    if($row['出貨日期'] == "0000-00-00")
-			    {
-			        $row['出貨日期'] = "";
-			    }
-			    if($row['匯款日期'] == "0000-00-00")
-			    {
-			        $row['匯款日期'] = "";
-			    }
-			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = $row['單價'] * $row['數量'];
-			    $remitedTable = $remitedTable . "<tr>";
-			    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['匯款日期'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $isReceivedPayment . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['出貨日期'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['匯款編號'] . "</td>";
-			    $remitedTable = $remitedTable . "</tr>";
-			}
-			$remitedTable = $remitedTable . "</table>";			
-			
-			
-			
-			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00';";
-				
-			$result = mysql_query($sql,$con);
-				
-			if (!$result) {
-			    die('Invalid query: ' . mysql_error());
-			}
-				
-			$waitShippingCount = mysql_num_rows($result);
-				
-			$waitShipping = "<table>
-            	<tr>
-             	<th>SN</th>
-            	<th>FB帳號 </th>
-		        <th>FBID </th>
-            	<th>品項</th>
-            	<th>單價</th>
-            	<th>數量</th>
-            	<th>金額</th>
-            	<th>匯款日期</th>
-             	<th>確認收款</th>
-            	<th>出貨日期</th>
-            	<th>匯款編號</th>
-            	</tr>";
-			while($row = mysql_fetch_array($result))
-			{
-			    if($row['出貨日期'] == "0000-00-00")
-			    {
-			        $row['出貨日期'] = "";
-			    }
-			    if($row['匯款日期'] == "0000-00-00")
-			    {
-			        $row['匯款日期'] = "";
-			    }
-			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = $row['單價'] * $row['數量'];
-			    $waitShipping = $waitShipping . "<tr>";
-			    $waitShipping = $waitShipping . "<td>" . $row['SerialNumber'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['FB帳號'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['FBID'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['品項'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['單價'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['數量'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $subTotal . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['匯款日期'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $isReceivedPayment . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['出貨日期'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['匯款編號'] . "</td>";
-			    $waitShipping = $waitShipping . "</tr>";
-			}
-			$waitShipping = $waitShipping . "</table>";
-			
-			if($toRemitTableCount > 0)
-			{
-    			echo "<h3>待匯款清單</h3>";
-                echo $toRemitTable;
-			}
-			if($remitedTableCount > 0)
-			{
-                echo "<h3>待出貨清單</h3>";
-                echo $remitedTable;
-			}
-			if($waitShippingCount > 0)
-			{
-                echo "<h3>上期未出貨清單</h3>";
-                echo $waitShipping;
-			}
-            
-		?>
-    </div>
-    <div id="menu2" class="tab-pane fade"><br>
-		<?php 
-    		if (isset($_POST['ModifyAddress'])) {
-    		    $Address = $_POST['Address'];
-    		    $FamilyNumber = $_POST['FamilyNumber'];
-    		    $ShippingWay = $_POST['ShippingWay'];
-    		    $ShippingFee = $_POST['ShippingFee'];
-    		    $Memo = $_POST['Memo'];
-    		    $AgentAccount = $_POST['AgentAccount'];    		    
-    		    
-		        if ($Address == "")
-		        {
-		            echo "<script type='text/javascript'>alert('Address')</script>";
-		        }
-		        elseif ($FamilyNumber == "")
-		        {
-		            echo "<script type='text/javascript'>alert('FamilyNumber')</script>";
-		        }
-		        elseif ($ShippingWay == "")
-	            {
-	                echo "<script type='text/javascript'>alert('ShippingWay')</script>";
-		        }
-		        elseif ($ShippingFee == "")
-		        {
-		            echo "<script type='text/javascript'>alert('ShippingFee')</script>";
-		        }
-		        elseif (($ShippingWay == "合併寄貨") && ($AgentAccount == ""))
-		        {
-		            echo "<script type='text/javascript'>alert('AgentAccount')</script>";
-		        }
-		        else 
-		        {
-        		    $sql = "INSERT INTO `Members` (`FB帳號`, `FBID`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `合併寄送人帳號`)
-        		    VALUES (\"$fbAccount\", \"$FBID\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\" , \"$AgentAccount\")
-        		    ON DUPLICATE KEY UPDATE `FB帳號`=\"$fbAccount\",`郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\", `合併寄送人帳號`=\"$AgentAccount\"";
-        		
-        		    $result = mysql_query($sql,$con);
-        		    if (!$result) {
-        		        echo $sql;
-        		        echo "<br>";
-        		        die('Invalid query2: ' . mysql_error());
-        		    }
-        		    	
-        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
-        		    ?>
-     			 		<script>
-     			 			alert("更改成功");
-     			 			$('.nav-tabs a[href="#menu2"]').tab('show')
-     			 		</script>
-    		 		<?php
-		        }
-		 	}
-	 	?>
-		 	<?php
-			$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
-		 	$result = mysql_query($sql,$con);
-		 	
-		 	if (!$result) {
-		 		die('Invalid query: ' . mysql_error());
-		 	}
-		 	
-		 	$row = mysql_fetch_array($result);
-
-		 	$ShippingInformation = "
-			<form name=\"AddressInformationForm\" action=\"MySQLTest.php\" onsubmit=\"return validateShippingForm()\" method=\"POST\">
-		   	<input type=\"hidden\" name=\"ModifyAddress\" value=\"run\">
-			<table id=\"Address\">
-		    <tr>		
-    		<th>郵遞區號＋地址<font color=\"red\">*</font></th>         		
-    	    <td>
-    			<input type=\"text\" name=\"Address\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['郵遞區號＋地址']."\"style=\"width:300px;\">
-    	    </td>	
-        	</tr>    		
-        	<tr>			
-        		<th>全家店到店 店名+地址<font color=\"red\">*</font><br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
-        				
-        	    <td>
-        			<input type=\"text\" name=\"FamilyNumber\" title=\"ex:全家板橋松柏店 新北市板橋區松柏街13號\" value=\"".$row['全家店到店服務代號']."\"style=\"width:300px;\">
-        	    </td>	
-        	</tr>
-        	<tr>			
-    		<th>指定的寄送方式<font color=\"red\">*</font></th>         		
-    	    <td>
-    			<select id=\"ShippingWayId\" onchange=\"myFunction()\" name=\"ShippingWay\" style=\"width:300px;\">
-    	    		<option selected>".$row['寄送方式']."</option>
-    				<option value=\"店到店\">店到店</option>
-    				<option value=\"貨運\">貨運</option>
-    				<option value=\"ZOo\">ZOo</option>
-    				<option value=\"Bon Vivant\">Bon Vivant</option>
-    				<option value=\"印不停\">印不停</option>
-    	    		<option value=\"合併寄貨\">合併寄貨</option>
-    			</select>
-    	    </td>	        		
-        	</tr>
-        		<tr>			
-        		<th>運費</th>         		
-        	    <td>
-        			<input type=\"text\" id=\"ShippingFeeId\" name=\"ShippingFee\" readonly=\"readonly\" value=\"".$row['運費']."\"style=\"width:300px;\">
-        	    </td>	
-        	</tr>
-        	<tr>			
-        		<th>合併寄送帳號(請先徵求合併出貨姊妹的同意喔!)</th>         		
-        	    <td>
-          			<input id=\"AgentAccount\" type=\"text\" name=\"AgentAccount\" title=\"合併寄送指由<<同一個人匯款收貨>>，XXX會幫我匯款收貨(請留XXX的FB帳號)謝謝喔!\" value=\"".$row['合併寄送人帳號']."\"style=\"width:300px;\">
-        	    </td>	
-        	</tr> 	 			
-        	<tr>			
-        		<th>備註</th>         		
-        	    <td>
-        			<input type=\"text\" name=\"Memo\" value=\"".$row['備註']."\"style=\"width:300px;\">
-        	    </td>	
-        	</tr>
-    		</table>			
-    	 	<input type=\"submit\" value=\"修改寄送資訊\">
-    	 	</form>";
-		 	
-		 	?>
- 	 		<script>
- 	 		$( function() {
- 	 			var availableAccount =
- 	 			<?php
- 	 			$sql = "SELECT FB帳號 FROM `Members`;";
- 	 			$result = mysql_query($sql,$con);
- 	 			if (!$result) {
- 	 				die('Invalid query: ' . mysql_error());
- 	 			}
- 	 			while($rows[]=mysql_fetch_array($result));
- 	 			$prefix = '';
- 	 			foreach ($rows as $r)
- 	 			{
- 	 				$AcountList .= $prefix . '"' . $r[FB帳號] . '"';
- 	 				$prefix = ', ';
- 	 			}
- 	 			echo "[$AcountList];";
- 	 			?>
- 	 			    
- 			    $( "#AgentAccount" ).autocomplete({
- 			      source: availableAccount
- 			    });
- 			  } ); 	
-		  </script>	
- 	 		<?php
-		 	
-            echo $ShippingInformation;
-            ?>
-    </div>
-    <div id="menu3" class="tab-pane fade"><br>
-		<?php
-		
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL);";
-			
-		$result = mysql_query($sql,$con);
-			
-		if (!$result) {
-		    die('Invalid query: ' . mysql_error());
-		}
-		$toRemitTableCount = mysql_num_rows($result);
-			
-		$toRemitTable = "<table>
-				<tr>
-				<th>SN</th>
-				<th>FB帳號 </th>
-	            <th>FBID </th>
-				<th>品項</th>
-				<th>單價</th>
-				<th>數量</th>
-				<th>金額</th>
-				<th>匯款日期</th>
-				<th>確認收款</th>
-				<th>出貨日期</th>
-			  	<th>匯款編號</th>
-				</tr>";
-		$totalPrice = 0;
-		while($row = mysql_fetch_array($result))
-		{
-		    if($row['出貨日期'] == "0000-00-00")
-		    {
-		        $row['出貨日期'] = "";
-		    }
-		    if($row['匯款日期'] == "0000-00-00")
-		    {
-		        $row['匯款日期'] = "";
-		    }
-		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-		    	
-		    $subTotal = $row['單價'] * $row['數量'];
-		    $toRemitTable = $toRemitTable . "<tr>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['匯款日期'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $isReceivedPayment . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['出貨日期'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['匯款編號'] . "</td>";
-		    $toRemitTable = $toRemitTable . "</tr>";
-		    $totalPrice = $totalPrice + $subTotal;
-		}
-		$toRemitTable = $toRemitTable . "</table>";
-			
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID');";
-			
-		$result = mysql_query($sql,$con);
-			
-		if (!$result) {
-		    die('Invalid query: ' . mysql_error());
-		}
-			
-		$remitedTable = "<table>
-				<tr>
-			 	<th>SN</th>
-				<th>FB帳號 </th>
-	            <th>FBID </th>
-				<th>品項</th>
-				<th>單價</th>
-				<th>數量</th>
-				<th>金額</th>
-				<th>匯款日期</th>
-			 	<th>確認收款</th>
-				<th>出貨日期</th>
-				<th>匯款編號</th>
-				</tr>";
-		while($row = mysql_fetch_array($result))
-		{
-		    if($row['出貨日期'] == "0000-00-00")
-		    {
-		        $row['出貨日期'] = "";
-		    }
-		    if($row['匯款日期'] == "0000-00-00")
-		    {
-		        $row['匯款日期'] = "";
-		    }
-		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-		    $subTotal = $row['單價'] * $row['數量'];
-		    $remitedTable = $remitedTable . "<tr>";
-		    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['匯款日期'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $isReceivedPayment . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['出貨日期'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['匯款編號'] . "</td>";
-		    $remitedTable = $remitedTable . "</tr>";
-		}
-		$remitedTable = $remitedTable . "</table>";
-			
-		$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
-		$result = mysql_query($sql,$con);
-		
-		if (!$result) {
-		    die('Invalid query: ' . mysql_error());
-		}
-		
-		$row = mysql_fetch_array($result);
-		$name = $row['姓名'];
-		$eMail = $row['E-Mail'];
-		$phoneNumber = $row['手機號碼'];
-		$address = $row['郵遞區號＋地址'];
-		$familyNumber = $row['全家店到店服務代號'];
-		$shippingWay = $row['寄送方式'];
-		$shippingFee = $row['運費'];
-		$agentAccount = $row['合併寄送人帳號'];
-		
-		if($totalPrice > 6000)
-		{
-		    $actualShippingFee = 0;
-		}
-		else {
-		    $actualShippingFee = $shippingFee;
-		}
-		if($totalPrice == 0)
-		{
-		    $moneyToBePaid = 0;
-		    $actualShippingFee = 0;
-		}
-		else
-		{
-		    $moneyToBePaid = $totalPrice + $actualShippingFee;
-		}
-		
-
-	    if($toRemitTableCount > 0)
-	    {
-	        echo '<b><font size="6">';
-	        echo "購買金額 : $totalPrice + 運費 : $actualShippingFee = 合計匯款金額 : $moneyToBePaid<br>";
-	        echo '</font></b>';
-	        
-	        echo '<b><font size="4">';
-	        echo "匯款帳號:郵局戶名:謝昀臻<br>
-			                    帳號:0002015-0385639";
-	        echo '</font></b>';
-	        
-	        echo '<hr align="left" width="1200px" color="#000000" size="4" />';
-	        echo $toRemitTable;
-	        ?>
-		 		<form name="RemitForm" action="MySQLTest.php" onsubmit="return validateRemitForm(this)" method="POST">
-		 			<input type="hidden" name="CheckOut" value="run">
-		 			<input type="hidden" value="<?php echo $FBID;?>" name="FBID">
-		 			<input type="hidden" value="<?php echo $moneyToBePaid;?>" name="moneyToBePaid">
-				  	<p><input type="text" name="remitLastFiveDigit" placeholder="匯款末五碼"></p>
-				  	<p><input type="text" name="remitAmont" placeholder="匯款金額"></p>
-				  	<p><input type="text" name="memo" placeholder="Memo"></p>
-				  	<input type="submit" name="RemitButton" value="回報匯款">
-		 		</form>
- 			<?php
- 			
- 		}
- 		else 
- 		{
-     		echo "<h3>已收到您的資料待對帳</h3>";
-    	 	echo $remitedTable;
- 		}
-		?>
-    </div>    
-  </div>
-</div>
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example').dataTable();
+    });
+</script>
+<table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr>
+                <td>Tiger Nixon</td>
+                <td>System Architect</td>
+                <td>Edinburgh</td>
+                <td>61</td>
+                <td>2011/04/25</td>
+                <td>$320,800</td>
+            </tr>
+            <tr>
+                <td>Garrett Winters</td>
+                <td>Accountant</td>
+                <td>Tokyo</td>
+                <td>63</td>
+                <td>2011/07/25</td>
+                <td>$170,750</td>
+            </tr>
+            <tr>
+                <td>Ashton Cox</td>
+                <td>Junior Technical Author</td>
+                <td>San Francisco</td>
+                <td>66</td>
+                <td>2009/01/12</td>
+                <td>$86,000</td>
+            </tr>
+            <tr>
+                <td>Cedric Kelly</td>
+                <td>Senior Javascript Developer</td>
+                <td>Edinburgh</td>
+                <td>22</td>
+                <td>2012/03/29</td>
+                <td>$433,060</td>
+            </tr>
+            <tr>
+                <td>Airi Satou</td>
+                <td>Accountant</td>
+                <td>Tokyo</td>
+                <td>33</td>
+                <td>2008/11/28</td>
+                <td>$162,700</td>
+            </tr>
+            <tr>
+                <td>Brielle Williamson</td>
+                <td>Integration Specialist</td>
+                <td>New York</td>
+                <td>61</td>
+                <td>2012/12/02</td>
+                <td>$372,000</td>
+            </tr>
+            <tr>
+                <td>Herrod Chandler</td>
+                <td>Sales Assistant</td>
+                <td>San Francisco</td>
+                <td>59</td>
+                <td>2012/08/06</td>
+                <td>$137,500</td>
+            </tr>
+            <tr>
+                <td>Rhona Davidson</td>
+                <td>Integration Specialist</td>
+                <td>Tokyo</td>
+                <td>55</td>
+                <td>2010/10/14</td>
+                <td>$327,900</td>
+            </tr>
+            <tr>
+                <td>Colleen Hurst</td>
+                <td>Javascript Developer</td>
+                <td>San Francisco</td>
+                <td>39</td>
+                <td>2009/09/15</td>
+                <td>$205,500</td>
+            </tr>
+            <tr>
+                <td>Sonya Frost</td>
+                <td>Software Engineer</td>
+                <td>Edinburgh</td>
+                <td>23</td>
+                <td>2008/12/13</td>
+                <td>$103,600</td>
+            </tr>
+            <tr>
+                <td>Jena Gaines</td>
+                <td>Office Manager</td>
+                <td>London</td>
+                <td>30</td>
+                <td>2008/12/19</td>
+                <td>$90,560</td>
+            </tr>
+            <tr>
+                <td>Quinn Flynn</td>
+                <td>Support Lead</td>
+                <td>Edinburgh</td>
+                <td>22</td>
+                <td>2013/03/03</td>
+                <td>$342,000</td>
+            </tr>
+            <tr>
+                <td>Charde Marshall</td>
+                <td>Regional Director</td>
+                <td>San Francisco</td>
+                <td>36</td>
+                <td>2008/10/16</td>
+                <td>$470,600</td>
+            </tr>
+            <tr>
+                <td>Haley Kennedy</td>
+                <td>Senior Marketing Designer</td>
+                <td>London</td>
+                <td>43</td>
+                <td>2012/12/18</td>
+                <td>$313,500</td>
+            </tr>
+            <tr>
+                <td>Tatyana Fitzpatrick</td>
+                <td>Regional Director</td>
+                <td>London</td>
+                <td>19</td>
+                <td>2010/03/17</td>
+                <td>$385,750</td>
+            </tr>
+            <tr>
+                <td>Michael Silva</td>
+                <td>Marketing Designer</td>
+                <td>London</td>
+                <td>66</td>
+                <td>2012/11/27</td>
+                <td>$198,500</td>
+            </tr>
+            <tr>
+                <td>Paul Byrd</td>
+                <td>Chief Financial Officer (CFO)</td>
+                <td>New York</td>
+                <td>64</td>
+                <td>2010/06/09</td>
+                <td>$725,000</td>
+            </tr>
+            <tr>
+                <td>Gloria Little</td>
+                <td>Systems Administrator</td>
+                <td>New York</td>
+                <td>59</td>
+                <td>2009/04/10</td>
+                <td>$237,500</td>
+            </tr>
+            <tr>
+                <td>Bradley Greer</td>
+                <td>Software Engineer</td>
+                <td>London</td>
+                <td>41</td>
+                <td>2012/10/13</td>
+                <td>$132,000</td>
+            </tr>
+            <tr>
+                <td>Dai Rios</td>
+                <td>Personnel Lead</td>
+                <td>Edinburgh</td>
+                <td>35</td>
+                <td>2012/09/26</td>
+                <td>$217,500</td>
+            </tr>
+            <tr>
+                <td>Jenette Caldwell</td>
+                <td>Development Lead</td>
+                <td>New York</td>
+                <td>30</td>
+                <td>2011/09/03</td>
+                <td>$345,000</td>
+            </tr>
+            <tr>
+                <td>Yuri Berry</td>
+                <td>Chief Marketing Officer (CMO)</td>
+                <td>New York</td>
+                <td>40</td>
+                <td>2009/06/25</td>
+                <td>$675,000</td>
+            </tr>
+            <tr>
+                <td>Caesar Vance</td>
+                <td>Pre-Sales Support</td>
+                <td>New York</td>
+                <td>21</td>
+                <td>2011/12/12</td>
+                <td>$106,450</td>
+            </tr>
+            <tr>
+                <td>Doris Wilder</td>
+                <td>Sales Assistant</td>
+                <td>Sidney</td>
+                <td>23</td>
+                <td>2010/09/20</td>
+                <td>$85,600</td>
+            </tr>
+            <tr>
+                <td>Angelica Ramos</td>
+                <td>Chief Executive Officer (CEO)</td>
+                <td>London</td>
+                <td>47</td>
+                <td>2009/10/09</td>
+                <td>$1,200,000</td>
+            </tr>
+            <tr>
+                <td>Gavin Joyce</td>
+                <td>Developer</td>
+                <td>Edinburgh</td>
+                <td>42</td>
+                <td>2010/12/22</td>
+                <td>$92,575</td>
+            </tr>
+            <tr>
+                <td>Jennifer Chang</td>
+                <td>Regional Director</td>
+                <td>Singapore</td>
+                <td>28</td>
+                <td>2010/11/14</td>
+                <td>$357,650</td>
+            </tr>
+            <tr>
+                <td>Brenden Wagner</td>
+                <td>Software Engineer</td>
+                <td>San Francisco</td>
+                <td>28</td>
+                <td>2011/06/07</td>
+                <td>$206,850</td>
+            </tr>
+            <tr>
+                <td>Fiona Green</td>
+                <td>Chief Operating Officer (COO)</td>
+                <td>San Francisco</td>
+                <td>48</td>
+                <td>2010/03/11</td>
+                <td>$850,000</td>
+            </tr>
+            <tr>
+                <td>Shou Itou</td>
+                <td>Regional Marketing</td>
+                <td>Tokyo</td>
+                <td>20</td>
+                <td>2011/08/14</td>
+                <td>$163,000</td>
+            </tr>
+            <tr>
+                <td>Michelle House</td>
+                <td>Integration Specialist</td>
+                <td>Sidney</td>
+                <td>37</td>
+                <td>2011/06/02</td>
+                <td>$95,400</td>
+            </tr>
+            <tr>
+                <td>Suki Burks</td>
+                <td>Developer</td>
+                <td>London</td>
+                <td>53</td>
+                <td>2009/10/22</td>
+                <td>$114,500</td>
+            </tr>
+            <tr>
+                <td>Prescott Bartlett</td>
+                <td>Technical Author</td>
+                <td>London</td>
+                <td>27</td>
+                <td>2011/05/07</td>
+                <td>$145,000</td>
+            </tr>
+            <tr>
+                <td>Gavin Cortez</td>
+                <td>Team Leader</td>
+                <td>San Francisco</td>
+                <td>22</td>
+                <td>2008/10/26</td>
+                <td>$235,500</td>
+            </tr>
+            <tr>
+                <td>Martena Mccray</td>
+                <td>Post-Sales support</td>
+                <td>Edinburgh</td>
+                <td>46</td>
+                <td>2011/03/09</td>
+                <td>$324,050</td>
+            </tr>
+            <tr>
+                <td>Unity Butler</td>
+                <td>Marketing Designer</td>
+                <td>San Francisco</td>
+                <td>47</td>
+                <td>2009/12/09</td>
+                <td>$85,675</td>
+            </tr>
+            <tr>
+                <td>Howard Hatfield</td>
+                <td>Office Manager</td>
+                <td>San Francisco</td>
+                <td>51</td>
+                <td>2008/12/16</td>
+                <td>$164,500</td>
+            </tr>
+            <tr>
+                <td>Hope Fuentes</td>
+                <td>Secretary</td>
+                <td>San Francisco</td>
+                <td>41</td>
+                <td>2010/02/12</td>
+                <td>$109,850</td>
+            </tr>
+            <tr>
+                <td>Vivian Harrell</td>
+                <td>Financial Controller</td>
+                <td>San Francisco</td>
+                <td>62</td>
+                <td>2009/02/14</td>
+                <td>$452,500</td>
+            </tr>
+            <tr>
+                <td>Timothy Mooney</td>
+                <td>Office Manager</td>
+                <td>London</td>
+                <td>37</td>
+                <td>2008/12/11</td>
+                <td>$136,200</td>
+            </tr>
+            <tr>
+                <td>Jackson Bradshaw</td>
+                <td>Director</td>
+                <td>New York</td>
+                <td>65</td>
+                <td>2008/09/26</td>
+                <td>$645,750</td>
+            </tr>
+            <tr>
+                <td>Olivia Liang</td>
+                <td>Support Engineer</td>
+                <td>Singapore</td>
+                <td>64</td>
+                <td>2011/02/03</td>
+                <td>$234,500</td>
+            </tr>
+            <tr>
+                <td>Bruno Nash</td>
+                <td>Software Engineer</td>
+                <td>London</td>
+                <td>38</td>
+                <td>2011/05/03</td>
+                <td>$163,500</td>
+            </tr>
+            <tr>
+                <td>Sakura Yamamoto</td>
+                <td>Support Engineer</td>
+                <td>Tokyo</td>
+                <td>37</td>
+                <td>2009/08/19</td>
+                <td>$139,575</td>
+            </tr>
+            <tr>
+                <td>Thor Walton</td>
+                <td>Developer</td>
+                <td>New York</td>
+                <td>61</td>
+                <td>2013/08/11</td>
+                <td>$98,540</td>
+            </tr>
+            <tr>
+                <td>Finn Camacho</td>
+                <td>Support Engineer</td>
+                <td>San Francisco</td>
+                <td>47</td>
+                <td>2009/07/07</td>
+                <td>$87,500</td>
+            </tr>
+            <tr>
+                <td>Serge Baldwin</td>
+                <td>Data Coordinator</td>
+                <td>Singapore</td>
+                <td>64</td>
+                <td>2012/04/09</td>
+                <td>$138,575</td>
+            </tr>
+            <tr>
+                <td>Zenaida Frank</td>
+                <td>Software Engineer</td>
+                <td>New York</td>
+                <td>63</td>
+                <td>2010/01/04</td>
+                <td>$125,250</td>
+            </tr>
+            <tr>
+                <td>Zorita Serrano</td>
+                <td>Software Engineer</td>
+                <td>San Francisco</td>
+                <td>56</td>
+                <td>2012/06/01</td>
+                <td>$115,000</td>
+            </tr>
+            <tr>
+                <td>Jennifer Acosta</td>
+                <td>Junior Javascript Developer</td>
+                <td>Edinburgh</td>
+                <td>43</td>
+                <td>2013/02/01</td>
+                <td>$75,650</td>
+            </tr>
+            <tr>
+                <td>Cara Stevens</td>
+                <td>Sales Assistant</td>
+                <td>New York</td>
+                <td>46</td>
+                <td>2011/12/06</td>
+                <td>$145,600</td>
+            </tr>
+            <tr>
+                <td>Hermione Butler</td>
+                <td>Regional Director</td>
+                <td>London</td>
+                <td>47</td>
+                <td>2011/03/21</td>
+                <td>$356,250</td>
+            </tr>
+            <tr>
+                <td>Lael Greer</td>
+                <td>Systems Administrator</td>
+                <td>London</td>
+                <td>21</td>
+                <td>2009/02/27</td>
+                <td>$103,500</td>
+            </tr>
+            <tr>
+                <td>Jonas Alexander</td>
+                <td>Developer</td>
+                <td>San Francisco</td>
+                <td>30</td>
+                <td>2010/07/14</td>
+                <td>$86,500</td>
+            </tr>
+            <tr>
+                <td>Shad Decker</td>
+                <td>Regional Director</td>
+                <td>Edinburgh</td>
+                <td>51</td>
+                <td>2008/11/13</td>
+                <td>$183,000</td>
+            </tr>
+            <tr>
+                <td>Michael Bruce</td>
+                <td>Javascript Developer</td>
+                <td>Singapore</td>
+                <td>29</td>
+                <td>2011/06/27</td>
+                <td>$183,000</td>
+            </tr>
+            <tr>
+                <td>Donna Snider</td>
+                <td>Customer Support</td>
+                <td>New York</td>
+                <td>27</td>
+                <td>2011/01/25</td>
+                <td>$112,000</td>
+            </tr>
+        </tbody>
+    </table>
+} );
 </body>
-</html>
+</html>    

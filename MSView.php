@@ -14,13 +14,18 @@ if(!session_id()) {
 <html>
 
 <head>
-
 <title>View Records</title>
-
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
 </head>
 
 <body>
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#itemView').dataTable();
+    });
+</script>
 <?php
 
 if(!isset($_GET['code']))
@@ -131,13 +136,11 @@ else
 	
 	// display data in table
 	
-	echo "<p><b>View All</b> | <a href='MSView-paginated.php?page=1'>View Paginated</a></p>";
+	//echo "<p><b>View All</b> | <a href='MSView-paginated.php?page=1'>View Paginated</a></p>";
+
+	echo "<table id=\"itemView\" class=\"display\">";
 	
-	
-	
-	echo "<table border='1' cellpadding='10'>";
-	
-	echo "<tr>
+	echo "<thead><tr>
 			<th>FB帳號</th>
 			<th>FBID</th>
 			<th>品項</th>
@@ -153,7 +156,7 @@ else
 			</th>
 			<th>
 			</th>
-		</tr>";
+			</thead></tr><tbody>";
 	
 	
 	
@@ -196,19 +199,12 @@ else
 	echo "</tr>";
 	
 	}
-	
-	
-	
 	// close table>
 	
-	echo "</table>";
+	echo "</tbody></table>";
 	
 	?>
-	
 	<p><a href="MSNew.php">Add a new record</a></p>
-	
-	
-	
 	</body>
 	
 	</html>

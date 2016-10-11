@@ -9,6 +9,9 @@ if(!session_id()) {
 ?>
 <html>
 <head>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
 <style>
 #Default {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -49,6 +52,13 @@ body {
 <title>匯款出貨確認表</title>
 </head>
 <body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#remitCheckingTable').dataTable({
+        	"lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]]
+        });
+    });
+</script>
 <?php
 if(!$accessToken)
 {
@@ -125,7 +135,7 @@ if (!$result) {
 $remitCheckingTableCount = mysql_num_rows($result);
 
 $remitCheckingTable = "<table id=\"remitCheckingTable\">
-	<tr>
+	<thead><tr>
 	<th>匯款編號 </th>
 	<th>FB帳號</th>
     <th>FBID</th>
@@ -137,7 +147,7 @@ $remitCheckingTable = "<table id=\"remitCheckingTable\">
 	<th>已收款</th>
 	<th>管理員備註</th>				
 	<th></th>
-	</tr>";
+	</thead></tr><tbody>";
 while($row = mysql_fetch_array($result))
 {
 	$isRemited = $row['已收款'] == 0 ? "否" : "已收";
@@ -176,7 +186,7 @@ while($row = mysql_fetch_array($result))
 	
 	$remitCheckingTable = $remitCheckingTable . "</tr>";
 }
-$remitCheckingTable = $remitCheckingTable . "</table>";
+$remitCheckingTable = $remitCheckingTable . "</tbody></table>";
 
 if (!empty($_GET['RemitChecked'])) {
 	$remitNumber = $_GET['remitNumber'];

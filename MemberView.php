@@ -16,11 +16,17 @@ if(!session_id()) {
 <head>
 
 <title>View Records</title>
-
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
 </head>
 
 <body>
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#memberView').dataTable();
+    });
+</script>
 <?php
 
 if(!isset($_GET['code']))
@@ -132,13 +138,13 @@ else
 	
 	// display data in table
 	
-	echo "<p><b>View All</b> | <a href='MemberView-paginated.php?page=1'>View Paginated</a></p>";
+// 	echo "<p><b>View All</b> | <a href='MemberView-paginated.php?page=1'>View Paginated</a></p>";
 	
 	
 	
-	echo "<table border='1' cellpadding='10'>";
+	echo "<table id=\"memberView\" class=\"display\">";
 	
-	echo "<tr>
+	echo "<thead><tr>
 			<th>姓名</th>
 			<th>FB帳號</th>
 		    <th>FBID</th>
@@ -153,7 +159,7 @@ else
 			</th>
 			<th>
 			</th>
-		</tr>";
+			</thead></tr><tbody>";
 	
 	
 	
@@ -199,7 +205,7 @@ else
 	
 	// close table>
 	
-	echo "</table>";
+	echo "</tbody></table>";
 	
 	?>
 	

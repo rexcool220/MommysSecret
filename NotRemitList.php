@@ -9,10 +9,56 @@ if(!session_id()) {
 ?>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="MommysSecret.css">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+<style>
+#Default {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#Member {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 60%;
+}
+
+td, th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+tr:hover {background-color: #ddd;}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #ffe6e6;
+    color: #ea9399;
+}
+body {
+    background-image: url("MommysSecretBackGround.png");
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-size: 25%;
+    background-attachment: fixed;
+}
+</style>
 <title>未匯款清單</title>
 </head>
 <body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#NotRemitList').dataTable({
+        	"lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]]
+        });
+    });
+</script>
 <?php
 
     if(!$accessToken)
@@ -89,14 +135,14 @@ if(mysql_num_rows($result) == 0)
     echo "$fbAccount,$FBID<br>";
 }
 
-$NotRemitList = "<table id=\"NotRemitList\" width=\"60%\">
-	<tr>
+$NotRemitList = "<table id=\"NotRemitList\">
+	<thead><tr>
 	<th>FB帳號 </th>
     <th>FBID</th>
 	<th>最近匯款日期</th>
 	<th>應付款金額</th>
 	<th></th>
-	</tr>";
+	</thead></tr><tbody>";
 
 $accountList = "";
 while($row = mysql_fetch_array($result))
@@ -110,7 +156,7 @@ while($row = mysql_fetch_array($result))
     $NotRemitList = $NotRemitList . "</tr>";
     $accountList = $accountList . "\n@" . $row['FB帳號'];
 }
-$NotRemitList = $NotRemitList . "</table>";
+$NotRemitList = $NotRemitList . "</tbody></table>";
 
 echo "<h3>共 $NotRemitListCount 人</h3>";
 

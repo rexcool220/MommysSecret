@@ -153,7 +153,6 @@ if(!session_id()) {
 	    ($fbAccount == 'Queenie Tsan')||
 	    ($fbAccount == '熊會買')||
 	    ($fbAccount == '熊哉')||
-	    ($fbAccount == '熊會算')||
 	    ($fbAccount == '古振平')||
 	    ($fbAccount == 'Keira Lin'))
 	{
@@ -226,48 +225,55 @@ if(!session_id()) {
 	    
 	    $memberFBID = $row['FBID'];
 	    
-    	
-        if (isset($_POST['CheckOut']) && empty($_SESSION["completed"])) {
+	    if(isset($_SESSION[$memberFBID]))
+	    {
+	    	unset($_SESSION[$memberFBID]);
+	    }
+	    
+        if (isset($_POST['CheckOut']) && empty($_SESSION[$memberFBID])) {
 	        $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
 	        $remitAmont = $_POST['remitAmont'];
 	        $memo = $_POST['memo'];
 	        $moneyToBePaid = $_POST['moneyToBePaid'];
 	        $rebateWillBeUpdate = $_POST['rebateWillBeUpdate'];
         	
-        if ($remitLastFiveDigit == "")
-        {
-            echo "<script type='text/javascript'>alert('remitLastFiveDigit')</script>";
-        }
-        elseif ($remitAmont == "")
-        {
-            echo "<script type='text/javascript'>alert('remitAmont')</script>";
-        }
-        else
-        {		    
-    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`)
-    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$memberFBAccount', '$memberFBID' ,'$moneyToBePaid');";
-    	    $result = mysql_query($sql,$con);
-    	    if (!$result) {
-    	        die('Invalid query: ' . mysql_error());
-    	    }
-    	    	
-    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$memberFBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
-    	    $result = mysql_query($sql,$con);
-    	    if (!$result) {
-    	        die('Invalid query: ' . mysql_error());
-    	    }
-    	    
-    	    $sql = "UPDATE `Members` SET `Rebate` = '$rebateWillBeUpdate' WHERE FBID = '$memberFBID'";
-    	    $result = mysql_query($sql,$con);
-    	    if (!$result) {
-    	    	die('Invalid query: ' . mysql_error());
-    	    }
-    	    
-    	    
-            $_SESSION["completed"] = true;   
-     		header("location: http://mommyssecret.tw/BuyingInformationByQuery.php");
-        }		
-    }
+	        if ($remitLastFiveDigit == "")
+	        {
+	            echo "<script type='text/javascript'>alert('remitLastFiveDigit')</script>";
+	        }
+	        elseif ($remitAmont == "")
+	        {
+	            echo "<script type='text/javascript'>alert('remitAmont')</script>";
+	        }
+	        else
+	        {		    
+	    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`)
+	    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$memberFBAccount', '$memberFBID' ,'$moneyToBePaid');";
+	    	    $result = mysql_query($sql,$con);
+	    	    if (!$result) {
+	    	        die('Invalid query: ' . mysql_error());
+	    	    }
+	    	    	
+	    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$memberFBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
+	    	    $result = mysql_query($sql,$con);
+	    	    if (!$result) {
+	    	        die('Invalid query: ' . mysql_error());
+	    	    }
+	    	    
+	    	    $sql = "UPDATE `Members` SET `Rebate` = '$rebateWillBeUpdate' WHERE FBID = '$memberFBID'";
+	    	    $result = mysql_query($sql,$con);
+	    	    if (!$result) {
+	    	    	die('Invalid query: ' . mysql_error());
+	    	    }
+	    	    
+	            $_SESSION[$memberFBID] = true;   
+	     		header("location: http://mommyssecret.tw/BuyingInformationByQuery.php");
+	        }		
+	    }
+	    else 
+	    {
+	    	//echo "here";
+	    }
 ?>
 <div class="container">
   <h2>訂單列表</h2>
@@ -786,6 +792,7 @@ if(!session_id()) {
 		{
 		    $moneyToBePaid = 0;
 		    $actualShippingFee = 0;
+		    $rebateTobeDeduct = 0;
 		}
 		else
 		{
@@ -806,7 +813,6 @@ if(!session_id()) {
 		    }
 		    else 
 		    {
-		    	
 		    	$rebateTobeDeduct = $moneyToBePaid;
 		    	$rebateWillBeUpdate = $rebate - $rebateTobeDeduct + $rebateToBeIncrease;
 		    	$moneyToBePaid = 0;

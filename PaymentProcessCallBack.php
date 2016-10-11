@@ -748,6 +748,7 @@ if(!session_id()) {
 		{
 		    $moneyToBePaid = 0;
 		    $actualShippingFee = 0;
+		    $rebateTobeDeduct = 0;
 		}
 		else
 		{
