@@ -14,17 +14,79 @@ if(!session_id()) {
 	<meta name="format-detection" content="telephone=no">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
-<title>點單確認表</title>
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+	<title>點單確認表</title>
+	<style>
+	#Default {
+	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	    border-collapse: collapse;
+	    width: 100%;
+	}
+	
+	#Member {
+	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	    border-collapse: collapse;
+	    width: 60%;
+	}
+	
+	td, th {
+	    border: 1px solid #ddd;
+	    padding: 8px;
+	}
+	
+	tr:nth-child(even){background-color: #f2f2f2;}
+	
+	tr:hover {background-color: #ddd;}
+	
+	th {
+	    padding-top: 12px;
+	    padding-bottom: 12px;
+	    text-align: left;
+	    background-color: #ffe6e6;
+	    color: #ea9399;
+	}
+	body {
+	    background-image: url("MommysSecretBackGround.png");
+	    background-repeat: no-repeat;
+	    background-position: right top;
+	    background-size: 25%;
+	    background-attachment: fixed;
+	}
+	</style>
 </head>
 <body>
-<!-- <form method="POST" action=""> -->
-<!-- 	<input type="text" value="" name="CustomerfbAccount" class="FBSearch" placeholder="FB帳號"><p> -->
-<!-- 	<input type="submit" value="查詢"><p> -->
-<!-- </form> -->
+<script type="text/javascript">
+    // Activate an inline edit on click of a table cell       
+    $(document).ready(function () {
+        $('#Comments').dataTable({
+        "lengthMenu": [[-1], ["All"]],
+        "bLengthChange": false,
+    	"order": [[ 0, "desc" ]],
+        "select": {
+	            style:    'os',
+	            selector: 'td:first-child'
+        	}
+        });
+        $('.table-remove').click(function () {
+	      	$('#Comments').DataTable()
+	        .row( $(this).parents('tr') )
+	        .remove()
+	        .draw();
+      	});
+        $('.table-duplicate').click(function () {
+        	var $clone = $(this).closest('tr').clone(true);
+        	$('#Comments').DataTable()
+        	.row
+        	.add($clone)
+        	.draw();
+      	});
+    });
+
+</script>
 <?php
 if(!$accessToken)
 {
@@ -79,13 +141,8 @@ if(!$accessToken)
 		exit;
 	}
 	$fbAccount = $userNode->getName();
-	if(($fbAccount == 'Gill Fang')||
-			($fbAccount == 'JoLyn Dai')||
-			($fbAccount == 'Queenie Tsan')||
-			($fbAccount == '熊會買')||
-			($fbAccount == '熊哉')||
-			($fbAccount == '古振平')||
-	        ($fbAccount == 'Keira Lin'))
+	if(($fbAccount == '熊會買')||
+		($fbAccount == '熊哉'))
 	{
 	// 	echo "管理者 : $fbAccount";
 	}
@@ -117,19 +174,26 @@ if(!$accessToken)
 	}
 	$result = $response->getDecodedBody();
 
-	echo "<table id=\"Comments\" width=\"60%\">
-	<tr>
+	echo "<table id=\"Comments\">
+	<thead><tr>
+	<th>時間</th>	    		
 	<th>FB帳號</th>
 	<th>FBID</th>
 	<th>Message</th>
-	</tr>";
+	<th></th>
+	</thead></tr><tbody>";
 	
 	for($i = 0; $i < count($result["comments"]["data"]); $i++)
 	{
 		echo "<tr>";
-		echo "<td>".$result["comments"]["data"][$i]["from"]["name"]."</td>";
-		echo "<td>".$result["comments"]["data"][$i]["from"]["id"]."</td>";
-		echo "<td>".$result["comments"]["data"][$i]["message"]."</td>";
+		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["created_time"]."</td>";
+		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["name"]."</td>";
+		echo "<td contenteditable=\"false\">".$result["comments"]["data"][$i]["from"]["id"]."</td>";
+		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["message"]."</td>";
+		echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span>
+	    		<span class=\"table-duplicate glyphicon glyphicon-duplicate\"></span></td>";
 		echo "</tr>";
 	}
+	
+	echo "</tbody></table>";
 	

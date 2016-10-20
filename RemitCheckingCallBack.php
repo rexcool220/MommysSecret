@@ -55,7 +55,9 @@ body {
 <script type="text/javascript">
     $(document).ready(function () {
         $('#remitCheckingTable').dataTable({
-        	"lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]]
+        "lengthMenu": [[-1], ["All"]],
+        "bLengthChange": false,
+    	"order": [[ 0, "desc" ]]
         });
     });
 </script>

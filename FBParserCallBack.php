@@ -12,17 +12,65 @@ if(!session_id()) {
 <head>
 	<title>FBParser</title>
 	<meta name="format-detection" content="telephone=no">
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20160825">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+	<style>
+	#Default {
+	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	    border-collapse: collapse;
+	    width: 100%;
+	}
+	
+	#Member {
+	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	    border-collapse: collapse;
+	    width: 60%;
+	}
+	
+	td, th {
+	    border: 1px solid #ddd;
+	    padding: 8px;
+	}
+	
+	tr:nth-child(even){background-color: #f2f2f2;}
+	
+	tr:hover {background-color: #ddd;}
+	
+	th {
+	    padding-top: 12px;
+	    padding-bottom: 12px;
+	    text-align: left;
+	    background-color: #ffe6e6;
+	    color: #ea9399;
+	}
+	body {
+	    background-image: url("MommysSecretBackGround.png");
+	    background-repeat: no-repeat;
+	    background-position: right top;
+	    background-size: 25%;
+	    background-attachment: fixed;
+	}
+	</style>	
 </head>
 <body>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ItemsList').dataTable({
+        "lengthMenu": [[-1], ["All"]],
+        "bLengthChange": false,
+    	"order": [[ 0, "desc" ]]
+        });
+    });
+</script>
+
 <?php 
 if(!$accessToken)
 {
@@ -152,7 +200,7 @@ if(!$accessToken)
 	//get feed
 	
 	try {
-	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message&since=". date("Y-m-d", strtotime("-1 months")). "&offset=0");
+	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message&since=". date("Y-m-d", strtotime("-1 weeks")). "&offset=0");
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 	    // When Graph returns an error
 	    echo 'Graph returned an error: ' . $e->getMessage();
@@ -166,15 +214,16 @@ if(!$accessToken)
  
 	$pagesEdge = $response->getGraphEdge();
 	
-	echo "<table id=\"ItemsList\" width=\"60%\">
-	<tr>
+	echo "<table id=\"ItemsList\">
+	<thead><tr>
 	<th>ID</th>
+	<th>月份</th>			
 	<th>開團日期</th>
 	<th>收單日期</th>
 	<th>品項</th>
 	<th>規格</th>
 	<th>單價</th>
-	</tr>";
+	</thead></tr><tbody>";
 	
 	
 	do {
@@ -182,13 +231,21 @@ if(!$accessToken)
 	    	
 	    	preg_match("/(\d+)_(\d+)/", $page['id'], $matches);
 	    	$id = $matches[2];
-	    	preg_match("/([^\n]+)\n([^\n]+)\n([^\n]+)\n/", $page['message'], $matches);
+	    	preg_match("/^\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+/", $page['message'], $matches);
+	    	$itemMonthCategory = $matches[1];
 	    	$dueDate = $matches[2];
 	    	$itemName = $matches[3];
+	    	$itemPrice = $matches[4];
+	    	
+	   		if(($itemName == "")||($itemName == NULL))
+	   		{
+	   			$itemName = "<font color=\"red\">" . substr($page['message'], 0 , 60) . "</font>"; 
+	   		}
 	    	
 	    	
 	    	echo "<tr>";
 	    	echo "<td>".$id."</td>";
+	    	echo "<td>".$itemMonthCategory."</td>";
 			echo "<td>".$page['created_time']->format('Y-m-d')."</td>";
 			echo "<td>".$dueDate."</td>";
 	        echo "<td>".$itemName."</td>";
@@ -198,7 +255,7 @@ if(!$accessToken)
 
 	    }
 	} while ($pagesEdge = $fb->next($pagesEdge));	
-	echo "</table>";
+	echo "</tbody></table>";
 
 ?>
 <script>

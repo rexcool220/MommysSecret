@@ -57,7 +57,8 @@ body {
 <script type="text/javascript">
     $(document).ready(function () {
         $('#shippingCheckingIndex').dataTable({
-        	"lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]]
+            "lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]],
+        	"order": [[ 2, "asc" ]]
         });
     });
 </script>
@@ -157,7 +158,7 @@ WHERE ShippingRecord.確認收款 =1
 AND ShippingRecord.出貨日期 =  '0000-00-00'
 ) AND ShippingRecord.FBID = Members.FBID
 GROUP BY RemitRecord.匯款編號
-ORDER BY RemitRecord.匯款編號  DESC ";
+ORDER BY RemitRecord.匯款編號  ASC ";
 
 
 	$result = mysql_query($sql,$con);

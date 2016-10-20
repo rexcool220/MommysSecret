@@ -110,6 +110,7 @@ else
 	if(($fbAccount == 'Gill Fang')||
 			($fbAccount == 'JoLyn Dai')||
 			($fbAccount == 'Queenie Tsan')||
+			($fbAccount == '熊會買')||
 			($fbAccount == '熊哉')||
     		($fbAccount == '古振平')||
             ($fbAccount == 'Keira Lin'))
