@@ -112,9 +112,9 @@ body {
 $sql = "SELECT FB帳號, FBID, MAX(匯款日期 ) , SUM(單價*數量 ) 
 FROM  `ShippingRecord`
 WHERE  `匯款日期` =  '0000-00-00'
+AND Active = true      			
 AND FBID
 IN (
-
 SELECT DISTINCT FBID
 FROM  `ShippingRecord` 
 WHERE  `匯款日期` =  '0000-00-00'

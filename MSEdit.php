@@ -22,7 +22,7 @@ Allows user to edit specific entry in database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error)
+function renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $month, $active, $spec, $itemID, $error)
 
 {
 
@@ -132,6 +132,14 @@ function renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $r
 	
 	<strong>確認收款: </strong> <input type="text" name="確認收款" value="<?php echo $isRemited; ?>" /><br/>
 	
+	<strong>月份: </strong> <input type="text" name="月份" value="<?php echo $month; ?>" /><br/>
+	
+	<strong>Active: </strong> <input type="text" name="Active" value="<?php echo $active; ?>" /><br/>
+	
+	<strong>規格: </strong> <input type="text" name="規格" value="<?php echo $spec; ?>" /><br/>
+	
+	<strong>ItemID: </strong> <input type="text" name="ItemID" value="<?php echo $itemID; ?>" /><br/>
+	
 	<strong>SerialNumber: *</strong> <input type="text" name="SerialNumber" value="<?php echo $serialNumber; ?>" /><br/>
 	
 	
@@ -178,10 +186,18 @@ if (isset($_POST['submit']))
 	$isRemited = $_POST['確認收款'];
 	
 	$serialNumber = $_POST['SerialNumber'];
+	
+	$month = $_POST['月份'];
+	
+	$active = $_POST['Active'];
+	
+	$spec = $_POST['規格'];
+	
+	$itemID = $_POST['ItemID'];
 
 	// check that firstname/lastname fields are both filled in
 	
-	if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $discount == '' || $amount == '' || $serialNumber == '')
+	if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $amount == '' || $serialNumber == '')
 	
 	{
 	
@@ -193,7 +209,7 @@ if (isset($_POST['submit']))
 		
 		//error, display form
 		
-		renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
+		renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $month, $active, $spec, $itemID, $error);
 	
 	}
 	
@@ -202,13 +218,8 @@ if (isset($_POST['submit']))
 	{
 	
 		// save the data to the database
-		
-		
-// 		$sql = "UPDATE `ShippingRecord` SET FB帳號='$FBAccount', 品項='$itemName', 單價='$price', 數量='$amount', 匯款日期='$remitDate', 出貨日期='$shippingDate', 匯款編號='$remitNumber', 確認收款='$isRemited' WHERE SerialNumber='$serialNumber'";
-		
-// 		echo $sql;
 			
-		mysql_query("UPDATE `ShippingRecord` SET FB帳號=\"$FBAccount\", FBID=\"$FBID\", 品項=\"$itemName\", 單價=\"$price\", Discount=\"$discount\", 數量=\"$amount\", 匯款日期=\"$remitDate\", 出貨日期=\"$shippingDate\", 匯款編號=\"$remitNumber\", 確認收款=\"$isRemited\" WHERE SerialNumber=\"$serialNumber\"")
+		mysql_query("UPDATE `ShippingRecord` SET FB帳號=\"$FBAccount\", FBID=\"$FBID\", 品項=\"$itemName\", 單價=\"$price\", Discount=\"$discount\", 數量=\"$amount\", 匯款日期=\"$remitDate\", 出貨日期=\"$shippingDate\", 匯款編號=\"$remitNumber\", 確認收款=\"$isRemited\", 月份=\"$month\", Active=\"$active\", 規格=\"$spec\", ItemID=\"$itemID\" WHERE SerialNumber=\"$serialNumber\"")
 		
 		or die(mysql_error());
 		
@@ -274,9 +285,17 @@ else
 				
 			$isRemited = $row['確認收款'];
 			
+			$month = $row['月份'];
+			
+			$active = $row['Active'];
+			
+			$spec = $row['規格'];
+			
+			$itemID = $row['ItemID'];
+			
 			// show form
 			
-			renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $error);
+			renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $remitDate, $shippingDate, $remitNumber, $isRemited, $serialNumber, $month, $active, $spec, $itemID, $error);
 		
 		}
 		

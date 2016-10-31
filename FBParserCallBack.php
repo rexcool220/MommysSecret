@@ -136,71 +136,23 @@ if(!$accessToken)
 	    echo "$fbAccount : 你不是管理者";
 	    exit;
 	}
+	//To get all item id
+	include('ConnectMySQL.php');
 	
+	// get results from database
 	
-// 	$ssid = "145r0XELzQQUtjIFk7KqRBXJAEMFrRc9zn1xkuB3H_-4";
-
-// 	$client = new Google_Client();
-
-// 	putenv("GOOGLE_APPLICATION_CREDENTIALS=Mommyssecret-e24d4b121c15.json");
-
-// 	if ($credentials_file = checkServiceAccountCredentialsFile()) {
-// 		// set the location manually
-// 		$client->setAuthConfig($credentials_file);
-// 	} elseif (getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
-// 		// use the application default credentials
-// 		$client->useApplicationDefaultCredentials();
-// 	} else {
-// 		echo missingServiceAccountDetailsWarning();
-// 		return;
-// 	}
-		
-// 	$client->setApplicationName("Parse Google form");
-
-// 	$client->setScopes(['https://www.googleapis.com/auth/drive','https://spreadsheets.google.com/feeds']);
-
-// 	$tokenArray = $client->fetchAccessTokenWithAssertion();
-
-// 	$googleAccessToken = $tokenArray["access_token"];
-		
-// 	//Get wsid from URL
-// 	$url = "https://spreadsheets.google.com/feeds/worksheets/$ssid/private/full";
-// 	$method = 'GET';
-// 	$headers = ["Authorization" => "Bearer $googleAccessToken"];
-// 	$httpClient = new GuzzleHttp\Client(['headers' => $headers]);
-// 	$resp = $httpClient->request($method, $url);
-// 	$body = $resp->getBody()->getContents();
-// 	$tableXML = simplexml_load_string($body);
+	$result = mysql_query("SELECT distinct ItemID FROM `ShippingRecord`")
 	
-// 	foreach ($tableXML->entry as $entry)
-// 	{
-// 		$id = $entry->id;
-// 		$title = $entry->title;
-// 		if($title == "點單表單")
-// 		{
-// 			if(preg_match("/[a-zA-Z0-9]+$/", $id, $matches)) {
-// 				$wsid = $matches[0];
-// 			}
-// 		}
-// 	}
-// 	if(empty($wsid))
-// 	{
-// 		echo "wsid is empty";
-// 		exit;
-// 	}
+	or die(mysql_error());
 	
-// 	$url = "https://spreadsheets.google.com/feeds/list/$ssid/$wsid/private/full";
-// 	$method = 'GET';
-// 	$headers = ["Authorization" => "Bearer $googleAccessToken"];
-// 	$httpClient = new GuzzleHttp\Client(['headers' => $headers]);
-// 	$resp = $httpClient->request($method, $url);
-// 	$body = $resp->getBody()->getContents();
-// 	$tableXML = simplexml_load_string($body);
+	$ItemIDs = array();
 	
-	//get feed
+	while($row = mysql_fetch_array($result)){
+	    $ItemIDs[] = $row["ItemID"];
+	}
 	
 	try {
-	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message&since=". date("Y-m-d", strtotime("-1 weeks")). "&offset=0");
+	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message&since=". date("Y-m-d", strtotime("-1 months")). "&limit=500");
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 	    // When Graph returns an error
 	    echo 'Graph returned an error: ' . $e->getMessage();
@@ -237,6 +189,8 @@ if(!$accessToken)
 	    	$itemName = $matches[3];
 	    	$itemPrice = $matches[4];
 	    	
+
+	    	
 	   		if(($itemName == "")||($itemName == NULL))
 	   		{
 	   			$itemName = "<font color=\"red\">" . substr($page['message'], 0 , 60) . "</font>"; 
@@ -244,7 +198,13 @@ if(!$accessToken)
 	    	
 	    	
 	    	echo "<tr>";
-	    	echo "<td>".$id."</td>";
+	    	if (in_array($id, $ItemIDs)) {
+	    		echo "<td><font color=\"red\">".$id."</font></td>";
+	    	}
+	    	else 
+	    	{
+	    		echo "<td>".$id."</td>";
+	    	}
 	    	echo "<td>".$itemMonthCategory."</td>";
 			echo "<td>".$page['created_time']->format('Y-m-d')."</td>";
 			echo "<td>".$dueDate."</td>";
@@ -288,7 +248,7 @@ function tableText(tableCell) {
 	var hiddenField = document.createElement("input"); 
 	hiddenField.setAttribute("type", "hidden");
 	hiddenField.setAttribute("name", "ID");
-	hiddenField.setAttribute("value", tableCell.innerHTML);
+	hiddenField.setAttribute("value", tableCell.innerText);
 	form.appendChild(hiddenField);
 	document.body.appendChild(form);
 

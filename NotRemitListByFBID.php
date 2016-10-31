@@ -51,7 +51,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '出貨確認表', 'http://mommyssecret.tw/ShippingCheckingCallBack.php' );
+			window.history.replaceState( {} , '出貨確認表', 'http://mommyssecret.tw/NotRemitListByFBID.php' );
 		</script>
 	<?php
 try {
@@ -96,7 +96,7 @@ if(isset($_POST['CustomerFBID'])) {
 
 if(isset($CustomerFBID)) {
 
-    $sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$CustomerFBID' AND 匯款日期= '0000-00-00' ORDER BY SerialNumber;";
+    $sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$CustomerFBID' AND 匯款日期= '0000-00-00' AND Active = true ORDER BY SerialNumber;";
 
     $result = mysql_query($sql,$con);
 
@@ -111,6 +111,7 @@ if(isset($CustomerFBID)) {
 	<th>FB帳號 </th>
 	<th>FBID </th>
 	<th>品項</th>
+	<th>規格</th>				
 	<th>單價</th>
 	<th>數量</th>
 	<th>金額</th>
@@ -118,7 +119,6 @@ if(isset($CustomerFBID)) {
 	<th>確認收款</th>
 	<th>出貨日期</th>
   	<th>匯款編號</th>
-	<th></th>
 	</tr>";
     $totalPrice = 0;
     while($row = mysql_fetch_array($result))
@@ -142,6 +142,7 @@ if(isset($CustomerFBID)) {
         $NotRemitTable = $NotRemitTable . "<td>" . $row['FB帳號'] . "</td>";
         $NotRemitTable = $NotRemitTable . "<td>" . $row['FBID'] . "</td>";
         $NotRemitTable = $NotRemitTable . "<td>" . $row['品項'] . "</td>";
+        $NotRemitTable = $NotRemitTable . "<td>" . $row['規格'] . "</td>";
         $NotRemitTable = $NotRemitTable . "<td>" . $row['單價'] . "</td>";
         $NotRemitTable = $NotRemitTable . "<td>" . $row['數量'] . "</td>";
         $NotRemitTable = $NotRemitTable . "<td>" . $subTotal . "</td>";

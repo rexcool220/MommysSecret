@@ -167,7 +167,7 @@ if(isset($CustomerFBID)) {
 		$SerialNumbersChecked = $_POST["SerialNumbersChecked"];
 		$SerialNumbersAll = $_POST["SerialNumbersAll"];
 		for($i=0;$i<Count($SerialNumbersChecked);$i++) {
-			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbersChecked[$i]'";
+			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbersChecked[$i]' AND Active = true";
 			$result = mysql_query($sql,$con);
 	
 			if (!$result) {
@@ -178,7 +178,7 @@ if(isset($CustomerFBID)) {
 		{
 		    if(in_array($serialNumber, $SerialNumbersChecked) == false)
 		    {
-		        $sql = "UPDATE `ShippingRecord` SET `出貨日期` = '0000-00-00'  WHERE SerialNumber = '$serialNumber'";
+		        $sql = "UPDATE `ShippingRecord` SET `出貨日期` = '0000-00-00'  WHERE SerialNumber = '$serialNumber' AND Active = true";
 		        $result = mysql_query($sql,$con);
 		        
 		        if (!$result) {
@@ -190,7 +190,7 @@ if(isset($CustomerFBID)) {
 		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerFBID=$CustomerFBID");
 	}
 	
-	$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號  ORDER BY 出貨日期;";
+	$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
 	
 	
 	
@@ -209,6 +209,7 @@ if(isset($CustomerFBID)) {
 	<th>FB帳號 </th>
     <th>FBID </th>
 	<th>品項</th>
+	<th>規格</th>
 	<th>單價</th>
 	<th>數量</th>
 	<th>金額</th>
@@ -241,6 +242,7 @@ if(isset($CustomerFBID)) {
 		$toShippingTable = $toShippingTable . "<td>" . $row['FB帳號'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['FBID'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['品項'] . "</td>";
+		$toShippingTable = $toShippingTable . "<td>" . $row['規格'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['單價'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['數量'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $subTotal . "</td>";

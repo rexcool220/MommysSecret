@@ -14,11 +14,15 @@ if(!session_id()) {
 	<meta name="format-detection" content="telephone=no">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
-	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
-	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+	<script src="//code.jquery.com/jquery-1.12.3.js"></script>
+	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
 	<title>點單確認表</title>
 	<style>
 	#Default {
@@ -60,12 +64,80 @@ if(!session_id()) {
 </head>
 <body>
 <script type="text/javascript">
-    // Activate an inline edit on click of a table cell       
+    // Activate an inline edit on click of a table cell  
     $(document).ready(function () {
-        $('#Comments').dataTable({
+        $('#Comments').dataTable({  
+		dom: 'Bfrtip',
+		buttons: [
+		{
+			text: '上傳資料',
+			action: function ( e, dt, node, config ) {
+		        jQuery.fn.pop = [].pop;
+		        jQuery.fn.shift = [].shift;
+		        var $rows = $('#Comments').find('tr:not(:hidden)');
+		        var headers = [];
+		        var data = [];
+		        $($rows.shift()).find('th:not(:empty)').each(function () {
+		            headers.push($(this).text().toLowerCase());
+				});
+		          
+				//Turn all existing rows into a loopable array
+				$rows.each(function () {
+					var $td = $(this).find('td');
+					var h = {};
+			            
+					//Use the headers from earlier to name our hash keys
+					headers.forEach(function (header, i) {
+						h[header] = $td.eq(i).text();   
+					});
+					data.push(h);
+				});
+				$.ajax({
+					type: "POST",
+					url: "ProcessComments.php",
+					data: {data : data}
+				}).done(function(output) {
+					alert(output);
+				});
+			}
+		},
+        {
+            text: '前往原始網址',
+            action: function ( e, dt, node, config ) {
+            	window.open("https://www.facebook.com/groups/607414496082801/permalink/" + <?php echo $_POST['ID'];?>,'_blank');
+            }
+        },
+        {
+            text: '統計數量',
+            action: function ( e, dt, node, config ) {
+				this.rows().every( function () {
+				var d = this.data();
+	            	 
+				d.counter++; // update data source for the row
+	            	 
+				this.invalidate(); // invalidate the data DataTables has cached for this row
+				} );
+	                
+	            var SpecColumns = 
+	                this
+					.columns(6)
+					.data()
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data
+	            var result = GroupCount(SpecColumns);
+	
+	            var index;
+	            var specCount = "";
+	            for (index = 0; index < result[0].length; ++index) {
+	            	specCount = specCount + result[0][index] + " , " + result[1][index] + "<br>"; 
+	            }
+	            $( "#dialogText" ).html(specCount);
+	            $( "#dialog" ).dialog();
+            }
+        }
+		],  
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
-    	"order": [[ 0, "desc" ]],
+    	"order": [[ 0, "asc" ]],
         "select": {
 	            style:    'os',
 	            selector: 'td:first-child'
@@ -84,9 +156,27 @@ if(!session_id()) {
         	.add($clone)
         	.draw();
       	});
-    });
+    });   
 
+    function GroupCount(arr) {
+        var a = [], b = [], prev;
+
+        arr.sort();
+        for ( var i = 0; i < arr.length; i++ ) {
+            if ( arr[i] !== prev ) {
+                a.push(arr[i]);
+                b.push(1);
+            } else {
+                b[b.length-1]++;
+            }
+            prev = arr[i];
+        }
+
+        return [a, b];
+    }   
 </script>
+
+
 <?php
 if(!$accessToken)
 {
@@ -152,6 +242,21 @@ if(!$accessToken)
 		exit;
 	}
 	
+	//To get all item id
+	include('ConnectMySQL.php');
+	
+	// get results from database
+	
+	$result = mysql_query("SELECT distinct ItemID FROM `ShippingRecord`")
+	
+	or die(mysql_error());
+	
+	$ItemIDs = array();
+	
+	while($row = mysql_fetch_array($result)){
+		$ItemIDs[] = $row["ItemID"];
+	}
+	
 	if(isset($_POST['ID'])) {
 		$ID = $_POST['ID'];	
 	}
@@ -161,8 +266,12 @@ if(!$accessToken)
 		exit;
 	}
 	
+	if (in_array($ID, $ItemIDs)) {
+		echo "<font color=\"red\"><h1>這筆點過了喔，請再確認一次</h1></font>";
+	}
+	
 	try {
-		$response = $fb->get("/607414496082801_".$ID."?fields=comments.limit(999)");
+		$response = $fb->get("/607414496082801_".$ID."?fields=message,comments.limit(999)");
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 		// When Graph returns an error
 		echo 'Graph returned an error: ' . $e->getMessage();
@@ -173,13 +282,27 @@ if(!$accessToken)
 		exit;
 	}
 	$result = $response->getDecodedBody();
+	
+	preg_match("/^\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+/", $result["message"], $matches);
+	$itemMonthCategory = $matches[1];
+	$dueDate = $matches[2];
+	$itemName = $matches[3];
+	preg_match("/(^[0-9]+)/", $matches[4], $priceMatches);
 
+	$itemPrice = $priceMatches[1];
+	
 	echo "<table id=\"Comments\">
 	<thead><tr>
 	<th>時間</th>	    		
 	<th>FB帳號</th>
 	<th>FBID</th>
-	<th>Message</th>
+	<th>月份</th>	    		
+	<th>ItemID</th>	    		
+	<th>品項</th>
+	<th>規格</th>
+	<th>單價</th>
+	<th>折扣</th>	    		
+	<th>數量</th>
 	<th></th>
 	</thead></tr><tbody>";
 	
@@ -188,7 +311,13 @@ if(!$accessToken)
 		echo "<tr>";
 		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["created_time"]."</td>";
 		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["name"]."</td>";
-		echo "<td contenteditable=\"false\">".$result["comments"]["data"][$i]["from"]["id"]."</td>";
+		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["id"]."</td>";
+		echo "<td contenteditable=\"true\">".$itemMonthCategory."</td>";
+		echo "<td contenteditable=\"true\">".$ID."</td>";
+		echo "<td contenteditable=\"true\">".$itemName."</td>";
+		echo "<td contenteditable=\"true\"></td>";
+		echo "<td contenteditable=\"true\">".$itemPrice."</td>";
+		echo "<td contenteditable=\"true\"></td>";
 		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["message"]."</td>";
 		echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span>
 	    		<span class=\"table-duplicate glyphicon glyphicon-duplicate\"></span></td>";
@@ -196,4 +325,9 @@ if(!$accessToken)
 	}
 	
 	echo "</tbody></table>";
+	?>
+	<div id="dialog" title="統計結果">
+		<p id="dialogText"></p>
+	</div>
+</body>
 	

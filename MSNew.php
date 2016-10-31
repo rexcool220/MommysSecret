@@ -22,7 +22,7 @@ Allows user to create a new entry in the database
 
 // since this form is used multiple times in this file, I have made it a function that is easily reusable
 
-function renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $serialNumber, $error)
+function renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $month, $active, $spec, $itemID, $error)
 
 {
 
@@ -117,11 +117,17 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 
 <strong>單價: *</strong> <input type="text" name="單價" value="<?php echo $price; ?>" /><br/>
 
-<strong>折扣: *</strong> <input type="text" name="折扣" value="<?php echo $discount; ?>" /><br/>
+<strong>折扣: </strong> <input type="text" name="折扣" value="<?php echo $discount; ?>" /><br/>
 
 <strong>數量: *</strong> <input type="text" name="數量" value="<?php echo $amount; ?>" /><br/>
 
-<strong>SerialNumber: *</strong> <input type="text" name="SerialNumber" value="<?php echo $serialNumber; ?>" /><br/>
+<strong>月份: </strong> <input type="text" name="月份" value="<?php echo $month; ?>" /><br/>
+
+<strong>Active: </strong> <input type="text" name="Active" value="<?php echo $active; ?>" /><br/>
+
+<strong>規格: </strong> <input type="text" name="規格" value="<?php echo $spec; ?>" /><br/>
+
+<strong>ItemID: </strong> <input type="text" name="ItemID" value="<?php echo $itemID; ?>" /><br/>
 
 <p>* required</p>
 
@@ -159,11 +165,17 @@ $discount = $_POST['折扣'];
 
 $amount = $_POST['數量'];
 
-$serialNumber = $_POST['SerialNumber'];
+$month = $_POST['月份'];
+
+$active = $_POST['Active'];
+
+$spec = $_POST['規格'];
+
+$itemID = $_POST['ItemID'];
 
 // check to make sure both fields are entered
 
-if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $discount == '' || $amount == '' || $serialNumber == '')
+if ($FBAccount == '' || $FBID == '' || $itemName == '' || $price == '' || $amount == '')
 
 {
 
@@ -175,7 +187,7 @@ $error = 'ERROR: Please fill in all required fields!';
 
 // if either field is blank, display the form again
 
-renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $serialNumber, $error);
+renderForm($FBAccount, $FBID, $itemName, $price, $discount, $amount, $month, $active, $spec, $itemID, $error);
 
 }
 
@@ -185,7 +197,7 @@ else
 
 // save the data to the database
 
-mysql_query("INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `FBID`, `品項`, `單價`, `Discount`, `數量`) VALUES ('$serialNumber', '$FBAccount', '$FBID', '$itemName', '$price', '$discount', '$amount')")
+mysql_query("INSERT INTO `ShippingRecord` (`SerialNumber`, `FB帳號`, `FBID`, `品項`, `單價`, `Discount`, `數量`, `月份`, `Active`, `規格`, `ItemID`) VALUES (NULL, '$FBAccount', '$FBID', '$itemName', '$price', '$discount', '$amount', '$month', '$active', '$spec', '$itemID')")
 or die(mysql_error());
 
 // once saved, redirect back to the view page
@@ -202,7 +214,7 @@ else
 
 {
 
-renderForm('','','','');
+renderForm('', '', '', '', '', '', '', '', '', '', '');
 
 }
 

@@ -185,7 +185,7 @@ if(!session_id()) {
     	        die('Invalid query: ' . mysql_error());
     	    }
     	    	
-    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL)";
+    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND Active = true ";
     	    $result = mysql_query($sql,$con);
     	    if (!$result) {
     	        die('Invalid query: ' . mysql_error());
@@ -290,7 +290,7 @@ if(!session_id()) {
     </div>
     <div id="menu1" class="tab-pane fade"><br>
 		<?php 
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) order by FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND Active = true order by FB帳號;";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -305,6 +305,7 @@ if(!session_id()) {
 				<th>FB帳號 </th>
 	            <th>FBID </th>
 				<th>品項</th>
+				<th>規格</th>
 				<th>單價</th>
 				<th>折扣</th>
 				<th>數量</th>
@@ -333,6 +334,7 @@ if(!session_id()) {
 				$toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
+				$toRemitTable = $toRemitTable . "<td>" . $row['規格'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['Discount'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
@@ -346,7 +348,7 @@ if(!session_id()) {
 			}
 			$toRemitTable = $toRemitTable . "</table>";
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' order by FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND Active = true order by FB帳號;";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -362,6 +364,7 @@ if(!session_id()) {
             	<th>FB帳號 </th>
     	        <th>FBID </th>
             	<th>品項</th>
+	    		<th>規格</th>
             	<th>單價</th>
         		<th>折扣</th>
             	<th>數量</th>
@@ -388,6 +391,7 @@ if(!session_id()) {
 			    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
+			    $remitedTable = $remitedTable . "<td>" . $row['規格'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['Discount'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
@@ -403,7 +407,7 @@ if(!session_id()) {
 			
 			
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00' order by FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00' AND Active = true order by FB帳號;";
 				
 			$result = mysql_query($sql,$con);
 				
@@ -419,6 +423,7 @@ if(!session_id()) {
             	<th>FB帳號 </th>
 		        <th>FBID </th>
             	<th>品項</th>
+				<th>規格</th>
             	<th>單價</th>
 				<th>折扣</th>
             	<th>數量</th>
@@ -445,6 +450,7 @@ if(!session_id()) {
 			    $waitShipping = $waitShipping . "<td>" . $row['FB帳號'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['FBID'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['品項'] . "</td>";
+			    $waitShipping = $waitShipping . "<td>" . $row['規格'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['單價'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['Discount'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['數量'] . "</td>";
@@ -613,7 +619,7 @@ if(!session_id()) {
     <div id="menu3" class="tab-pane fade"><br>
 		<?php
 		
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) order by FB帳號;";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND Active = true order by FB帳號;";
 			
 		$result = mysql_query($sql,$con);
 			
@@ -628,6 +634,7 @@ if(!session_id()) {
 				<th>FB帳號 </th>
 	            <th>FBID </th>
 				<th>品項</th>
+				<th>規格</th>
 				<th>單價</th>
 				<th>折扣</th>
 				<th>數量</th>
@@ -656,6 +663,7 @@ if(!session_id()) {
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
+		    $toRemitTable = $toRemitTable . "<td>" . $row['規格'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['Discount'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
@@ -669,7 +677,7 @@ if(!session_id()) {
 		}
 		$toRemitTable = $toRemitTable . "</table>";
 			
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') order by FB帳號;";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND Active = true order by FB帳號;";
 			
 		$result = mysql_query($sql,$con);
 			
@@ -683,6 +691,7 @@ if(!session_id()) {
 				<th>FB帳號 </th>
 	            <th>FBID </th>
 				<th>品項</th>
+	    		<th>規格</th>
 				<th>單價</th>
         		<th>折扣</th>
 				<th>數量</th>
@@ -709,6 +718,7 @@ if(!session_id()) {
 		    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
+		    $remitedTable = $remitedTable . "<td>" . $row['規格'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['Discount'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";

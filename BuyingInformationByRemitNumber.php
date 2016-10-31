@@ -39,7 +39,7 @@ if(isset($_GET['remitNumber'])) {
 	$row = mysql_fetch_array($result);
 	$FBID = $row['FBID'];
 	
-	$sql = "SELECT * FROM `ShippingRecord` WHERE 匯款編號 = '$remitNumber'";
+	$sql = "SELECT * FROM `ShippingRecord` WHERE 匯款編號 = '$remitNumber' AND Active = true";
 	$result = mysql_query($sql,$con);
 	
 	if (!$result) {
@@ -51,6 +51,7 @@ if(isset($_GET['remitNumber'])) {
   	<th>SN</th>
 	<th>FB帳號 </th>
 	<th>品項</th>
+	<th>規格</th>
 	<th>單價</th>
 	<th>數量</th>
 	<th>金額</th>
@@ -76,6 +77,7 @@ if(isset($_GET['remitNumber'])) {
 		$RemitTable = $RemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['FB帳號'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['品項'] . "</td>";
+		$RemitTable = $RemitTable . "<td>" . $row['規格'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['單價'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['數量'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $subTotal . "</td>";

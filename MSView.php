@@ -153,6 +153,10 @@ else
 			<th>SerialNumber</th>
 			<th>匯款編號</th>
 			<th>確認收款</th>
+			<th>月份</th>
+			<th>Active</th>
+			<th>規格</th>
+			<th>ItemID</th>
 			<th>
 			</th>
 			<th>
@@ -192,6 +196,14 @@ else
 	echo '<td>' . $row['匯款編號'] . '</td>';
 	
 	echo '<td>' . $row['確認收款'] . '</td>';
+	
+	echo '<td>' . $row['月份'] . '</td>';
+	
+	echo '<td>' . $row['Active'] . '</td>';
+	
+	echo '<td>' . $row['規格'] . '</td>';
+	
+	echo '<td>' . $row['ItemID'] . '</td>';
 	
 	echo '<td><a href="MSEdit.php?SerialNumber=' . $row['SerialNumber'] . '">Edit</a></td>';
 	

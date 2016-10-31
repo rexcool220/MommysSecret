@@ -200,7 +200,7 @@ if (!empty($_GET['RemitChecked'])) {
 		die('Invalid query: ' . mysql_error());
 	}
 	
-	$sql = "UPDATE `ShippingRecord` SET `確認收款` = '1'  WHERE 匯款編號 = $remitNumber";
+	$sql = "UPDATE `ShippingRecord` SET `確認收款` = '1'  WHERE 匯款編號 = $remitNumber AND Active = true";
 	$result = mysql_query($sql,$con);
 	
 	if (!$result) {
@@ -220,7 +220,7 @@ if (!empty($_GET['RemitUnchecked'])) {
         die('Invalid query: ' . mysql_error());
     }
 
-    $sql = "UPDATE `ShippingRecord` SET `確認收款` = '0'  WHERE 匯款編號 = $remitNumber";
+    $sql = "UPDATE `ShippingRecord` SET `確認收款` = '0'  WHERE 匯款編號 = $remitNumber AND Active = true";
     $result = mysql_query($sql,$con);
 
     if (!$result) {
