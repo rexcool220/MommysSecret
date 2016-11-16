@@ -63,6 +63,9 @@ if(!session_id()) {
 	</style>
 </head>
 <body>
+	<div id="dialog" title="統計結果">
+		<p id="dialogText"></p>
+	</div>
 <script type="text/javascript">
     // Activate an inline edit on click of a table cell  
     $(document).ready(function () {
@@ -123,16 +126,62 @@ if(!session_id()) {
 					.columns(6)
 					.data()
 					.eq( 0 );      // Reduce the 2D array into a 1D array of data
-	            var result = GroupCount(SpecColumns);
-	
-	            var index;
-	            var specCount = "";
-	            for (index = 0; index < result[0].length; ++index) {
-	            	specCount = specCount + result[0][index] + " , " + result[1][index] + "<br>"; 
+				var itemCount = 
+					this
+					.columns(9)
+					.data()
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data
+
+				var combinArray = [];
+												
+	            for (var i = 0; i < SpecColumns.length; ++i) {
+	            	combinArray.push([SpecColumns[i], itemCount[i]]);
 	            }
+
+	            combinArray.sort(function sortFunction(a, b) {
+			        if (a[0] === b[0]) {
+			            return 0;
+			        }
+			        else {
+			            return (a[0] < b[0]) ? -1 : 1;
+			        }
+			    });
+
+	            var SpecArray = [], CountArray = [], prev;
+	            
+	            for ( var i = 0; i < combinArray.length; i++ ) {
+	                if ( combinArray[i][0] !== prev ) {
+	                	SpecArray.push(combinArray[i][0]);
+	                	CountArray.push(Number(combinArray[i][1]));
+	                } else {
+	                	CountArray[CountArray.length-1] = Number(CountArray[CountArray.length-1]) + Number(combinArray[i][1]);
+	                }
+	                prev = combinArray[i][0];
+	            }
+
+				var specCount = "";
+	            
+	            for (var i = 0; i < SpecArray.length; ++i) {
+	            	specCount = specCount + SpecArray[i] + " + " + CountArray[i] + "<br>"; 
+	            }
+	            	            
 	            $( "#dialogText" ).html(specCount);
+
 	            $( "#dialog" ).dialog();
             }
+        },
+        {
+            text: '刪除此項資料',
+            action: function ( e, dt, node, config ) {
+		        var itemID = <?php echo $_POST['ID']?>;
+				$.ajax({
+					type: "POST",
+					url: "DeleteWholeItemID.php",
+					data: {itemID : itemID}
+				}).done(function(output) {
+					alert(output);
+				});
+			}
         }
 		],  
         "lengthMenu": [[-1], ["All"]],
@@ -156,24 +205,8 @@ if(!session_id()) {
         	.add($clone)
         	.draw();
       	});
-    });   
-
-    function GroupCount(arr) {
-        var a = [], b = [], prev;
-
-        arr.sort();
-        for ( var i = 0; i < arr.length; i++ ) {
-            if ( arr[i] !== prev ) {
-                a.push(arr[i]);
-                b.push(1);
-            } else {
-                b[b.length-1]++;
-            }
-            prev = arr[i];
-        }
-
-        return [a, b];
-    }   
+    });
+  
 </script>
 
 
@@ -182,7 +215,7 @@ if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
 		'app_id' => '1540605312908660',
-		'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -263,6 +296,10 @@ if(!$accessToken)
 	else 
 	{
 		echo "ID is empty";
+		echo "<form method=\"POST\" action=\"FBParserComment.php\">
+	 	<input type=\"text\" name=\"ID\" value=\"\"><p>
+		<input type=\"submit\" value=\"輸入ID\"><p>
+</form>";
 		exit;
 	}
 	
@@ -326,8 +363,5 @@ if(!$accessToken)
 	
 	echo "</tbody></table>";
 	?>
-	<div id="dialog" title="統計結果">
-		<p id="dialogText"></p>
-	</div>
 </body>
 	

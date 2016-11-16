@@ -99,7 +99,7 @@ if(!session_id()) {
 	{
 		$fb = new Facebook\Facebook([
 				'app_id' => '1540605312908660',
-				'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+				'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
 				'default_graph_version' => 'v2.6',
 		]);
 		$helper = $fb->getRedirectLoginHelper();
@@ -896,7 +896,7 @@ if(!session_id()) {
 		        	<input type=\"hidden\" value=\"$memberFBID\" name=\"FBID\">
 		        	<input type=\"hidden\" value=\"$moneyToBePaid\" name=\"moneyToBePaid\">
 	    	    	<input type=\"hidden\" value=\"$rebateWillBeUpdate\" name=\"rebateWillBeUpdate\">
-				  	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"匯款末五碼\"></p>
+				  	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"轉出帳號末5碼，無摺請寫郵局局號\"></p>
 				  	<p><input type=\"text\" name=\"remitAmont\" placeholder=\"匯款金額\"></p>
 				  	<p><input type=\"text\" name=\"memo\" placeholder=\"Memo\"></p>
 				  	<input type=\"submit\" name=\"RemitButton\" value=\"回報匯款\">

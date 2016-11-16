@@ -30,7 +30,7 @@ if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
 		'app_id' => '1540605312908660',
-		'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -190,9 +190,21 @@ if(isset($CustomerFBID)) {
 		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerFBID=$CustomerFBID");
 	}
 	
-	$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
+	//$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
 	
-	
+	$sql = "SELECT 
+		ShippingRecord.SerialNumber,
+		ShippingRecord.確認收款,
+		ShippingRecord.FB帳號,
+		ShippingRecord.FBID,
+		ShippingRecord.品項,
+		ShippingRecord.規格,
+		ShippingRecord.單價,
+		ShippingRecord.數量,
+		ShippingRecord.匯款日期,
+		ShippingRecord.出貨日期,
+		ShippingRecord.匯款編號,
+		RemitRecord.匯款金額 FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
 	
 	$result = mysql_query($sql,$con);
 	
@@ -244,7 +256,14 @@ if(isset($CustomerFBID)) {
 		$toShippingTable = $toShippingTable . "<td>" . $row['品項'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['規格'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['單價'] . "</td>";
-		$toShippingTable = $toShippingTable . "<td>" . $row['數量'] . "</td>";
+		if($row['數量'] > 1)
+		{
+			$toShippingTable = $toShippingTable . "<td><font color=\"red\">" . $row['數量'] . "</font></td>";
+		}
+		else 
+		{
+			$toShippingTable = $toShippingTable . "<td>" . $row['數量'] . "</td>";
+		}
 		$toShippingTable = $toShippingTable . "<td>" . $subTotal . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['匯款日期'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $isReceivedPayment . "</td>";
@@ -266,6 +285,8 @@ if(isset($CustomerFBID)) {
 	}
 	$toShippingTable = $toShippingTable . "</table>";
 	$toShippingTable = $toShippingTable . "</form>";
+	
+	
 	$sql = "SELECT * FROM `Members` WHERE FBID  = '$CustomerFBID';";
 	$result = mysql_query($sql,$con);
 	

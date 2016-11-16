@@ -18,7 +18,7 @@ if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
 		'app_id' => '1540605312908660',
-		'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -72,7 +72,6 @@ if(($fbAccount == 'Gill Fang')||
 		($fbAccount == 'Queenie Tsan')||
 		($fbAccount == '熊會買')||
 		($fbAccount == '熊哉')||
-		($fbAccount == '熊會算')||
 		($fbAccount == '古振平')||
         ($fbAccount == 'Keira Lin'))
 {
@@ -95,6 +94,69 @@ if(isset($_POST['CustomerFBID'])) {
 
 
 if(isset($CustomerFBID)) {
+	
+	$sql = "SELECT * FROM `Members` WHERE FBID  = '$CustomerFBID';";
+	$result = mysql_query($sql,$con);
+	
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
+	
+	$row = mysql_fetch_array($result);
+	if($totalPrice > 6000)
+	{
+		$shippingFee = 0;
+	}
+	else {
+		$shippingFee = $row['運費'];
+	}
+	if($totalPrice == 0)
+	{
+		$moneyToBePaid = 0;
+		$shippingFee = 0;
+	}
+	else
+	{
+		$moneyToBePaid = $totalPrice + $shippingFee;
+	}
+	
+	$MemberInformation = "<table id=\"Member\">
+		<tr>
+		<th>真實姓名</th>
+		<td>".$row['姓名']."</td>
+		</tr>
+		<tr>
+		<th>FB帳號</th>
+		<td>".$row['FB帳號']."</td>
+		</tr>
+		<tr>
+		<th>FBID</th>
+		<td>".$row['FBID']."</td>
+		</tr>
+		<tr>
+		<th>E-Mail</th>
+		<td>".$row['E-Mail']."</td>
+		</tr>
+		<tr>
+		<th>手機號碼</th>
+		<td>".$row['手機號碼']."</td>
+		</tr>
+		<tr>
+		<th>郵遞區號＋地址</th>
+		<td>".$row['郵遞區號＋地址']."</td>
+		</tr>
+		<tr>
+		<th>全家店到店 店名+地址 </th>
+		<td>".$row['全家店到店服務代號']."</td>
+		</tr>
+		<tr>
+		<th>寄送方式 </th>
+		<td>".$row['寄送方式']."</td>
+		</tr>
+		</table>";
+	
+	echo $MemberInformation;
+	
 
     $sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$CustomerFBID' AND 匯款日期= '0000-00-00' AND Active = true ORDER BY SerialNumber;";
 

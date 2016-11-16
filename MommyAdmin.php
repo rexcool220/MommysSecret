@@ -34,7 +34,7 @@ if(!isset($_GET['code']))
 	
 	$fb = new Facebook\Facebook([
 	  'app_id' => '1540605312908660',
-	  'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+	  'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
 	  'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -53,7 +53,7 @@ else
 	{
 		$fb = new Facebook\Facebook([
 				'app_id' => '1540605312908660',
-				'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+				'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
 				'default_graph_version' => 'v2.6',
 		]);
 		$helper = $fb->getRedirectLoginHelper();
@@ -169,6 +169,20 @@ else
 				<td>
 					<form action=\"FBParser.php\" method=\"get\" target=\"_blank\">
 		 				<input type=\"submit\" value=\"點單系統\">
+		 			</form>
+				</td>			
+			</tr>
+			<tr>
+				<td>
+					<form action=\"TagByItemID.php\" method=\"get\" target=\"_blank\">
+		 				<input type=\"submit\" value=\"Tag小工具\">
+		 			</form>
+				</td>			
+			</tr>		
+			<tr>
+				<td>
+					<form action=\"ItemCategoryView.php\" method=\"get\" target=\"_blank\">
+		 				<input type=\"submit\" value=\"到貨管理\">
 		 			</form>
 				</td>			
 			</tr>				

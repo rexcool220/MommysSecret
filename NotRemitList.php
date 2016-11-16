@@ -55,7 +55,8 @@ body {
 <script type="text/javascript">
     $(document).ready(function () {
         $('#NotRemitList').dataTable({
-        	"lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]]
+        	"lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]],
+        	"order": [[ 3, "desc" ]]
         });
     });
 </script>
@@ -65,7 +66,7 @@ body {
     {
         $fb = new Facebook\Facebook([
             'app_id' => '1540605312908660',
-            'app_secret' => '066f0c1bd42b77412f8d36776ee7b788',
+            'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
             'default_graph_version' => 'v2.6',
         ]);
     
@@ -109,18 +110,19 @@ body {
         exit;
     }
 
-$sql = "SELECT FB帳號, FBID, MAX(匯款日期 ) , SUM(單價*數量 ) 
-FROM  `ShippingRecord`
-WHERE  `匯款日期` =  '0000-00-00'
-AND Active = true      			
-AND FBID
+$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, MAX(ShippingRecord.匯款日期 ) , SUM(ShippingRecord.單價*ShippingRecord.數量 ), Members.寄送方式
+FROM  `ShippingRecord`,`Members`
+WHERE  ShippingRecord.匯款日期 =  '0000-00-00'
+AND ShippingRecord.Active = true      			
+AND ShippingRecord.FBID
 IN (
 SELECT DISTINCT FBID
 FROM  `ShippingRecord` 
 WHERE  `匯款日期` =  '0000-00-00'
 )
-GROUP BY FBID
-ORDER BY MAX( 匯款日期 ) ASC, SUM(單價*數量) DESC";
+AND ShippingRecord.FBID = Members.FBID
+GROUP BY ShippingRecord.FBID
+ORDER BY MAX( ShippingRecord.匯款日期 ) ASC, SUM(ShippingRecord.單價*ShippingRecord.數量) DESC";
 
 $result = mysql_query($sql,$con);
 if (!$result) {
@@ -141,6 +143,7 @@ $NotRemitList = "<table id=\"NotRemitList\">
     <th>FBID</th>
 	<th>最近匯款日期</th>
 	<th>應付款金額</th>
+    <th>出貨方式</th>
 	<th></th>
 	</thead></tr><tbody>";
 
@@ -150,8 +153,9 @@ while($row = mysql_fetch_array($result))
     $NotRemitList = $NotRemitList . "<tr>";
     $NotRemitList = $NotRemitList . "<td>" . $row['FB帳號'] . "</td>";
     $NotRemitList = $NotRemitList . "<td>" . $row['FBID'] . "</td>";
-    $NotRemitList = $NotRemitList . "<td>" . $row['MAX(匯款日期 )'] . "</td>";
-    $NotRemitList = $NotRemitList . "<td>" . $row['SUM(單價*數量 )'] . "</td>";
+    $NotRemitList = $NotRemitList . "<td>" . $row['MAX(ShippingRecord.匯款日期 )'] . "</td>";
+    $NotRemitList = $NotRemitList . "<td>" . $row['SUM(ShippingRecord.單價*ShippingRecord.數量 )'] . "</td>";
+    $NotRemitList = $NotRemitList . "<td>" . $row['寄送方式'] . "</td>";
     $NotRemitList = $NotRemitList . "<td><input type=\"checkbox\" name=\"NotRemitList\" value=\"".$row['FB帳號']."\" onclick=\"NotRemitListChecked(this)\" checked style=\"WIDTH: 40px; HEIGHT: 40px\">";
     $NotRemitList = $NotRemitList . "</tr>";
     $accountList = $accountList . "\n@" . $row['FB帳號'];
@@ -160,7 +164,7 @@ $NotRemitList = $NotRemitList . "</tbody></table>";
 
 echo "<h3>共 $NotRemitListCount 人</h3>";
 
-echo "<textarea id=\"TobeInformTextarea\" rows=\"4\" cols=\"50\">".date("Y/m/d")."未匯款點點名，還有".$NotRemitListCount."人未匯款！！哭哭～～先tag一些喔！＃請大家趕快匯款，社團墊款資金有限，空間也有限 ＃不併月寄送收款 ＃有買車用頭枕，醬油，浴巾，巧克力粉等大又重的商品建議使用貨運，免得下期還要補收運費唷～：".$accountList."</textarea><br>";
+echo "<textarea id=\"TobeInformTextarea\" rows=\"4\" cols=\"50\">".date("Y/m/d")."未匯款點點名，還有".$NotRemitListCount."人未匯款！！#匯款須知：空間有限不併月出貨，有近3000樣大大小小商品，保管分類就很複雜，請大家一定一定當月把商品付款領走不能寄放喔!社團墊款訂貨基於互信請大家按時匯款 ❤".$accountList."</textarea><br>";
 
 echo $NotRemitList;
 
