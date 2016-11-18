@@ -204,7 +204,15 @@ if(isset($CustomerFBID)) {
 		ShippingRecord.匯款日期,
 		ShippingRecord.出貨日期,
 		ShippingRecord.匯款編號,
-		RemitRecord.匯款金額 FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
+		RemitRecord.匯款金額 FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' 
+		AND ShippingRecord.匯款編號
+		IN (
+			SELECT DISTINCT ShippingRecord.匯款編號
+			FROM  `ShippingRecord`
+			WHERE ShippingRecord.確認收款 =1
+			AND ShippingRecord.出貨日期 =  '0000-00-00'
+			)
+		AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
 	
 	$result = mysql_query($sql,$con);
 	

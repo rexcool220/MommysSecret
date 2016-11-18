@@ -746,6 +746,7 @@ if(!session_id()) {
 		$shippingWay = $row['寄送方式'];
 		$shippingFee = $row['運費'];
 		$rebate = $row['Rebate'];
+		$type = $row['Type'];
 		
 		if($totalPrice > 6000)
 		{
@@ -783,6 +784,11 @@ if(!session_id()) {
 		    	$rebateTobeDeduct = $moneyToBePaid;
 		    	$rebateWillBeUpdate = $rebate - $rebateTobeDeduct + $rebateToBeIncrease;
 		    	$moneyToBePaid = 0;
+		    }
+		    if($type == '團媽')
+		    {
+		    	$rebateToBeIncrease = 0;
+		    	$rebateWillBeUpdate = 0;
 		    }
 		}
 		
