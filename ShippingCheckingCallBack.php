@@ -29,8 +29,8 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-		'app_id' => '1540605312908660',
-		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+		'app_id' => '198155157308846',
+		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -207,10 +207,10 @@ if(isset($CustomerFBID)) {
 		RemitRecord.匯款金額 FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' 
 		AND ShippingRecord.匯款編號
 		IN (
-			SELECT DISTINCT ShippingRecord.匯款編號
+			SELECT ShippingRecord.匯款編號
 			FROM  `ShippingRecord`
 			WHERE ShippingRecord.確認收款 =1
-			AND ShippingRecord.出貨日期 =  '0000-00-00'
+			AND ShippingRecord.匯款日期 > DATE_SUB( CURDATE( ) , INTERVAL 12 WEEK) AND ShippingRecord.FBID = '$CustomerFBID'
 			)
 		AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
 	

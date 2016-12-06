@@ -75,8 +75,8 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-			'app_id' => '1540605312908660',
-			'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+			'app_id' => '198155157308846',
+			'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 			'default_graph_version' => 'v2.8',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -152,7 +152,7 @@ if(!$accessToken)
 	}
 	
 	try {
-	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message&since=". date("Y-m-d", strtotime("-1 months")). "&limit=500");
+	    $response = $fb->get("/607414496082801/feed?fields=id,created_time,message&since=". date("Y-m-d", strtotime("-2 months")). "&limit=500");
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 	    // When Graph returns an error
 	    echo 'Graph returned an error: ' . $e->getMessage();

@@ -75,6 +75,49 @@ if(!session_id()) {
 		{
 			text: '上傳資料',
 			action: function ( e, dt, node, config ) {
+				//verify columns
+				var itemNames = 
+	                this
+					.columns(5)
+					.data()
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data
+				var itemPrices = 
+					this
+					.columns(7)
+					.data()
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data
+
+				var itemCounts = 
+					this
+					.columns(9)
+					.data()
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data
+					
+	            for (var i = 0; i < itemNames.length; ++i) {
+	            	if(itemNames[i] == "")
+	            	{
+		            	alert("請檢查品項!");
+		            	return false;
+	            	}
+	            }
+
+	            for (var i = 0; i < itemPrices.length; ++i) {
+	            	if(itemPrices[i] == "")
+	            	{
+		            	alert("請檢查價格!");
+		            	return false;
+	            	}
+	            }
+
+	            for (var i = 0; i < itemCounts.length; ++i) {
+	            	if(itemCounts[i] == "")
+	            	{
+		            	alert("請檢查數量!");
+		            	return false;
+	            	}
+	            }
+
+				
 		        jQuery.fn.pop = [].pop;
 		        jQuery.fn.shift = [].shift;
 		        var $rows = $('#Comments').find('tr:not(:hidden)');
@@ -205,6 +248,11 @@ if(!session_id()) {
         	.add($clone)
         	.draw();
       	});
+		var table = $('#Comments').DataTable();
+        $('#Comments tbody').on( 'focusout', 'td', function () {
+        	var cell = table.cell( this );
+            cell.data( this.innerHTML ).draw();
+        } );
     });
   
 </script>
@@ -214,8 +262,8 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-		'app_id' => '1540605312908660',
-		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+		'app_id' => '198155157308846',
+		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -308,7 +356,7 @@ if(!$accessToken)
 	}
 	
 	try {
-		$response = $fb->get("/607414496082801_".$ID."?fields=message,comments.limit(999)");
+		$response = $fb->get("/607414496082801_".$ID."?fields=message,comments.limit(999).summary(true)");
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 		// When Graph returns an error
 		echo 'Graph returned an error: ' . $e->getMessage();
@@ -328,6 +376,14 @@ if(!$accessToken)
 
 	$itemPrice = $priceMatches[1];
 	
+	if($result["comments"]["summary"]["total_count"] != count($result["comments"]["data"]))
+	{
+		echo "<font color=\"red\"><h1>這筆系統有漏，回原始網址double check!!!</h1></font>";
+// 		echo $result["comments"]["summary"]["total_count"];
+// 		echo count($result["comments"]["data"]);
+	}
+
+	
 	echo "<table id=\"Comments\">
 	<thead><tr>
 	<th>時間</th>	    		
@@ -338,7 +394,7 @@ if(!$accessToken)
 	<th>品項</th>
 	<th>規格</th>
 	<th>單價</th>
-	<th>折扣</th>	    		
+	<th>備註</th>	    		
 	<th>數量</th>
 	<th></th>
 	</thead></tr><tbody>";
@@ -346,12 +402,12 @@ if(!$accessToken)
 	for($i = 0; $i < count($result["comments"]["data"]); $i++)
 	{
 		echo "<tr>";
-		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["created_time"]."</td>";
+		echo "<td>".$result["comments"]["data"][$i]["created_time"]."</td>";
 		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["name"]."</td>";
 		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["id"]."</td>";
-		echo "<td contenteditable=\"true\">".$itemMonthCategory."</td>";
-		echo "<td contenteditable=\"true\">".$ID."</td>";
-		echo "<td contenteditable=\"true\">".$itemName."</td>";
+		echo "<td>".$itemMonthCategory."</td>";
+		echo "<td>".$ID."</td>";
+		echo "<td>".$itemName."</td>";
 		echo "<td contenteditable=\"true\"></td>";
 		echo "<td contenteditable=\"true\">".$itemPrice."</td>";
 		echo "<td contenteditable=\"true\"></td>";

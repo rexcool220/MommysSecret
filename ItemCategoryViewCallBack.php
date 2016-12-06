@@ -74,7 +74,7 @@ if(!session_id()) {
     	select: true
         });
         $('.table-update').click(function () {
-
+        	var arriveDate = $(this).closest("tr").find(".arriveDate");
 	      	var data = $('#ItemCategorys').DataTable()
 		        .row( $(this).parents('tr') )
 		        .data();
@@ -85,6 +85,7 @@ if(!session_id()) {
 				data: {data : data}
 			}).done(function(output) {
 				alert(output);
+				arriveDate.html(output);
 			});	        
       	});
 //         $("#ItemCategorys").on('click', function() {
@@ -106,8 +107,8 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-		'app_id' => '1540605312908660',
-		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+		'app_id' => '198155157308846',
+		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -191,6 +192,9 @@ if(!$accessToken)
 	<th>需求數量</th>
 	<th>到貨數量</th>
 	<th>成本</th>
+	<th>批發價</th>
+	<th>廠商</th>
+	<th>到貨日期</th>
 	<th></th>
 	</thead></tr><tbody>";
 	
@@ -205,6 +209,9 @@ if(!$accessToken)
 		echo "<td contenteditable=\"true\">".$row[需求數量]."</td>";
 		echo "<td contenteditable=\"true\">".$row[到貨數量]."</td>";
 		echo "<td contenteditable=\"true\">".$row[成本]."</td>";
+		echo "<td contenteditable=\"true\">".$row[批發價]."</td>";
+		echo "<td contenteditable=\"true\">".$row[廠商]."</td>";
+		echo "<td class=\"arriveDate\">".$row[到貨日期]."</td>";
 		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
 		echo "</tr>";
 	}

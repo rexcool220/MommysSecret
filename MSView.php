@@ -67,6 +67,21 @@ if(!session_id()) {
 <script type="text/javascript">
     $(document).ready(function () {        
         $('#ItemInformation').dataTable({  
+        dom: 'Bfrtip',
+    	buttons: [
+	    	{
+	    		text: '歷史資料',
+	    		action: function ( e, dt, node, config ) {
+				window.open("MSViewAll.php",'_blank');
+	    		}
+	    	},
+	    	{
+	    		text: '新增資料',
+	    		action: function ( e, dt, node, config ) {
+				window.open("MSNew.php",'_blank');
+	    		}
+	    	}
+    	],           
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
     	"order": [[ 0, "asc" ]],
@@ -86,21 +101,24 @@ if(!session_id()) {
 			});	        
       	});
         $('.table-remove').click(function () {
-        	var data = $('#ItemInformation').DataTable()
+            if(confirm("確定刪除?"))
+            {
+	        	var data = $('#ItemInformation').DataTable()
+			        .row( $(this).parents('tr') )
+			        .data();
+			
+				$.ajax({
+					type: "POST",
+					url: "MSDelete.php",
+					data: {data : data}
+				}).done(function(output) {
+					alert(output);
+				});	  
+		      	$('#ItemInformation').DataTable()
 		        .row( $(this).parents('tr') )
-		        .data();
-		
-			$.ajax({
-				type: "POST",
-				url: "MSDelete.php",
-				data: {data : data}
-			}).done(function(output) {
-				alert(output);
-			});	  
-	      	$('#ItemInformation').DataTable()
-	        .row( $(this).parents('tr') )
-	        .remove()
-	        .draw();      
+		        .remove()
+		        .draw();
+            }
       	});
 //         $("#ItemInformation").on('click', function() {
 //         	this.invalidate();
@@ -121,8 +139,8 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-		'app_id' => '1540605312908660',
-		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+		'app_id' => '198155157308846',
+		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -208,12 +226,13 @@ if(!$accessToken)
 	<th>匯款編號</th>
 	<th>確認收款</th>
 	<th>FBID</th>
-	<th>折扣</th>
+	<th>備註</th>
 	<th>月份</th>
 	<th>Active</th>
 	<th>規格</th>
 	<th>ItemID</th>
 	<th></th>
+	<th></th>			
 	</thead></tr><tbody>";
 	
 	while($row = mysql_fetch_array($result))
@@ -223,20 +242,19 @@ if(!$accessToken)
 		echo "<td contenteditable=\"true\">".$row[品項]."</td>";
 		echo "<td contenteditable=\"true\">".$row[單價]."</td>";
 		echo "<td contenteditable=\"true\">".$row[數量]."</td>";
-		echo "<td contenteditable=\"true\">".$row[匯款日期]."</td>";
-		echo "<td contenteditable=\"true\">".$row[出貨日期]."</td>";
-		echo "<td contenteditable=\"true\">".$row[SerialNumber]."</td>";
-		echo "<td contenteditable=\"true\">".$row[匯款編號]."</td>";
-		echo "<td contenteditable=\"true\">".$row[確認收款]."</td>";
+		echo "<td>".$row[匯款日期]."</td>";
+		echo "<td>".$row[出貨日期]."</td>";
+		echo "<td>".$row[SerialNumber]."</td>";
+		echo "<td>".$row[匯款編號]."</td>";
+		echo "<td>".$row[確認收款]."</td>";
 		echo "<td contenteditable=\"true\">".$row[FBID]."</td>";
-		echo "<td contenteditable=\"true\">".$row[Discount]."</td>";
+		echo "<td contenteditable=\"true\">".$row[備註]."</td>";
 		echo "<td contenteditable=\"true\">".$row[月份]."</td>";
 		echo "<td contenteditable=\"true\">".$row[Active]."</td>";
 		echo "<td contenteditable=\"true\">".$row[規格]."</td>";
 		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
-		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span>
-        		<span class=\"table-remove glyphicon glyphicon-remove\"></span>
-        		</td>";
+		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
+		echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
 		echo "</tr>";
 	}
 	

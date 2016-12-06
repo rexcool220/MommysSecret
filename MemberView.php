@@ -66,10 +66,10 @@ if(!session_id()) {
 
 <script type="text/javascript">
     $(document).ready(function () {        
-        $('#MemberInformation').dataTable({  
+        $('#MemberInformation').dataTable({
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
-    	"order": [[ 0, "asc" ]],
+        "order": [[ 11, "asc" ]],
     	select: true
         });
         $('.table-update').click(function () {
@@ -105,8 +105,8 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-		'app_id' => '1540605312908660',
-		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+		'app_id' => '198155157308846',
+		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -196,6 +196,19 @@ if(!$accessToken)
 	<th></th>
 	</thead></tr><tbody>";
 	
+	echo "<td contenteditable=\"true\">新增會員資料</td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
+	echo "</tr>";
 	while($row = mysql_fetch_array($result))
 	{
 		echo "<tr>";

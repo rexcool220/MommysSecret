@@ -139,8 +139,8 @@ if(!session_id()) {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-		'app_id' => '1540605312908660',
-		'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+		'app_id' => '198155157308846',
+		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -173,7 +173,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '點單小幫手', 'http://mommyssecret.tw/TagByItemID.php' );
+			window.history.replaceState( {} , '點單小幫手', 'http://mommyssecret.tw/TagByItemIDCallBack.php' );
 		</script>
 	<?php
 	try {
@@ -259,7 +259,7 @@ if(!$accessToken)
 	<th>品項</th>
 	<th>規格</th>
 	<th>單價</th>
-	<th>折扣</th>	    		
+	<th>備註</th>	    		
 	<th>數量</th>
 	<th></th>
 	</thead></tr><tbody>";

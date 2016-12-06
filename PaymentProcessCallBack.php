@@ -103,8 +103,8 @@ if(!session_id()) {
 	if(!$accessToken)
 	{
 		$fb = new Facebook\Facebook([
-				'app_id' => '1540605312908660',
-				'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+				'app_id' => '198155157308846',
+				'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 				'default_graph_version' => 'v2.6',
 		]);
 		$helper = $fb->getRedirectLoginHelper();
@@ -167,6 +167,7 @@ if(!session_id()) {
         $moneyToBePaid = $_POST['moneyToBePaid'];
         $rebateWillBeUpdate = $_POST['rebateWillBeUpdate'];
         $rebateTobeDeduct = $_POST['rebateTobeDeduct'];
+        $actualShippingFee = $_POST['actualShippingFee'];
         	
         if ($remitLastFiveDigit == "")
         {
@@ -178,8 +179,8 @@ if(!session_id()) {
         }
         else
         {		    
-    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`,`PaidRebate`)
-    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount', '$FBID' ,'$moneyToBePaid', $rebateTobeDeduct);";
+    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`,`PaidRebate`,`運費`)
+    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$fbAccount', '$FBID' ,'$moneyToBePaid', '$rebateTobeDeduct', '$actualShippingFee');";
     	    $result = mysql_query($sql,$con);
     	    if (!$result) {
     	        die('Invalid query: ' . mysql_error());
@@ -307,7 +308,7 @@ if(!session_id()) {
 				<th>品項</th>
 				<th>規格</th>
 				<th>單價</th>
-				<th>折扣</th>
+				<th>備註</th>
 				<th>數量</th>
 				<th>金額</th>
 				<th>匯款日期</th>
@@ -328,7 +329,7 @@ if(!session_id()) {
 				}
 				$isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 					
-				$subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
+				$subTotal = $row['單價'] * $row['數量'];
 				$toRemitTable = $toRemitTable . "<tr>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
@@ -336,7 +337,7 @@ if(!session_id()) {
 				$toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['規格'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['Discount'] . "</td>";
+				$toRemitTable = $toRemitTable . "<td>" . $row['備註'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['匯款日期'] . "</td>";
@@ -366,7 +367,7 @@ if(!session_id()) {
             	<th>品項</th>
 	    		<th>規格</th>
             	<th>單價</th>
-        		<th>折扣</th>
+        		<th>備註</th>
             	<th>數量</th>
             	<th>金額</th>
             	<th>匯款日期</th>
@@ -385,7 +386,7 @@ if(!session_id()) {
 			        $row['匯款日期'] = "";
 			    }
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
+			    $subTotal = $row['單價'] * $row['數量'];
 			    $remitedTable = $remitedTable . "<tr>";
 			    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
@@ -393,7 +394,7 @@ if(!session_id()) {
 			    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['規格'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['Discount'] . "</td>";
+			    $remitedTable = $remitedTable . "<td>" . $row['備註'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['匯款日期'] . "</td>";
@@ -403,9 +404,6 @@ if(!session_id()) {
 			    $remitedTable = $remitedTable . "</tr>";
 			}
 			$remitedTable = $remitedTable . "</table>";			
-			
-			
-			
 			
 			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00' AND Active = true order by FB帳號;";
 				
@@ -425,7 +423,7 @@ if(!session_id()) {
             	<th>品項</th>
 				<th>規格</th>
             	<th>單價</th>
-				<th>折扣</th>
+				<th>備註</th>
             	<th>數量</th>
             	<th>金額</th>
             	<th>匯款日期</th>
@@ -444,7 +442,7 @@ if(!session_id()) {
 			        $row['匯款日期'] = "";
 			    }
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
+			    $subTotal = $row['單價'] * $row['數量'];
 			    $waitShipping = $waitShipping . "<tr>";
 			    $waitShipping = $waitShipping . "<td>" . $row['SerialNumber'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['FB帳號'] . "</td>";
@@ -452,7 +450,7 @@ if(!session_id()) {
 			    $waitShipping = $waitShipping . "<td>" . $row['品項'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['規格'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['單價'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['Discount'] . "</td>";
+			    $waitShipping = $waitShipping . "<td>" . $row['備註'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['數量'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $subTotal . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['匯款日期'] . "</td>";
@@ -636,7 +634,7 @@ if(!session_id()) {
 				<th>品項</th>
 				<th>規格</th>
 				<th>單價</th>
-				<th>折扣</th>
+				<th>備註</th>
 				<th>數量</th>
 				<th>金額</th>
 				<th>匯款日期</th>
@@ -657,7 +655,7 @@ if(!session_id()) {
 		    }
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 		    	
-		    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
+		    $subTotal = $row['單價'] * $row['數量'];
 		    $toRemitTable = $toRemitTable . "<tr>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
@@ -665,7 +663,7 @@ if(!session_id()) {
 		    $toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['規格'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['Discount'] . "</td>";
+		    $toRemitTable = $toRemitTable . "<td>" . $row['備註'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['匯款日期'] . "</td>";
@@ -693,7 +691,7 @@ if(!session_id()) {
 				<th>品項</th>
 	    		<th>規格</th>
 				<th>單價</th>
-        		<th>折扣</th>
+        		<th>備註</th>
 				<th>數量</th>
 				<th>金額</th>
 				<th>匯款日期</th>
@@ -712,7 +710,7 @@ if(!session_id()) {
 		        $row['匯款日期'] = "";
 		    }
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-		    $subTotal = ($row['單價'] - $row['Discount']) * $row['數量'];
+		    $subTotal = $row['單價'] * $row['數量'];
 		    $remitedTable = $remitedTable . "<tr>";
 		    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
@@ -720,7 +718,7 @@ if(!session_id()) {
 		    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['規格'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['Discount'] . "</td>";
+		    $remitedTable = $remitedTable . "<td>" . $row['備註'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['匯款日期'] . "</td>";
@@ -860,6 +858,7 @@ if(!session_id()) {
 		        	<input type=\"hidden\" value=\"$moneyToBePaid\" name=\"moneyToBePaid\">
 	    	    	<input type=\"hidden\" value=\"$rebateWillBeUpdate\" name=\"rebateWillBeUpdate\">
 	    	    	<input type=\"hidden\" value=\"$rebateTobeDeduct\" name=\"rebateTobeDeduct\">
+	    	    	<input type=\"hidden\" value=\"$actualShippingFee\" name=\"actualShippingFee\">
 				  	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"轉出帳號末5碼，無摺請寫郵局局號\"></p>
 				  	<p><input type=\"text\" name=\"remitAmont\" placeholder=\"匯款金額\"></p>
 				  	<p><input type=\"text\" name=\"memo\" placeholder=\"Memo\"></p>
@@ -888,6 +887,56 @@ if(!session_id()) {
  		else 
  		{
      		echo "<h3>已收到您的資料待對帳</h3>";
+     		
+     		$sql = "SELECT * FROM `RemitRecord` WHERE `匯款編號` = (
+     		SELECT MAX(`匯款編號`)
+     		FROM `RemitRecord` WHERE FBID = '$FBID');";
+     		
+     		$result = mysql_query($sql,$con);
+     		
+     		if (!$result) {
+     			die('Invalid query: ' . mysql_error());
+     		}
+     		 
+     		$row = mysql_fetch_array($result);
+     		$moneyToBePaid = $row['應匯款金額'];
+     		$rebateTobeDeduct = $row['PaidRebate'];
+     		$actualShippingFee = $row['運費'];
+     		$totalPrice = (int)$moneyToBePaid + (int)$rebateTobeDeduct - (int)$actualShippingFee;
+     		
+     		echo "<table style=\"font-size:24px;display: inline-block;\">
+     		<tr>
+     		<th>本期購買金額</th>
+     		<td>$totalPrice</td>
+     		</tr>
+     		</table>";
+     		 
+     		echo '<b><font size="32"> + </font></b>';
+     		 
+     		echo "<table style=\"font-size:24px;display: inline-block;\">
+     		<tr>
+     		<th>本期運費</th>
+     		<td>$actualShippingFee</td>
+     		</tr>
+     		</table>";
+     		 
+     		echo '<b><font size="32"> - </font></b>';
+     		 
+     		echo "<table style=\"font-size:24px;display: inline-block;\">
+     		<tr>
+     		<th>上期回饋金</th>
+     		<td>$rebateTobeDeduct</td>
+     		</tr>
+     		</table>";
+     		 
+     		echo '<b><font size="32"> = </font></b>';
+     		 
+     		echo "<table style=\"font-size:24px;display: inline-block;\">
+     		<tr>
+     		<th>合計匯款金額</th>
+     		<td>$moneyToBePaid</td>
+     		</tr>
+     		</table><br>";
      		
      		echo "<table style=\"font-size:22px;\">
      		<tr>

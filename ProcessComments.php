@@ -17,10 +17,10 @@ $dataArray = $_POST['data'];
 		$itemName = $data['品項'];
 		$spec = $data['規格'];
 		$price = $data['單價'];
-		$discount = $data['折扣'];
+		$comment = $data['備註'];
 		$amount = $data['數量'];
-		$sql = "INSERT INTO `ShippingRecord`(`FB帳號`, `品項`, `單價`, `數量`, `SerialNumber`, `FBID`, `Discount`, `月份`, `規格`, `ItemID`) 
-			VALUES ('$fbAccount', '$itemName', '$price', '$amount', NULL, '$fbId', '$discount', '$month', '$spec', '$itemID')";
+		$sql = "INSERT INTO `ShippingRecord`(`FB帳號`, `品項`, `單價`, `數量`, `SerialNumber`, `FBID`, `備註`, `月份`, `規格`, `ItemID`) 
+			VALUES ('$fbAccount', '$itemName', '$price', '$amount', NULL, '$fbId', '$comment', '$month', '$spec', '$itemID')";
 	
 		$result = mysql_query($sql,$con);
 		if (!$result) {

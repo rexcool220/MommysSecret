@@ -66,8 +66,8 @@ body {
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
-			'app_id' => '1540605312908660',
-			'app_secret' => '9a3a69dcdc8a10b04da656e719552a69',
+			'app_id' => '198155157308846',
+			'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
 			'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -142,7 +142,7 @@ else
 			SELECT DISTINCT ShippingRecord.匯款編號
 			FROM  `ShippingRecord` 
 			WHERE ShippingRecord.確認收款 =1
-			AND ShippingRecord.出貨日期 =  '0000-00-00'
+			AND (ShippingRecord.出貨日期  = '0000-00-00')
 		)
 		AND ShippingRecord.FBID = Members.FBID
 		GROUP BY RemitRecord.FBID
