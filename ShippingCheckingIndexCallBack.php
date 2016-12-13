@@ -145,7 +145,7 @@ else
 			AND (ShippingRecord.出貨日期  = '0000-00-00')
 		)
 		AND ShippingRecord.FBID = Members.FBID
-		GROUP BY RemitRecord.FBID
+		GROUP BY RemitRecord.匯款編號
 		ORDER BY RemitRecord.匯款編號 ASC ";
 	
 	
