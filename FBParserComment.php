@@ -22,7 +22,8 @@ if(!session_id()) {
 	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	
+	<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">	
 	<title>點單確認表</title>
 	<style>
 	#Default {
@@ -69,7 +70,10 @@ if(!session_id()) {
 <script type="text/javascript">
     // Activate an inline edit on click of a table cell  
     $(document).ready(function () {
-        $('#Comments').dataTable({  
+        $('#Comments').dataTable({
+		"fixedHeader": {
+    		header: true,
+    		},
 		dom: 'Bfrtip',
 		buttons: [
 		{
@@ -168,17 +172,21 @@ if(!session_id()) {
 	                this
 					.columns(6)
 					.data()
-					.eq( 0 );      // Reduce the 2D array into a 1D array of data
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data				
 				var itemCount = 
 					this
 					.columns(9)
 					.data()
 					.eq( 0 );      // Reduce the 2D array into a 1D array of data
-
+	            var PriceColumns = 
+	                this
+					.columns(7)
+					.data()
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data	
 				var combinArray = [];
 												
 	            for (var i = 0; i < SpecColumns.length; ++i) {
-	            	combinArray.push([SpecColumns[i], itemCount[i]]);
+	            	combinArray.push([SpecColumns[i], itemCount[i], PriceColumns[i]]);
 	            }
 
 	            combinArray.sort(function sortFunction(a, b) {
@@ -190,12 +198,13 @@ if(!session_id()) {
 			        }
 			    });
 
-	            var SpecArray = [], CountArray = [], prev;
+	            var SpecArray = [], CountArray = [], PriceArray = [],prev;
 	            
 	            for ( var i = 0; i < combinArray.length; i++ ) {
 	                if ( combinArray[i][0] !== prev ) {
 	                	SpecArray.push(combinArray[i][0]);
 	                	CountArray.push(Number(combinArray[i][1]));
+	                	PriceArray.push(Number(combinArray[i][2]));
 	                } else {
 	                	CountArray[CountArray.length-1] = Number(CountArray[CountArray.length-1]) + Number(combinArray[i][1]);
 	                }
@@ -205,7 +214,7 @@ if(!session_id()) {
 				var specCount = "";
 	            
 	            for (var i = 0; i < SpecArray.length; ++i) {
-	            	specCount = specCount + SpecArray[i] + " + " + CountArray[i] + "<br>"; 
+	            	specCount = specCount + SpecArray[i] + " + " + CountArray[i] + "  $" + PriceArray[i] + "<br>"; 
 	            }
 	            	            
 	            $( "#dialogText" ).html(specCount);
@@ -251,7 +260,7 @@ if(!session_id()) {
 		var table = $('#Comments').DataTable();
         $('#Comments tbody').on( 'focusout', 'td', function () {
         	var cell = table.cell( this );
-            cell.data( this.innerHTML ).draw();
+            cell.data( this.innerHTML );
         } );
     });
   
@@ -350,10 +359,20 @@ if(!$accessToken)
 </form>";
 		exit;
 	}
-	
+
+	$latestFBDateStr = "2000-01-01T00:00:00+0000";
 	if (in_array($ID, $ItemIDs)) {
-		echo "<font color=\"red\"><h1>這筆點過了喔，請再確認一次</h1></font>";
+		echo "<font color=\"red\"><h1>這筆點過了，僅顯示尚未處理的資料</h1></font>";
+		$sql = "SELECT 更新時間 FROM  `ItemCategory` WHERE ItemID = $ID";
+		$result = mysql_query($sql,$con);
+		if (!$result) {
+			die('Invalid query: ' . mysql_error());
+		}
+		$row = mysql_fetch_array($result);
+		
+		$latestFBDateStr = $row['更新時間'];
 	}
+	$latestFBDate = strtotime($latestFBDateStr);
 	
 	try {
 		$response = $fb->get("/607414496082801_".$ID."?fields=message,comments.limit(999).summary(true)");
@@ -368,7 +387,7 @@ if(!$accessToken)
 	}
 	$result = $response->getDecodedBody();
 	
-	preg_match("/^\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+/", $result["message"], $matches);
+	preg_match("/^\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]*/", $result["message"], $matches);
 	$itemMonthCategory = $matches[1];
 	$dueDate = $matches[2];
 	$itemName = $matches[3];
@@ -382,7 +401,7 @@ if(!$accessToken)
 // 		echo $result["comments"]["summary"]["total_count"];
 // 		echo count($result["comments"]["data"]);
 	}
-
+	
 	
 	echo "<table id=\"Comments\">
 	<thead><tr>
@@ -401,20 +420,25 @@ if(!$accessToken)
 	
 	for($i = 0; $i < count($result["comments"]["data"]); $i++)
 	{
-		echo "<tr>";
-		echo "<td>".$result["comments"]["data"][$i]["created_time"]."</td>";
-		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["name"]."</td>";
-		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["id"]."</td>";
-		echo "<td>".$itemMonthCategory."</td>";
-		echo "<td>".$ID."</td>";
-		echo "<td>".$itemName."</td>";
-		echo "<td contenteditable=\"true\"></td>";
-		echo "<td contenteditable=\"true\">".$itemPrice."</td>";
-		echo "<td contenteditable=\"true\"></td>";
-		echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["message"]."</td>";
-		echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span>
+
+		if($latestFBDate < strtotime($result["comments"]["data"][$i]["created_time"]))
+		{
+			$latestFBDate = strtotime($result["comments"]["data"][$i]["created_time"]);
+			echo "<tr>";
+			echo "<td>".date('Y-m-d H:i:s', strtotime($result["comments"]["data"][$i]["created_time"]))."</td>";
+			echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["name"]."</td>";
+			echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["from"]["id"]."</td>";
+			echo "<td>".$itemMonthCategory."</td>";
+			echo "<td>".$ID."</td>";
+			echo "<td>".$itemName."</td>";
+			echo "<td contenteditable=\"true\"></td>";
+			echo "<td contenteditable=\"true\">".$itemPrice."</td>";
+			echo "<td contenteditable=\"true\"></td>";
+			echo "<td contenteditable=\"true\">".$result["comments"]["data"][$i]["message"]."</td>";
+			echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span>
 	    		<span class=\"table-duplicate glyphicon glyphicon-duplicate\"></span></td>";
-		echo "</tr>";
+			echo "</tr>";
+		}
 	}
 	
 	echo "</tbody></table>";

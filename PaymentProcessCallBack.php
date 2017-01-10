@@ -79,7 +79,7 @@ if(!session_id()) {
 		}
 		else if(document.getElementById("ShippingWayId").value == "貨運")
 		{
-			shippingFee = 90;
+			shippingFee = 85;
 		}
 		else if(document.getElementById("ShippingWayId").value == "ZOo")
 		{
@@ -563,7 +563,6 @@ if(!session_id()) {
     				<option value=\"店到店\">店到店</option>
     				<option value=\"貨運\">貨運</option>
     				<option value=\"ZOo\">ZOo</option>
-    				<option value=\"Bon Vivant\">Bon Vivant</option>
     				<option value=\"印不停\">印不停</option>
     			</select>
     	    </td>	        		

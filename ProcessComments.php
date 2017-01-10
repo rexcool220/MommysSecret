@@ -7,9 +7,9 @@ header("Content-Type:text/html; charset=utf-8");
 	
 $dataArray = $_POST['data'];
 
+	$latestFBDate = new DateTime("0000-00-00 00:00:00");
 	foreach($dataArray as $data)
 	{
-		$time = $data['時間'];
 		$fbAccount = $data['fb帳號'];
 		$fbId = $data['fbid'];
 		$month = $data['月份'];
@@ -19,6 +19,14 @@ $dataArray = $_POST['data'];
 		$price = $data['單價'];
 		$comment = $data['備註'];
 		$amount = $data['數量'];
+		
+		$fbDate = new DateTime($data['時間']);
+		
+		if($latestFBDate < $fbDate)
+		{
+			$latestFBDate = $fbDate;
+		}
+		
 		$sql = "INSERT INTO `ShippingRecord`(`FB帳號`, `品項`, `單價`, `數量`, `SerialNumber`, `FBID`, `備註`, `月份`, `規格`, `ItemID`) 
 			VALUES ('$fbAccount', '$itemName', '$price', '$amount', NULL, '$fbId', '$comment', '$month', '$spec', '$itemID')";
 	
@@ -27,6 +35,8 @@ $dataArray = $_POST['data'];
 			die('Invalid query: ' . mysql_error());
 		}			
 	}
+	
+	$latestFBDateStr = $latestFBDate->format('Y-m-d H:i:s');
 	
 	$sql = "SELECT ItemID,品項,單價,規格,月份,SUM(數量) FROM `ShippingRecord` WHERE `ItemID` = '$itemID' group by 規格";
 	
@@ -44,7 +54,9 @@ $dataArray = $_POST['data'];
 		$month = $row['月份'];
 		$amount = $row['SUM(數量)'];
 		
-		$sql = "INSERT INTO `ItemCategory`(`ItemID`, `品項`, `單價`, `規格`, `月份`, `需求數量`) VALUES ('$itemID', '$itemName', '$price', '$spec', '$month', '$amount')";
+		$sql = "INSERT INTO `ItemCategory`(`ItemID`, `品項`, `單價`, `規格`, `月份`, `需求數量`, `更新時間`) VALUES ('$itemID', '$itemName', '$price', '$spec', '$month', '$amount', '$latestFBDateStr')
+			ON DUPLICATE KEY UPDATE `品項`=\"$itemName\", `單價`=\"$price\", `月份`=\"$month\", `需求數量`=\"$amount\", `更新時間`=\"$latestFBDateStr\"";		
+		
 		$insertResult = mysql_query($sql,$con);
 		if (!$insertResult) {
 			die('Invalid query: ' . mysql_error());

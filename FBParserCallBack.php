@@ -21,6 +21,8 @@ if(!session_id()) {
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
 	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+	<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">
 	<style>
 	#Default {
 	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -64,6 +66,9 @@ if(!session_id()) {
 <script type="text/javascript">
     $(document).ready(function () {
         $('#ItemsList').dataTable({
+        "fixedHeader": {
+			header: true,
+			},
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
     	"order": [[ 0, "desc" ]]
@@ -183,7 +188,8 @@ if(!$accessToken)
 	    	
 	    	preg_match("/(\d+)_(\d+)/", $page['id'], $matches);
 	    	$id = $matches[2];
-	    	preg_match("/^\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+/", $page['message'], $matches);
+// 	    	echo $page['message']."<br>";
+	    	preg_match("/^\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]+\[([^\]]+)\][^\[]*/", $page['message'], $matches);
 	    	$itemMonthCategory = $matches[1];
 	    	$dueDate = $matches[2];
 	    	$itemName = $matches[3];

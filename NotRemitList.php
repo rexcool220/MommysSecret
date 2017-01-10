@@ -12,6 +12,8 @@ if(!session_id()) {
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">
 <style>
 #Default {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -55,6 +57,9 @@ body {
 <script type="text/javascript">
     $(document).ready(function () {
         $('#NotRemitList').dataTable({
+    		"fixedHeader": {
+    			header: true,
+    		},               
         	"lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]],
         	"order": [[ 3, "desc" ]]
         });

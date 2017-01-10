@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="/resources/demos/style.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script>
 	function validateForm() {
 	    var MemberName = document.forms["MemberInformationForm"]["MemberName"].value;
@@ -47,7 +47,7 @@
 		}
 		else if(document.getElementById("ShippingWayId").value == "貨運")
 		{
-			shippingFee = 90;
+			shippingFee = 85;
 		}
 		else if(document.getElementById("ShippingWayId").value == "ZOo")
 		{
@@ -223,7 +223,6 @@ if(!$accessToken)
 				<option value=\"店到店\">店到店</option>
 				<option value=\"貨運\">貨運</option>
 				<option value=\"ZOo\">ZOo</option>
-				<option value=\"Bon Vivant\">Bon Vivant</option>
 				<option value=\"印不停\">印不停</option>
 			</select>
 	    </td>	        		

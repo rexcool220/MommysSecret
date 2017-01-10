@@ -14,9 +14,11 @@ if(!session_id()) {
 <html>
 
 <head>
-
-<link rel="stylesheet" type="text/css" href="Admin.css?20160830">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="Admin.css?20170110">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <title>MommysSecret</title>
 
 </head>
@@ -125,67 +127,64 @@ else
 		<table id=\"AdminTable\">
 			<tr>
 				<td>
-					<form action=\"MemberView.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"會員資料\">
-		 			</form>
+			        <a href=\"MemberView.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-user\"></span> 會員資料
+			        </a>				
 				</td>
-			</tr>
-			<tr>			
 				<td>
-					<form action=\"MSView.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"訂單管理\">
-		 			</form>
+			        <a href=\"MSView.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-shopping-cart\"></span> 訂單管理
+			        </a>			
+				</td>				
+			</tr>
+			<tr>
+				<td>
+			        <a href=\"ShippingCheckingIndex.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-plane\"></span> 出貨管理
+			        </a>				
+				</td>		
+				<td>
+			        <a href=\"RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-piggy-bank\"></span> 對帳管理
+			        </a>				
 				</td>			
 			</tr>
 			<tr>
 				<td>
-					<form action=\"ShippingCheckingIndex.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"出貨管理\">
-		 			</form>
-				</td>
-			</tr>
-			<tr>			
-				<td>
-					<form action=\"RemitChecking.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"對帳管理\">
-		 			</form>
+			        <a href=\"BuyingInformationByQuery.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-search\"></span> 會員結帳代查詢
+			        </a>				
 				</td>			
-			</tr>
-			<tr>
 				<td>
-					<form action=\"BuyingInformationByQuery.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"會員結帳代查詢\">
-		 			</form>
+			        <a href=\"NotRemitList.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-thumbs-down\"></span> 未匯款清單
+			        </a>				
 				</td>			
 			</tr>		
 			<tr>
 				<td>
-					<form action=\"NotRemitList.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"未匯款清單\">
-		 			</form>
+			        <a href=\"FBParser.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-check\"></span> 點單系統
+			        </a>			
+				</td>			
+				<td>
+			        <a href=\"TagByItemID.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-tags\"></span> Tag小工具
+			        </a>
 				</td>			
 			</tr>		
 			<tr>
 				<td>
-					<form action=\"FBParser.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"點單系統\">
-		 			</form>
+			        <a href=\"ItemCategoryView.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-download-alt\"></span> 到貨管理
+			        </a>
 				</td>			
-			</tr>
-			<tr>
 				<td>
-					<form action=\"TagByItemID.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"Tag小工具\">
-		 			</form>
+			        <a href=\"TagByUnknownMembers.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-question-sign\"></span> 失蹤會員小幫手 
+			        </a>			
 				</td>			
-			</tr>		
-			<tr>
-				<td>
-					<form action=\"ItemCategoryView.php\" method=\"get\" target=\"_blank\">
-		 				<input type=\"submit\" value=\"到貨管理\">
-		 			</form>
-				</td>			
-			</tr>				
+			</tr>	
 		</table>";
 		echo $AdminTable;
 		?>

@@ -22,7 +22,8 @@ if(!session_id()) {
 	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	
+	<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">	
 	<title>Tag小幫手</title>
 	<style>
 	#Default {
@@ -70,6 +71,9 @@ if(!session_id()) {
     // Activate an inline edit on click of a table cell  
     $(document).ready(function () {
         $('#Comments').dataTable({  
+		"fixedHeader": {
+			header: true,
+		},              
 		dom: 'Bfrtip',
 		buttons: [
         {
@@ -112,6 +116,7 @@ if(!session_id()) {
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
     	"order": [[ 0, "asc" ]],
+    	"aaSorting": [],
         "select": {
 	            style:    'os',
 	            selector: 'td:first-child'

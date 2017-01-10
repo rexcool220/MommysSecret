@@ -22,10 +22,9 @@ if(!session_id()) {
 	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	<script src="../../extensions/Editor/js/dataTables.editor.min.js"></script>
 	<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">	
-	<title>到貨管理</title>
+	<title>失蹤會員小幫手</title>
 	<style>
 	#Default {
 	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -65,45 +64,73 @@ if(!session_id()) {
 	</style>
 </head>
 <body>
-
+	<div id="dialog" title="小幫手說">
+		<p id="dialogText"></p>
+	</div>
 <script type="text/javascript">
-    $(document).ready(function () {        
-        $('#ItemCategorys').dataTable({  
+    // Activate an inline edit on click of a table cell  
+    $(document).ready(function () {
+        $('#UnknownMembers').dataTable({  
 		"fixedHeader": {
 			header: true,
-		},               
+		},              
+		dom: 'Bfrtip',
+		buttons: [
+        {
+            text: '產生Tag文字',
+            action: function ( e, dt, node, config ) {
+				this.rows().every( function () {
+				var d = this.data();
+	            	 
+				d.counter++; // update data source for the row
+	            	 
+				this.invalidate(); // invalidate the data DataTables has cached for this row
+				} );
+	                
+	            var FBAccounts = 
+	                this
+					.columns(0)
+					.data()
+					.eq( 0 )
+					.sort()
+					.unique();      // Reduce the 2D array into a 1D array of data
+
+				var FBAccountString = "";
+	            
+	            for (var i = 0; i < FBAccounts.length; ++i) {
+	            	FBAccountString = FBAccountString + "@" + FBAccounts[i] + "<br>"; 
+	            }
+	            	            
+	            $( "#dialogText" ).html(FBAccountString);
+
+	            $( "#dialog" ).dialog();
+            }
+        }
+		],  
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
     	"order": [[ 0, "asc" ]],
-    	select: true
+    	"aaSorting": [],
+        "select": {
+	            style:    'os',
+	            selector: 'td:first-child'
+        	}
         });
-        $('.table-update').click(function () {
-        	var arriveDate = $(this).closest("tr").find(".arriveDate");
-	      	var data = $('#ItemCategorys').DataTable()
-		        .row( $(this).parents('tr') )
-		        .data();
-			
-			$.ajax({
-				type: "POST",
-				url: "UpdateItemCategory.php",
-				data: {data : data}
-			}).done(function(output) {
-				alert(output);
-				arriveDate.html(output);
-			});	        
+        $('.table-remove').click(function () {
+	      	$('#UnknownMembers').DataTable()
+	        .row( $(this).parents('tr') )
+	        .remove()
+	        .draw();
       	});
-//         $("#ItemCategorys").on('click', function() {
-//         	this.invalidate();
-//         	this.draw();
-//         });
-		var table = $('#ItemCategorys').DataTable();
-        $('#ItemCategorys tbody').on( 'focusout', 'td', function () {
-        	var cell = table.cell( this );
-            cell.data( this.innerHTML );
-        } );
+        $('.table-duplicate').click(function () {
+        	var $clone = $(this).closest('tr').clone(true);
+        	$('#UnknownMembers').DataTable()
+        	.row
+        	.add($clone)
+        	.draw();
+      	});
     });
-    // Activate an inline edit on click of a table cell  
-    
+  
 </script>
 
 
@@ -145,7 +172,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '到貨管理', 'http://mommyssecret.tw/ItemCategoryViewCallBack.php' );
+			window.history.replaceState( {} , '失蹤會員小幫手', 'http://mommyssecret.tw/TagByUnknownMembersCallBack.php' );
 		</script>
 	<?php
 	try {
@@ -161,13 +188,8 @@ if(!$accessToken)
 		exit;
 	}
 	$fbAccount = $userNode->getName();
-	if(($fbAccount == 'Gill Fang')||
-			($fbAccount == 'JoLyn Dai')||
-			($fbAccount == 'Queenie Tsan')||
-			($fbAccount == '熊會買')||
-			($fbAccount == '熊哉')||
-    		($fbAccount == '古振平')||
-            ($fbAccount == 'Keira Lin'))
+	if(($fbAccount == '熊會買')||
+		($fbAccount == '熊哉'))
 	{
 	// 	echo "管理者 : $fbAccount";
 	}
@@ -180,45 +202,57 @@ if(!$accessToken)
 	//To get all item id
 	include('ConnectMySQL.php');
 	
-	// get results from database
+	$sql = "SELECT `FBID` FROM `Members`;";
+	$result = mysql_query($sql,$con);
 	
-	$result = mysql_query("SELECT * FROM `ItemCategory`")
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
 	
-	or die(mysql_error());
+	$row = mysql_fetch_array($result);
 	
-	echo "<table id=\"ItemCategorys\">
-	<thead><tr>
-	<th>ItemID</th>	    		
-	<th>品項</th>
-	<th>單價</th>				
-	<th>規格</th>
-	<th>月份</th>	    		
-	<th>需求數量</th>
-	<th>到貨數量</th>
-	<th>成本</th>
-	<th>批發價</th>
-	<th>廠商</th>
-	<th>到貨日期</th>
-	<th>存檔</th>
-	</thead></tr><tbody>";
+	$exsistMembers = array();
 	
 	while($row = mysql_fetch_array($result))
 	{
-		echo "<tr>";		
-		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
-		echo "<td contenteditable=\"true\">".$row[品項]."</td>";
-		echo "<td contenteditable=\"true\">".$row[單價]."</td>";
-		echo "<td contenteditable=\"true\">".$row[規格]."</td>";
-		echo "<td contenteditable=\"true\">".$row[月份]."</td>";
-		echo "<td contenteditable=\"true\">".$row[需求數量]."</td>";
-		echo "<td contenteditable=\"true\">".$row[到貨數量]."</td>";
-		echo "<td contenteditable=\"true\">".$row[成本]."</td>";
-		echo "<td contenteditable=\"true\">".$row[批發價]."</td>";
-		echo "<td contenteditable=\"true\">".$row[廠商]."</td>";
-		echo "<td class=\"arriveDate\">".$row[到貨日期]."</td>";
-		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
-		echo "</tr>";
+		array_push($exsistMembers, $row[FBID]);
 	}
+// 	print_r($exsistMembers);
+		
+	try {
+		$response = $fb->get("607414496082801/members?limit=999");
+	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		// When Graph returns an error
+		echo 'Graph returned an error: ' . $e->getMessage();
+		exit;
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		// When validation fails or other local issues
+		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+		exit;
+	}
+	$result = $response->getDecodedBody();
+	
+	$pagesEdge = $response->getGraphEdge();
+		
+	echo "<table id=\"UnknownMembers\">
+	<thead><tr>	    		
+	<th>FB帳號</th>
+	<th>FBID</th>
+	<th></th>
+	</thead></tr><tbody>";
+	
+	do {
+		foreach ($pagesEdge as $page) {
+			if(in_array($page['id'], $exsistMembers) == false)
+			{
+				echo "<tr>";
+				echo "<td>".$page["name"]."</td>";
+				echo "<td>".$page['id']."</td>";
+				echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
+				echo "</tr>";
+			}
+		}
+	} while ($pagesEdge = $fb->next($pagesEdge));
 	
 	echo "</tbody></table>";
 	?>

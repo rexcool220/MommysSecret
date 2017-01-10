@@ -70,10 +70,128 @@ if(!session_id()) {
         dom: 'Bfrtip',
     	buttons: [
 	    	{
-	    		text: '測試',
-	    		action: function ( e, dt, node, config ) {
-				alert('test');
-	    		}
+	    		text: '上傳資料',
+				action: function ( e, dt, node, config ) {
+					//verify columns
+					var FBAccounts = 
+		                this
+						.columns(0)
+						.data()
+						.eq( 0 );      // Reduce the 2D array into a 1D array of data
+					var itemNames = 
+						this
+						.columns(1)
+						.data()
+						.eq( 0 );      // Reduce the 2D array into a 1D array of data
+
+					var itemPrices = 
+						this
+						.columns(2)
+						.data()
+						.eq( 0 );      // Reduce the 2D array into a 1D array of data
+					var itemCounts = 
+		                this
+						.columns(3)
+						.data()
+						.eq( 0 );      // Reduce the 2D array into a 1D array of data
+					var FBIDs = 
+						this
+						.columns(9)
+						.data()
+						.eq( 0 );      // Reduce the 2D array into a 1D array of data
+
+					var months = 
+						this
+						.columns(11)
+						.data()
+						.eq( 0 );      // Reduce the 2D array into a 1D array of data		
+					var actives = 
+						this
+						.columns(12)
+						.data()
+						.eq( 0 );      // Reduce the 2D array into a 1D array of data											
+		            for (var i = 0; i < FBAccounts.length; ++i) {
+		            	if(FBAccounts[i] == "")
+		            	{
+			            	alert("請檢查FB帳號!");
+			            	return false;
+		            	}
+		            }
+
+		            for (var i = 0; i < itemNames.length; ++i) {
+		            	if(itemNames[i] == "")
+		            	{
+			            	alert("請檢查品項!");
+			            	return false;
+		            	}
+		            }
+
+		            for (var i = 0; i < itemPrices.length; ++i) {
+		            	if(itemPrices[i] == "")
+		            	{
+			            	alert("請檢查價格!");
+			            	return false;
+		            	}
+		            }
+		            for (var i = 0; i < itemCounts.length; ++i) {
+		            	if(itemCounts[i] == "")
+		            	{
+			            	alert("請檢查數量!");
+			            	return false;
+		            	}
+		            }
+
+		            for (var i = 0; i < FBIDs.length; ++i) {
+		            	if(FBIDs[i] == "")
+		            	{
+			            	alert("請檢查FBID!");
+			            	return false;
+		            	}
+		            }
+
+		            for (var i = 0; i < months.length; ++i) {
+		            	if(months[i] == "")
+		            	{
+			            	alert("請檢查月份!");
+			            	return false;
+		            	}
+		            }		            
+		            for (var i = 0; i < actives.length; ++i) {
+		            	if(actives[i] == "")
+		            	{
+			            	alert("請檢查Active!");
+			            	return false;
+		            	}
+		            }		
+					
+			        jQuery.fn.pop = [].pop;
+			        jQuery.fn.shift = [].shift;
+			        var $rows = $('#ItemInformation').find('tr:not(:hidden)');
+			        var headers = [];
+			        var data = [];
+			        $($rows.shift()).find('th:not(:empty)').each(function () {
+			            headers.push($(this).text());
+					});
+			          
+					//Turn all existing rows into a loopable array
+					$rows.each(function () {
+						var $td = $(this).find('td');
+						var h = {};
+				            
+						//Use the headers from earlier to name our hash keys
+						headers.forEach(function (header, i) {
+							h[header] = $td.eq(i).text();   
+						});
+						data.push(h);
+					});
+					$.ajax({
+						type: "POST",
+						url: "MSBatchAdd.php",
+						data: {data : data}
+					}).done(function(output) {
+						alert(output);
+					});
+				}
 	    	}
     	],           
         "lengthMenu": [[-1], ["All"]],
@@ -97,17 +215,17 @@ if(!session_id()) {
         $('.table-remove').click(function () {
             if(confirm("確定刪除?"))
             {
-	        	var data = $('#ItemInformation').DataTable()
-			        .row( $(this).parents('tr') )
-			        .data();
+// 	        	var data = $('#ItemInformation').DataTable()
+// 			        .row( $(this).parents('tr') )
+// 			        .data();
 			
-				$.ajax({
-					type: "POST",
-					url: "MSDelete.php",
-					data: {data : data}
-				}).done(function(output) {
-					alert(output);
-				});	  
+// 				$.ajax({
+// 					type: "POST",
+// 					url: "MSDelete.php",
+// 					data: {data : data}
+// 				}).done(function(output) {
+// 					alert(output);
+// 				});	  
 		      	$('#ItemInformation').DataTable()
 		        .row( $(this).parents('tr') )
 		        .remove()
@@ -128,7 +246,7 @@ if(!session_id()) {
 		var table = $('#ItemInformation').DataTable();
         $('#ItemInformation tbody').on( 'focusout', 'td', function () {
         	var cell = table.cell( this );
-            cell.data( this.innerHTML ).draw();
+            cell.data( this.innerHTML );
         } );
     });
     // Activate an inline edit on click of a table cell  
