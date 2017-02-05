@@ -68,14 +68,14 @@ if(!session_id()) {
 
 <script type="text/javascript">
     $(document).ready(function () {        
-        $('#ItemCategorys').dataTable({  
-		"fixedHeader": {
-			header: true,
-		},               
+        $('#ItemCategorys').dataTable({                
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
     	"order": [[ 0, "asc" ]],
-    	select: true
+    	select: true,
+		"fixedHeader": {
+			header: true,
+		}
         });
         $('.table-update').click(function () {
         	var arriveDate = $(this).closest("tr").find(".arriveDate");
@@ -100,6 +100,24 @@ if(!session_id()) {
         $('#ItemCategorys tbody').on( 'focusout', 'td', function () {
         	var cell = table.cell( this );
             cell.data( this.innerHTML );
+            var row = $(this).parent().parent().children().index($(this).parent());
+            var col = $(this).parent().children().index($(this));
+            if((col == 6)||(col == 7))
+            {
+            	var activeCell = table.cell(row, 12);
+            	requestAmount = parseInt($(this).parent().children(':nth-child(7)').text());//需求數量
+            	currentAmount = parseInt($(this).parent().children(':nth-child(8)').text());//到貨數量
+				if(currentAmount >= requestAmount)
+				{
+					$(this).parent().children().eq(12).empty().append('1');
+					activeCell.data('1').draw();
+				}
+				else
+				{
+					$(this).parent().children().eq(12).empty().append('0');
+					activeCell.data('0').draw();
+				}
+            }
         } );
     });
     // Activate an inline edit on click of a table cell  
@@ -188,7 +206,8 @@ if(!$accessToken)
 	
 	echo "<table id=\"ItemCategorys\">
 	<thead><tr>
-	<th>ItemID</th>	    		
+	<th>商品圖</th>
+	<th>ItemID</th>		
 	<th>品項</th>
 	<th>單價</th>				
 	<th>規格</th>
@@ -199,12 +218,15 @@ if(!$accessToken)
 	<th>批發價</th>
 	<th>廠商</th>
 	<th>到貨日期</th>
+	<th>Active</th>			
 	<th>存檔</th>
 	</thead></tr><tbody>";
 	
 	while($row = mysql_fetch_array($result))
 	{
-		echo "<tr>";		
+		echo "<tr>";
+		echo "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+// 		echo "<td><img src=uploads/".$row[Photo]." /></td>";
 		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
 		echo "<td contenteditable=\"true\">".$row[品項]."</td>";
 		echo "<td contenteditable=\"true\">".$row[單價]."</td>";
@@ -216,6 +238,7 @@ if(!$accessToken)
 		echo "<td contenteditable=\"true\">".$row[批發價]."</td>";
 		echo "<td contenteditable=\"true\">".$row[廠商]."</td>";
 		echo "<td class=\"arriveDate\">".$row[到貨日期]."</td>";
+		echo "<td>".$row[Active]."</td>";
 		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
 		echo "</tr>";
 	}

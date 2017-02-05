@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
-require_once 'ConnectMySQL.php';
+require_once '../ConnectMySQL.php';
 
 header("Content-Type:text/html; charset=utf-8");
 	

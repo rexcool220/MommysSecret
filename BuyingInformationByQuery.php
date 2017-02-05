@@ -238,6 +238,7 @@ if(!session_id()) {
 	        $rebateWillBeUpdate = $_POST['rebateWillBeUpdate'];
 	        $rebateTobeDeduct = $_POST['rebateTobeDeduct'];
 	        $actualShippingFee = $_POST['actualShippingFee'];
+	        $rebate = $_POST['rebate'];
         	
 	        if ($remitLastFiveDigit == "")
 	        {
@@ -267,6 +268,28 @@ if(!session_id()) {
 	    	    if (!$result) {
 	    	    	die('Invalid query: ' . mysql_error());
 	    	    }
+	    	    
+	    	    if($rebateTobeDeduct > 0)
+	    	    {
+	    	    	$sql = "INSERT INTO `RebateRecord`(`登入帳號`, `顧客FB帳號`, `顧客FBID`, `修改金額`, `備註`, `修改日期`, `RebateNumber`, `目前回饋金`)
+	    	    	VALUES ('熊會買','$memberFBAccount','$memberFBID','-$rebateTobeDeduct','系統自動處理',CURDATE(),NULL,$rebate-$rebateTobeDeduct)";
+	    	    	$result = mysql_query($sql,$con);
+	    	    	if (!$result) {
+	    	    		die('Invalid query: ' . mysql_error());
+	    	    	}
+	    	    }
+	    	    	
+	    	    if(($rebateWillBeUpdate - $rebate) > 0)
+	    	    {
+	    	    	$sql = "INSERT INTO `RebateRecord`(`登入帳號`, `顧客FB帳號`, `顧客FBID`, `修改金額`, `備註`, `修改日期`, `RebateNumber`, `目前回饋金`)
+	    	    	VALUES ('熊會買','$memberFBAccount','$memberFBID','$rebateWillBeUpdate - $rebate','系統自動處理',CURDATE(),NULL,'$rebateWillBeUpdate')";
+	    	    	$result = mysql_query($sql,$con);
+	    	    	if (!$result) {
+	    	    		die('Invalid query: ' . mysql_error());
+	    	    	}
+	    	    }
+	    	    
+	    	    
 	    	    
 	            $_SESSION[$memberFBID] = true;   
 	     		header("location: http://mommyssecret.tw/BuyingInformationByQuery.php");
@@ -817,6 +840,7 @@ if(!session_id()) {
 		    {
 		    	$rebateToBeIncrease = 0;
 		    }
+		    
 		    if($moneyToBePaid >= $rebate)
 		    {
 		    	$rebateTobeDeduct = $rebate;
@@ -829,6 +853,7 @@ if(!session_id()) {
 		    	$rebateWillBeUpdate = $rebate - $rebateTobeDeduct + $rebateToBeIncrease;
 		    	$moneyToBePaid = 0;
 		    }
+		    
 		    if($type == '團媽')
 		    {
 		    	$rebateToBeIncrease = 0;
@@ -904,6 +929,7 @@ if(!session_id()) {
 		        	<input type=\"hidden\" value=\"$moneyToBePaid\" name=\"moneyToBePaid\">
 	    	    	<input type=\"hidden\" value=\"$rebateWillBeUpdate\" name=\"rebateWillBeUpdate\">
 	    	    	<input type=\"hidden\" value=\"$shippingFee\" name=\"shippingFee\">
+	    	    	<input type=\"hidden\" value=\"$rebate\" name=\"rebate\">
 				  	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"轉出帳號末5碼，無摺請寫郵局局號\"></p>
 				  	<p><input type=\"text\" name=\"remitAmont\" placeholder=\"匯款金額\"></p>
 				  	<p><input type=\"text\" name=\"memo\" placeholder=\"Memo\"></p>

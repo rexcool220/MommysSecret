@@ -10,7 +10,7 @@ if(!session_id()) {
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FBParser</title>
+	<title>點單</title>
 	<meta name="format-detection" content="telephone=no">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">

@@ -1,12 +1,7 @@
 <?php
-	require_once __DIR__ . '/vendor/autoload.php';
+	require_once dirname(__DIR__).'/vendor/autoload.php';
 	if(!session_id()) {
 		session_start();
-	}
-	if($_GET['googleFormUrl'] == '')
-	{
-		echo 'Google form url is empty';
-		//exit;
 	}
 	
 	$fb = new Facebook\Facebook([
@@ -17,10 +12,8 @@
 	$helper = $fb->getRedirectLoginHelper();
 	
 	$permissions = ['email','user_managed_groups']; // optional
-	//$permissions = ['email','publish_actions','user_managed_groups']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/ItemCategoryViewCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/Customer/CustomerPageCallBack.php', $permissions);
 	
-	//echo urldecode($loginUrl);
 	header("location: ".$loginUrl);
 ?>

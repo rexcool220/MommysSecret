@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
-include_once "./vendor/google/apiclient/examples/templates/base.php";
-require_once 'ConnectMySQL.php';
+require_once dirname(__DIR__).'/vendor/autoload.php';
+include_once "../vendor/google/apiclient/examples/templates/base.php";
+require_once '../ConnectMySQL.php';
 header("Content-Type:text/html; charset=utf-8");
 if(!session_id()) {
 	session_start();
@@ -18,7 +18,6 @@ if(!session_id()) {
 	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="//code.jquery.com/jquery-1.12.3.js"></script>
 	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -77,14 +76,13 @@ if(!session_id()) {
     	select: true
         });
         $('.table-update').click(function () {
-
 	      	var data = $('#MemberInformation').DataTable()
 		        .row( $(this).parents('tr') )
 		        .data();
 			
 			$.ajax({
 				type: "POST",
-				url: "MemberEdit.php",
+				url: "/Members/MemberEdit.php",
 				data: {data : data}
 			}).done(function(output) {
 				alert(output);
@@ -97,16 +95,59 @@ if(!session_id()) {
 		var table = $('#MemberInformation').DataTable();
         $('#MemberInformation tbody').on( 'focusout', 'td', function () {
         	var cell = table.cell( this );
-//             cell.data( this.innerHTML ).draw();
             cell.data( this.innerHTML );
         } );
+    	$("#submit").click(function(event){
+			var amount = $('#amount');
+			var comment = $('#comment');
+			amount.closest('.form-group').removeClass('has-error').addClass('has-success');
+			comment.closest('.form-group').removeClass('has-error').addClass('has-success');
+			if(!amount.val() || !comment.val()) {
+				if(!amount.val())
+				{
+					amount.closest('.form-group').removeClass('has-success').addClass('has-error');
+				}
+				if(!comment.val())
+				{
+					comment.closest('.form-group').removeClass('has-success').addClass('has-error');
+				}
+				event.preventDefault();
+			}
+			else
+			{
+	    		event.preventDefault();
+	    		$.ajax({
+					type: "POST",
+					url: "/Members/RebateEdit.php",
+					data: $(rebateform).serialize(),
+				}).done(function(output) {
+					alert(output);
+				});
+	    		$('#myModal').modal('hide');
+			}
+    	});
     });
-    // Activate an inline edit on click of a table cell  
+	function editRebate(tableCell) {
+		if($('#accountType').text() == "共用帳號")
+		{
+			alert("修改回饋金，請不要使用共用帳號");
+		}
+		else
+		{
+	// 		alert(tableCell.parentNode.childNodes[0].innerHTML);
+			$('#loginFBAccount').val($('#fbAccount').text());
+			$('#customberFBAccount').val(tableCell.parentNode.childNodes[0].innerHTML);
+			$('#customerFBID').val(tableCell.parentNode.childNodes[8].innerHTML);
+			$('#logInAccount').val();
+			$('#myModal').modal('show');
+		}
+	}
     
 </script>
 
 
 <?php
+
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
@@ -144,7 +185,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '會員管理', 'http://mommyssecret.tw/MemberView.php' );
+			window.history.replaceState( {} , '會員管理', 'http://mommyssecret.tw/Members/MemberView.php' );
 		</script>
 	<?php
 	try {
@@ -159,27 +200,30 @@ if(!$accessToken)
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
+	
+	
+	$fbID = $userNode->getId();
+	
 	$fbAccount = $userNode->getName();
-	if(($fbAccount == 'Gill Fang')||
-			($fbAccount == 'JoLyn Dai')||
-			($fbAccount == 'Queenie Tsan')||
-			($fbAccount == '熊會買')||
-			($fbAccount == '熊哉')||
-    		($fbAccount == '古振平')||
-            ($fbAccount == 'Keira Lin'))
+	
+	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
+	
+	or die(mysql_error());
+	
+	$row = mysql_fetch_array($result);
+	
+	$type = $row['TYPE'];
+	
+	if(($type == "管理員") || ($type == "共用帳號"))
 	{
-	// 	echo "管理者 : $fbAccount";
+		echo "<p hidden id=\"accountType\">$type</p>";
+		echo "<p hidden id=\"fbAccount\">$fbAccount</p>";
 	}
 	else
 	{
 		echo "$fbAccount : 你不是管理者";
 		exit;
 	}
-	
-	//To get all item id
-	include('ConnectMySQL.php');
-	
-	// get results from database
 	
 	$result = mysql_query("SELECT * FROM `Members`")
 	
@@ -226,7 +270,7 @@ if(!$accessToken)
 		echo "<td contenteditable=\"true\">".$row[運費]."</td>";
 		echo "<td contenteditable=\"true\">".$row[備註]."</td>";
 		echo "<td contenteditable=\"true\">".$row[FBID]."</td>";
-		echo "<td contenteditable=\"true\">".$row[Rebate]."</td>";
+		echo "<td onclick=\"editRebate(this)\">".$row[Rebate]."</td>";
 		echo "<td contenteditable=\"true\">".$row[Type]."</td>";
 		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
 		echo "</tr>";
@@ -234,5 +278,44 @@ if(!$accessToken)
 	
 	echo "</tbody></table>";
 	?>
+  <!-- Modal -->
+<!-- Modal -->
+<!-- modal contact form -->
+<div id="myModal" class="modal fade" aria-labelledby="myModalLabel" aria-hidden="true" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">回饋金表單</h4>
+            </div>
+            <div class="modal-body" id="myModalBody">
+                <form id="rebateform" role="form" >
+                	<div class="form-group">
+                        <label for="loginFBAccount">登入帳號</label>
+                        <input type="text" name="loginFBAccount" id="loginFBAccount" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="customberFBAccount">客戶帳號</label>
+                        <input type="text" name="customberFBAccount" id="customberFBAccount" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerFBID">客戶FBID</label>
+                        <input type="text" name="customerFBID" id="customerFBID" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">金額</label>
+                        <input type="text" name="amount" id="amount" placeholder="輸入欲增加/減少的金額" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">備註</label>
+                        <textarea name="comment" id="comment" rows="4" placeholder="請註明修改原因" class="form-control"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="submit" class="btn btn-success">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
-	

@@ -1,5 +1,5 @@
 <?php
-	require_once __DIR__ . '/vendor/autoload.php';
+	require_once dirname(__DIR__).'/vendor/autoload.php';
 	if(!session_id()) {
 		session_start();
 	}
@@ -16,10 +16,9 @@
 	]);
 	$helper = $fb->getRedirectLoginHelper();
 	
-	$permissions = ['email','user_managed_groups']; // optional
-	//$permissions = ['email','publish_actions','user_managed_groups']; // optional
+	$permissions = ['email','user_managed_groups','publish_actions']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/ItemCategoryViewCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/CreateCommodity/FBPosterCallBack.php', $permissions);
 	
 	//echo urldecode($loginUrl);
 	header("location: ".$loginUrl);

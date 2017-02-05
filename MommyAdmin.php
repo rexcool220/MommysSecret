@@ -127,63 +127,75 @@ else
 		<table id=\"AdminTable\">
 			<tr>
 				<td>
-			        <a href=\"MemberView.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/Members/MemberView.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-user\"></span> 會員資料
 			        </a>				
 				</td>
 				<td>
-			        <a href=\"MSView.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"MSView.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-shopping-cart\"></span> 訂單管理
 			        </a>			
 				</td>				
 			</tr>
 			<tr>
 				<td>
-			        <a href=\"ShippingCheckingIndex.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/Employee/ShippingCheckingIndex.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-plane\"></span> 出貨管理
 			        </a>				
 				</td>		
 				<td>
-			        <a href=\"RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-piggy-bank\"></span> 對帳管理
 			        </a>				
 				</td>			
 			</tr>
 			<tr>
 				<td>
-			        <a href=\"BuyingInformationByQuery.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"BuyingInformationByQuery.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-search\"></span> 會員結帳代查詢
 			        </a>				
 				</td>			
 				<td>
-			        <a href=\"NotRemitList.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"NotRemitList.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-thumbs-down\"></span> 未匯款清單
 			        </a>				
 				</td>			
 			</tr>		
 			<tr>
 				<td>
-			        <a href=\"FBParser.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"FBParser.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-check\"></span> 點單系統
 			        </a>			
 				</td>			
 				<td>
-			        <a href=\"TagByItemID.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"TagByItemID.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-tags\"></span> Tag小工具
 			        </a>
 				</td>			
 			</tr>		
 			<tr>
 				<td>
-			        <a href=\"ItemCategoryView.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"ItemCategoryView.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-download-alt\"></span> 到貨管理
 			        </a>
 				</td>			
 				<td>
-			        <a href=\"TagByUnknownMembers.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"TagByUnknownMembers.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-question-sign\"></span> 失蹤會員小幫手 
 			        </a>			
 				</td>			
+			</tr>
+			<tr>
+				<td>
+			        <a target=\"_blank\" href=\"/CreateCommodity/FBPoster.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-comment\"></span> 開團小幫手
+			        </a>
+				</td>
+				<td>
+			        <a target=\"_blank\" href=\"/Members/RebateView.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-usd\"></span> 回饋金查詢
+			        </a>
+				</td>	
 			</tr>	
 		</table>";
 		echo $AdminTable;

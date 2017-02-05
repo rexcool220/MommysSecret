@@ -15,7 +15,7 @@ $itemID = $_POST['itemID'];
 		die('Invalid query: ' . mysql_error());
 	}
 	
-	$sql = "DELETE FROM `ItemCategory` WHERE `ItemID` = $itemID";
+	$sql = "UPDATE `ItemCategory` SET `需求數量`= 0, `Active` = '0' WHERE `ItemID` = $itemID";
 	
 	$result = mysql_query($sql,$con);
 	if (!$result) {

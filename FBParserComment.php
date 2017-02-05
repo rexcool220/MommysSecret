@@ -391,7 +391,7 @@ if(!$accessToken)
 	$itemMonthCategory = $matches[1];
 	$dueDate = $matches[2];
 	$itemName = $matches[3];
-	preg_match("/(^[0-9]+)/", $matches[4], $priceMatches);
+	preg_match("/：([0-9]+)/", $matches[4], $priceMatches);
 
 	$itemPrice = $priceMatches[1];
 	

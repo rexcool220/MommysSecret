@@ -219,41 +219,71 @@ if(!$accessToken)
 	}
 // 	print_r($exsistMembers);
 		
-	try {
-		$response = $fb->get("607414496082801/members?limit=999");
-	} catch(Facebook\Exceptions\FacebookResponseException $e) {
-		// When Graph returns an error
-		echo 'Graph returned an error: ' . $e->getMessage();
-		exit;
-	} catch(Facebook\Exceptions\FacebookSDKException $e) {
-		// When validation fails or other local issues
-		echo 'Facebook SDK returned an error: ' . $e->getMessage();
-		exit;
-	}
-	$result = $response->getDecodedBody();
+// 	try {
+// 		$response = $fb->get("607414496082801/members?limit=999");
+// 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+// 		// When Graph returns an error
+// 		echo 'Graph returned an error: ' . $e->getMessage();
+// 		exit;
+// 	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+// 		// When validation fails or other local issues
+// 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+// 		exit;
+// 	}
+// 	$result = $response->getDecodedBody();
 	
-	$pagesEdge = $response->getGraphEdge();
+// 	$pagesEdge = $response->getGraphEdge();
 		
+// 	echo "<table id=\"UnknownMembers\">
+// 	<thead><tr>	    		
+// 	<th>FB帳號</th>
+// 	<th>FBID</th>
+// 	<th></th>
+// 	</thead></tr><tbody>";
+	
+// 	do {
+// 		foreach ($pagesEdge as $page) {
+// 			if(in_array($page['id'], $exsistMembers) == false)
+// 			{
+// 				echo "<tr>";
+// 				echo "<td>".$page["name"]."</td>";
+// 				echo "<td>".$page['id']."</td>";
+// 				echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
+// 				echo "</tr>";
+// 			}
+// 		}
+// 	} while ($pagesEdge = $fb->next($pagesEdge));
+	
+// 	echo "</tbody></table>";
+
+$sql = "SELECT `FBID`, `FB帳號` FROM  `ShippingRecord` WHERE `匯款日期` = '0000-00-00' GROUP BY (`FBID`)";
+$result = mysql_query($sql,$con);
+
+if (!$result) {
+	die('Invalid query: ' . mysql_error());
+}
+
+$row = mysql_fetch_array($result);
+	
 	echo "<table id=\"UnknownMembers\">
-	<thead><tr>	    		
+	<thead><tr>
 	<th>FB帳號</th>
 	<th>FBID</th>
 	<th></th>
 	</thead></tr><tbody>";
 	
-	do {
-		foreach ($pagesEdge as $page) {
-			if(in_array($page['id'], $exsistMembers) == false)
-			{
-				echo "<tr>";
-				echo "<td>".$page["name"]."</td>";
-				echo "<td>".$page['id']."</td>";
-				echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
-				echo "</tr>";
-			}
+	while($row = mysql_fetch_array($result))
+	{
+		if(in_array($row['FBID'], $exsistMembers) == false)
+		{
+			echo "<tr>";
+			echo "<td>".$row['FB帳號']."</td>";
+			echo "<td>".$row['FBID']."</td>";
+			echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
+			echo "</tr>";
 		}
-	} while ($pagesEdge = $fb->next($pagesEdge));
-	
+	}
+
 	echo "</tbody></table>";
 	?>
 </body>
