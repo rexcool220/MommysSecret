@@ -85,6 +85,11 @@ if(!session_id()) {
 					.columns(5)
 					.data()
 					.eq( 0 );      // Reduce the 2D array into a 1D array of data
+				var itemSpecs = 
+	                this
+					.columns(6)
+					.data()
+					.eq( 0 );      // Reduce the 2D array into a 1D array of data					
 				var itemPrices = 
 					this
 					.columns(7)
@@ -104,6 +109,14 @@ if(!session_id()) {
 		            	return false;
 	            	}
 	            }
+	            for (var i = 0; i < itemSpecs.length; ++i) {
+	            	if((itemSpecs[i] == "")||($( "#specList" ).text().includes(itemSpecs[i]) == false))
+	            	{
+		            	alert(itemSpecs[i]);
+		            	alert("請檢查規格!");
+		            	return false;
+	            	}
+	            }	            
 
 	            for (var i = 0; i < itemPrices.length; ++i) {
 	            	if(itemPrices[i] == "")
@@ -401,7 +414,16 @@ if(!$accessToken)
 // 		echo $result["comments"]["summary"]["total_count"];
 // 		echo count($result["comments"]["data"]);
 	}
-	
+	$sql = "SELECT 規格 FROM  `ItemCategory` WHERE ItemID = $ID";
+	$specResult = mysql_query($sql,$con);
+	if (!$specResult) {
+		die('Invalid query: ' . mysql_error());
+	}
+	echo "<p id=\"specList\">規格:";
+	while($specRow = mysql_fetch_array($specResult)) {
+		echo $specRow['規格'].'/';
+	}
+	echo "</p>";
 	
 	echo "<table id=\"Comments\">
 	<thead><tr>

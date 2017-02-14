@@ -39,7 +39,7 @@ if(isset($_GET['remitNumber'])) {
 	$row = mysql_fetch_array($result);
 	$FBID = $row['FBID'];
 	
-	$sql = "SELECT * FROM `ShippingRecord` WHERE 匯款編號 = '$remitNumber' AND Active = true";
+	$sql = "SELECT * FROM `ShippingRecord` WHERE 匯款編號 = '$remitNumber' AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true)";
 	$result = mysql_query($sql,$con);
 	
 	if (!$result) {

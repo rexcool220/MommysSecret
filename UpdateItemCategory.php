@@ -20,7 +20,7 @@ header("Content-Type:text/html; charset=utf-8");
 	$arriveDate = $dataArray[11];
 	$active = $dataArray[12];
 	
- 	$sql = "UPDATE `ItemCategory` SET `品項`= '$itemName', `單價`= '$price', `月份`= '$month', `需求數量` = '$requireAmount', `到貨數量` = '$arriveAmount', `成本` = '$cost', `批發價` = '$wholesalePrice', `廠商` = '$vendor', `到貨日期` = CURDATE(), `Active` = '$active' WHERE `ItemID` = '$itemID' AND `規格` like '$spec%'";
+ 	$sql = "UPDATE `ItemCategory` SET `品項`= '$itemName', `價格`= '$price', `月份`= '$month', `需求數量` = '$requireAmount', `到貨數量` = '$arriveAmount', `成本` = '$cost', `批發價` = '$wholesalePrice', `廠商` = '$vendor', `到貨日期` = CURDATE(), `Active` = '$active' WHERE `ItemID` = '$itemID' AND `規格` = '$spec'";
 		
 	$result = mysql_query($sql,$con);
 	if (!$result) {

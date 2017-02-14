@@ -149,8 +149,8 @@ if(!$accessToken)
 	
 	for($i = 0;$i < $itemSpecCounts;$i++)
 	{
-		$sql = "INSERT INTO `ItemCategory`(`ItemID`, `品項`, `規格`, `單價`, `成本`, `批發價`, `月份`, `收單日期`, `廠商`, `Photo`) VALUES ('$itemID', '$itemName', '$itemSpec[$i]', '$itemPrice[$i]', '$itemCost[$i]', '$itemShopPrice[$i]', '$month', '$closeDate', '$vendor', '$fileToBeUpload')
-		ON DUPLICATE KEY UPDATE `品項`=\"$itemName\", `單價`=\"$itemPrice[$i]\", `成本`=\"$itemCost[$i]\", `批發價`=\"$itemShopPrice[$i]\", `月份`=\"$month\", `收單日期`=\"$closeDate\", `廠商`=\"$vendor\", `Photo`=\"$fileToBeUpload\"";
+		$sql = "INSERT INTO `ItemCategory`(`ItemID`, `品項`, `規格`, `價格`, `成本`, `批發價`, `月份`, `收單日期`, `廠商`, `Photo`) VALUES ('$itemID', '$itemName', '$itemSpec[$i]', '$itemPrice[$i]', '$itemCost[$i]', '$itemShopPrice[$i]', '$month', '$closeDate', '$vendor', '$fileToBeUpload')
+		ON DUPLICATE KEY UPDATE `品項`=\"$itemName\", `價格`=\"$itemPrice[$i]\", `成本`=\"$itemCost[$i]\", `批發價`=\"$itemShopPrice[$i]\", `月份`=\"$month\", `收單日期`=\"$closeDate\", `廠商`=\"$vendor\", `Photo`=\"$fileToBeUpload\"";
 		$insertResult = mysql_query($sql,$con);
 		if (!$insertResult) {
 			die('Invalid query: ' . mysql_error());

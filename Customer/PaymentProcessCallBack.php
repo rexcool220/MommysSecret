@@ -187,7 +187,7 @@ if(!session_id()) {
     	        die('Invalid query: ' . mysql_error());
     	    }
     	    	
-    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND Active = true ";
+    	    $sql = "UPDATE `ShippingRecord` SET `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ";
     	    $result = mysql_query($sql,$con);
     	    if (!$result) {
     	        die('Invalid query: ' . mysql_error());
@@ -311,7 +311,7 @@ if(!session_id()) {
     </div>
     <div id="menu1" class="tab-pane fade"><br>
 		<?php 
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND Active = true order by FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) order by FB帳號;";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -369,7 +369,7 @@ if(!session_id()) {
 			}
 			$toRemitTable = $toRemitTable . "</table>";
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND Active = true order by FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) order by FB帳號;";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -425,7 +425,7 @@ if(!session_id()) {
 			}
 			$remitedTable = $remitedTable . "</table>";			
 			
-			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00' AND Active = true order by FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND 出貨日期 = '0000-00-00' AND 匯款日期 <> '0000-00-00' AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) order by FB帳號;";
 				
 			$result = mysql_query($sql,$con);
 				
@@ -636,7 +636,7 @@ if(!session_id()) {
     <div id="menu3" class="tab-pane fade"><br>
 		<?php
 		
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND Active = true order by FB帳號;";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) order by FB帳號;";
 			
 		$result = mysql_query($sql,$con);
 			
@@ -694,7 +694,7 @@ if(!session_id()) {
 		}
 		$toRemitTable = $toRemitTable . "</table>";
 			
-		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND Active = true order by FB帳號;";
+		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) order by FB帳號;";
 			
 		$result = mysql_query($sql,$con);
 			

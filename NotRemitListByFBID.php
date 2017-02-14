@@ -158,7 +158,7 @@ if(isset($CustomerFBID)) {
 	echo $MemberInformation;
 	
 
-    $sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$CustomerFBID' AND 匯款日期= '0000-00-00' AND Active = true ORDER BY SerialNumber;";
+    $sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$CustomerFBID' AND 匯款日期= '0000-00-00' AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ORDER BY SerialNumber;";
 
     $result = mysql_query($sql,$con);
 

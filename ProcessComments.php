@@ -54,10 +54,7 @@ $dataArray = $_POST['data'];
 		$month = $row['月份'];
 		$amount = $row['SUM(數量)'];
 		
-		$sql = "INSERT INTO `ItemCategory`(`ItemID`, `品項`, `單價`, `規格`, `月份`, `需求數量`, `更新時間`) VALUES ('$itemID', '$itemName', '$price', '$spec', '$month', '$amount', '$latestFBDateStr')
-			ON DUPLICATE KEY UPDATE `品項`=\"$itemName\", `單價`=\"$price\", `月份`=\"$month\", `需求數量`=\"$amount\", `更新時間`=\"$latestFBDateStr\"";		
-		
-// 		$sql = "UPDATE `ItemCategory` SET `需求數量` = $amount,`更新時間` = $latestFBDateStr WHERE `ItemID` = $itemID AND　`規格` = $spec";
+		$sql = "UPDATE `ItemCategory` SET `需求數量`='$amount',`更新時間`='$latestFBDateStr' WHERE `ItemID` = '$itemID' AND `規格`='$spec'";		
 		
 		$insertResult = mysql_query($sql,$con);
 		if (!$insertResult) {

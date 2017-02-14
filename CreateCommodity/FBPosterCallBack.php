@@ -192,6 +192,26 @@ if(!$accessToken)
 			    <option>28</option>
 			    <option>29</option>
 			    <option>30</option>
+			    <option>31</option>
+			    <option>32</option>
+			    <option>33</option>
+			    <option>34</option>
+			    <option>35</option>
+			    <option>36</option>
+			    <option>37</option>
+			    <option>38</option>
+			    <option>39</option>
+			    <option>40</option>
+			    <option>41</option>
+			    <option>42</option>
+			    <option>43</option>
+			    <option>44</option>
+			    <option>45</option>
+			    <option>46</option>
+			    <option>47</option>
+			    <option>48</option>
+			    <option>49</option>
+			    <option>50</option>
 			  </select>
 		</div>	
 	</div>
@@ -283,7 +303,7 @@ function myFunction() {
 	$('#inputList').empty();
 	for (i = 0; i < specNumbers; i++) {
 		$('#inputList').append("<div class=\"form-group has-feedback col-lg-3\"><label class=\"control-label\" for=\"itemSpec" + i + "\">規格" + (i + 1).toString() + ":</label><input id=\"itemSpec" + i + "\" type=\"text\" class=\"form-control\" name=\"itemSpec" + i + "\" required></div>" +
-							   "<div class=\"form-group has-feedback col-lg-3\"><label class=\"control-label\" for=\"itemPrice" + i + "\">單價" + (i + 1).toString() + ":</label><input id=\"itemPrice" + i + "\" type=\"number\" class=\"form-control\" name=\"itemPrice" + i + "\" required></div>" +
+							   "<div class=\"form-group has-feedback col-lg-3\"><label class=\"control-label\" for=\"itemPrice" + i + "\">價格" + (i + 1).toString() + ":</label><input id=\"itemPrice" + i + "\" type=\"number\" class=\"form-control\" name=\"itemPrice" + i + "\" required></div>" +
 							   "<div class=\"form-group has-feedback col-lg-3\"><label class=\"control-label\" for=\"itemCost" + i + "\">成本" + (i + 1).toString() + ":</label><input id=\"itemCost" + i + "\" type=\"number\" class=\"form-control\" name=\"itemCost" + i + "\" required></div>" +
 							   "<div class=\"form-group has-feedback col-lg-3\"><label class=\"control-label\" for=\"itemShopPrice" + i + "\">批發價" + (i + 1).toString() + ":</label><input id=\"itemShopPrice" + i + "\" type=\"number\" class=\"form-control\" name=\"itemShopPrice" + i + "\" required></div>"
 		);

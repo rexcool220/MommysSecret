@@ -118,7 +118,7 @@ body {
 $sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, MAX(ShippingRecord.匯款日期 ) , SUM(ShippingRecord.單價*ShippingRecord.數量 ), Members.寄送方式
 FROM  `ShippingRecord`,`Members`
 WHERE  ShippingRecord.匯款日期 =  '0000-00-00'
-AND ShippingRecord.Active = true      			
+AND (ShippingRecord.ItemID, ShippingRecord.規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true)     		
 AND ShippingRecord.FBID
 IN (
 SELECT DISTINCT FBID

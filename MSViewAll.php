@@ -226,7 +226,6 @@ if(!$accessToken)
 	<th>FBID</th>
 	<th>備註</th>
 	<th>月份</th>
-	<th>Active</th>
 	<th>規格</th>
 	<th>ItemID</th>
 	<th></th>
@@ -248,7 +247,6 @@ if(!$accessToken)
 		echo "<td contenteditable=\"true\">".$row[FBID]."</td>";
 		echo "<td contenteditable=\"true\">".$row[備註]."</td>";
 		echo "<td contenteditable=\"true\">".$row[月份]."</td>";
-		echo "<td contenteditable=\"true\">".$row[Active]."</td>";
 		echo "<td contenteditable=\"true\">".$row[規格]."</td>";
 		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
 		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";

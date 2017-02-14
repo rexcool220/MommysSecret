@@ -100,24 +100,25 @@ if(!session_id()) {
         $('#ItemCategorys tbody').on( 'focusout', 'td', function () {
         	var cell = table.cell( this );
             cell.data( this.innerHTML );
-            var row = $(this).parent().parent().children().index($(this).parent());
-            var col = $(this).parent().children().index($(this));
-            if((col == 6)||(col == 7))
-            {
-            	var activeCell = table.cell(row, 12);
-            	requestAmount = parseInt($(this).parent().children(':nth-child(7)').text());//需求數量
-            	currentAmount = parseInt($(this).parent().children(':nth-child(8)').text());//到貨數量
-				if(currentAmount >= requestAmount)
-				{
-					$(this).parent().children().eq(12).empty().append('1');
-					activeCell.data('1').draw();
-				}
-				else
-				{
-					$(this).parent().children().eq(12).empty().append('0');
-					activeCell.data('0').draw();
-				}
-            }
+//             var row = $(this).parent().parent().children().index($(this).parent());
+//             var col = $(this).parent().children().index($(this));
+//             if((col == 6)||(col == 7))
+//             {
+//             	var activeCell = table.cell(row, 12);
+//             	requestAmount = parseInt($(this).parent().children(':nth-child(7)').text());//需求數量
+//             	currentAmount = parseInt($(this).parent().children(':nth-child(8)').text());//到貨數量
+// 				if(currentAmount >= requestAmount)
+// 				{
+// 					$(this).parent().children().eq(12).empty().append('1');
+// 					activeCell.data('1');
+// 				}
+// 				else
+// 				{
+// 					$(this).parent().children().eq(12).empty().append('0');
+// 					activeCell.data('0');
+// 				}
+// 				$(this).parent().draw()
+//             }
         } );
     });
     // Activate an inline edit on click of a table cell  
@@ -209,7 +210,7 @@ if(!$accessToken)
 	<th>商品圖</th>
 	<th>ItemID</th>		
 	<th>品項</th>
-	<th>單價</th>				
+	<th>價格</th>				
 	<th>規格</th>
 	<th>月份</th>	    		
 	<th>需求數量</th>
@@ -229,7 +230,7 @@ if(!$accessToken)
 // 		echo "<td><img src=uploads/".$row[Photo]." /></td>";
 		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
 		echo "<td contenteditable=\"true\">".$row[品項]."</td>";
-		echo "<td contenteditable=\"true\">".$row[單價]."</td>";
+		echo "<td contenteditable=\"true\">".$row[價格]."</td>";
 		echo "<td contenteditable=\"true\">".$row[規格]."</td>";
 		echo "<td contenteditable=\"true\">".$row[月份]."</td>";
 		echo "<td contenteditable=\"true\">".$row[需求數量]."</td>";
@@ -238,7 +239,7 @@ if(!$accessToken)
 		echo "<td contenteditable=\"true\">".$row[批發價]."</td>";
 		echo "<td contenteditable=\"true\">".$row[廠商]."</td>";
 		echo "<td class=\"arriveDate\">".$row[到貨日期]."</td>";
-		echo "<td>".$row[Active]."</td>";
+		echo "<td contenteditable=\"true\">".$row[Active]."</td>";
 		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
 		echo "</tr>";
 	}

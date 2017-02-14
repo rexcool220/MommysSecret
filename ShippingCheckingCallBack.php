@@ -167,7 +167,7 @@ if(isset($CustomerFBID)) {
 		$SerialNumbersChecked = $_POST["SerialNumbersChecked"];
 		$SerialNumbersAll = $_POST["SerialNumbersAll"];
 		for($i=0;$i<Count($SerialNumbersChecked);$i++) {
-			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbersChecked[$i]' AND Active = true";
+			$sql = "UPDATE `ShippingRecord` SET `出貨日期` = CURDATE()  WHERE SerialNumber = '$SerialNumbersChecked[$i]' AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true)";
 			$result = mysql_query($sql,$con);
 	
 			if (!$result) {
@@ -178,7 +178,7 @@ if(isset($CustomerFBID)) {
 		{
 		    if(in_array($serialNumber, $SerialNumbersChecked) == false)
 		    {
-		        $sql = "UPDATE `ShippingRecord` SET `出貨日期` = '0000-00-00'  WHERE SerialNumber = '$serialNumber' AND Active = true";
+		        $sql = "UPDATE `ShippingRecord` SET `出貨日期` = '0000-00-00'  WHERE SerialNumber = '$serialNumber' AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true)";
 		        $result = mysql_query($sql,$con);
 		        
 		        if (!$result) {
@@ -190,7 +190,7 @@ if(isset($CustomerFBID)) {
 		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerFBID=$CustomerFBID");
 	}
 	
-	//$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
+	//$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.(ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ORDER BY 出貨日期;";
 	
 	$sql = "SELECT 
 		ShippingRecord.SerialNumber,
@@ -212,7 +212,7 @@ if(isset($CustomerFBID)) {
 			WHERE ShippingRecord.確認收款 =1
 			AND ShippingRecord.匯款日期 > DATE_SUB( CURDATE( ) , INTERVAL 12 WEEK) AND ShippingRecord.FBID = '$CustomerFBID'
 			)
-		AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.Active = true ORDER BY 出貨日期;";
+		AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.(ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ORDER BY 出貨日期;";
 	
 	$result = mysql_query($sql,$con);
 	

@@ -19,9 +19,8 @@ header("Content-Type:text/html; charset=utf-8");
 	$fbID = $dataArray[9];
 	$comment = $dataArray[10];
 	$month = $dataArray[11];
-	$active = $dataArray[12];
-	$spec = $dataArray[13];
-	$itemID = $dataArray[14];
+	$spec = $dataArray[12];
+	$itemID = $dataArray[13];
 	
 	if($serialNumber == '')
 	{
