@@ -114,23 +114,28 @@ try {
 	echo 'Facebook SDK returned an error: ' . $e->getMessage();
 	exit;
 }
-$fbAccount = $userNode->getName();
-if(($fbAccount == 'Gill Fang')||
-		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == 'Queenie Tsan')||
-		($fbAccount == '熊會買')||
-		($fbAccount == '熊哉')||
-		($fbAccount == '古振平')||
-        ($fbAccount == 'Keira Lin'))
-{
-	echo "管理者 : $fbAccount";
-}
-else
-{
-	echo "$fbAccount : 你不是管理者";
-	exit;
-}
-
+	$fbID = $userNode->getId();
+	
+	$fbAccount = $userNode->getName();
+	
+	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
+	
+	or die(mysql_error());
+	
+	$row = mysql_fetch_array($result);
+	
+	$type = $row['TYPE'];
+	
+	if(($type == "管理員") || ($type == "共用帳號"))
+	{
+		echo "<p hidden id=\"accountType\">$type</p>";
+		echo "<p hidden id=\"fbAccount\">$fbAccount</p>";
+	}
+	else
+	{
+		echo "$fbAccount : 你沒有權限";
+		exit;
+	}
 
 $sql = "SELECT * FROM  `RemitRecord` where 匯款編號 > 1300 ORDER BY 已收款 ASC,匯款編號  DESC ;";
 

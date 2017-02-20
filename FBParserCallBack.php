@@ -129,17 +129,28 @@ if(!$accessToken)
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
+
+	$fbID = $userNode->getId();
+	
 	$fbAccount = $userNode->getName();
-	if(($fbAccount == '熊會買')||
-		($fbAccount == '熊哉'))
+	
+	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
+	
+	or die(mysql_error());
+	
+	$row = mysql_fetch_array($result);
+	
+	$type = $row['TYPE'];
+	
+	if($type == "共用帳號")
 	{
-	    	 
-//         echo $userNode->getId();	
+		echo "<p hidden id=\"accountType\">$type</p>";
+		echo "<p hidden id=\"fbAccount\">$fbAccount</p>";
 	}
 	else
 	{
-	    echo "$fbAccount : 你不是管理者";
-	    exit;
+		echo "$fbAccount : 你沒有權限";
+		exit;
 	}
 	//To get all item id
 	include('ConnectMySQL.php');

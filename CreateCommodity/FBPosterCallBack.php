@@ -78,16 +78,27 @@ if(!$accessToken)
 		exit;
 	}
 	$fbAccount = $userNode->getName();
-	if(($fbAccount == '熊會買')||
-		($fbAccount == '熊哉'))
+$fbID = $userNode->getId();
+	
+	$fbAccount = $userNode->getName();
+	
+	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
+	
+	or die(mysql_error());
+	
+	$row = mysql_fetch_array($result);
+	
+	$type = $row['TYPE'];
+	
+	if($type == "共用帳號")
 	{
-	    	 
-//         echo $userNode->getId();	
+		echo "<p hidden id=\"accountType\">$type</p>";
+		echo "<p hidden id=\"fbAccount\">$fbAccount</p>";
 	}
 	else
 	{
-	    echo "$fbAccount : 你不是管理者";
-	    exit;
+		echo "$fbAccount : 你沒有權限";
+		exit;
 	}
 	//To get all item id
 	include('ConnectMySQL.php');
@@ -119,9 +130,12 @@ if(!$accessToken)
 			</label>
 		</div>
 		<div class="form-group has-feedback">
-			<input id="fileToBeUpload" type="text" class="form-control" name="fileToBeUpload" data-error="請選擇上傳檔案" required>
+			<input id="fileToBeUpload" type="text" class="form-control" name="fileToBeUpload" data-container="body" data-error="請選擇上傳檔案" required>
 			<!-- 				<span class="glyphicon form-control-feedback" aria-hidden="true"></span> -->
-		</div>      
+		</div>
+		<div class="form-group has-feedback">      
+			<img id="preview" src="../uploads/NotAvailable.png"  height="100" width="100"/>
+		</div>
 	</div>
 	<div class="row">	
 		<div class="form-group has-feedback col-lg-6">
@@ -293,7 +307,8 @@ $(document).ready(function()
 
     $("#my-file-selector").on('change', function() {
     	$('#fileToBeUpload').val($('input[type=file]')[0].files[0].name);
-	})    
+    	readURL(this);
+	})
 });
 $( function() {
 	$( "#datepicker" ).datepicker();
@@ -309,5 +324,15 @@ function myFunction() {
 		);
 	}
 	$('#ajaxform').validator('update');
+}
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#preview').attr('src', e.target.result);
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 </script>

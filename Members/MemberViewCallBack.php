@@ -201,7 +201,6 @@ if(!$accessToken)
 		exit;
 	}
 	
-	
 	$fbID = $userNode->getId();
 	
 	$fbAccount = $userNode->getName();
@@ -221,7 +220,7 @@ if(!$accessToken)
 	}
 	else
 	{
-		echo "$fbAccount : 你不是管理者";
+		echo "$fbAccount : 你沒有權限";
 		exit;
 	}
 	

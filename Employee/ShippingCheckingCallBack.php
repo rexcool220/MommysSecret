@@ -79,21 +79,28 @@ try {
 	exit;
 }
 $fbAccount = $userNode->getName();
-if(($fbAccount == 'Gill Fang')||
-		($fbAccount == 'JoLyn Dai')||
-		($fbAccount == 'Queenie Tsan')||
-		($fbAccount == '熊會買')||
-		($fbAccount == '熊哉')||
-		($fbAccount == '古振平')||
-        ($fbAccount == 'Keira Lin'))
-{
-// 	echo "管理者 : $fbAccount";
-}
-else
-{
-	echo "$fbAccount : 你不是管理者";
-	exit;
-}
+$fbID = $userNode->getId();
+	
+	$fbAccount = $userNode->getName();
+	
+	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
+	
+	or die(mysql_error());
+	
+	$row = mysql_fetch_array($result);
+	
+	$type = $row['TYPE'];
+	
+	if(($type == "管理員") || ($type == "共用帳號"))
+	{
+		echo "<p hidden id=\"accountType\">$type</p>";
+		echo "<p hidden id=\"fbAccount\">$fbAccount</p>";
+	}
+	else
+	{
+		echo "$fbAccount : 你不是管理者";
+		exit;
+	}
 
 ?>
 	
@@ -346,16 +353,26 @@ if(isset($CustomerFBID)) {
 		<tr>
 		<th>手機號碼</th>
 		<td>".$row['手機號碼']."</td>
-		</tr>
-		<tr>
-		<th>郵遞區號＋地址</th>
-		<td>".$row['郵遞區號＋地址']."</td>
-		</tr>
-		<tr>
-		<th>全家店到店 店名+地址 </th>
-		<td>".$row['全家店到店服務代號']."</td>
-		</tr>
-		<tr>
+		</tr>";
+		
+		if($row['寄送方式'] == "貨運")
+		{
+			$MemberInformation = $MemberInformation. 
+			"<tr>
+			<th>郵遞區號＋地址</th>
+			<td>".$row['郵遞區號＋地址']."</td>
+			</tr>";
+		}
+		if($row['寄送方式'] == "店到店")
+		{
+			$MemberInformation = $MemberInformation. 
+			"<tr>
+			<th>全家店到店 店名+地址 </th>
+			<td>".$row['全家店到店服務代號']."</td>
+			</tr>";
+		}
+		$MemberInformation = $MemberInformation. 
+		"<tr>
 		<th>寄送方式 </th>
 		<td>".$row['寄送方式']."</td>
 		</tr>
