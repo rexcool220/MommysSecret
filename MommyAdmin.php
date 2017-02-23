@@ -151,7 +151,7 @@ else
 			        </a>				
 				</td>		
 				<td>
-			        <a target=\"_blank\" href=\"RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/Employee/RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-piggy-bank\"></span> 對帳管理
 			        </a>				
 				</td>			

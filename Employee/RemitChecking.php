@@ -1,5 +1,5 @@
 <?php
-	require_once __DIR__ . '/vendor/autoload.php';
+	require_once dirname(__DIR__).'/vendor/autoload.php';
 	if(!session_id()) {
 		session_start();
 	}
@@ -11,11 +11,9 @@
 	]);
 	$helper = $fb->getRedirectLoginHelper();
 	
-	$permissions = ['email']; // optional
+	$permissions = ['email'];
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MemberInformationCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/Employee/RemitCheckingCallBack.php', $permissions);
 	
-	//echo urldecode($loginUrl);
-	$_SESSION['personal'] = $_GET['personal'];
 	header("location: ".$loginUrl);
 ?>

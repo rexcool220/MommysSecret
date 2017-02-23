@@ -137,7 +137,7 @@ try {
 		exit;
 	}
 
-$sql = "SELECT * FROM  `RemitRecord` where 匯款編號 > 1300 ORDER BY 已收款 ASC,匯款編號  DESC ;";
+$sql = "SELECT * FROM  `RemitRecord` where 匯款編號 > 2489 ORDER BY 已收款 ASC,匯款編號  DESC ;";
 
 $result = mysql_query($sql,$con);
 
