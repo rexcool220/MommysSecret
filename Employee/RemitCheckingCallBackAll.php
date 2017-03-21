@@ -107,6 +107,11 @@ if(!session_id()) {
         	var cell = table.cell( this );
             cell.data( this.innerHTML );
         });
+        $(".BuyingInf").on( 'click', function () {
+            var url = "BuyingInformationByRemitNumber.php?remitNumber=" + $(this).text();
+        	var win = window.open(url, '_blank');
+        	win.focus();
+        });        
     });
     // Activate an inline edit on click of a table cell  
 
@@ -218,7 +223,7 @@ if(!$accessToken)
 	{
 		$isChecked = $row['已收款'] == 0 ? "否" : "已收";
 		echo "<tr>";
-		echo "<td>".$row[匯款編號]."</td>";
+		echo "<td class=\"BuyingInf\">".$row['匯款編號']."</td>";
 		echo "<td>".$row[FB帳號]."</td>";
 		echo "<td>".$row[FBID]."</td>";
 		echo "<td>".$row[匯款金額]."</td>";

@@ -22,11 +22,19 @@ $isChecked = $isChecked == "否" ? 0 : 1;
 
 //$sql = "UPDATE `Members` SET `姓名`='$name', `FB帳號`='$fbAccount', `手機號碼`='$phoneNumber', `郵遞區號＋地址`='$address',`全家店到店服務代號`='$familyNumber' ,`寄送方式`='$shippingWay', `運費`='$shippingFee', `備註`='$comment', `Rebate`='$rebate', `Type`='$type' WHERE `FBID`='$fbID'";
 
-$sql = "UPDATE `RemitRecord` SET `已收款`='$isChecked',`管理員備註`='$adminMemo' WHERE `匯款編號` = $remitNumber";
+$sql = "UPDATE `RemitRecord` SET `已收款`=\"$isChecked\",`管理員備註`=\"$adminMemo\" WHERE `匯款編號` = $remitNumber";
 
 $result = mysql_query($sql,$con);
 if (!$result) {
 	die('Invalid query: ' . mysql_error());
 }
+
+$sql = "UPDATE `ShippingRecord` SET `確認收款` = \"$isChecked\"  WHERE 匯款編號 = $remitNumber AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true)";
+
+$result = mysql_query($sql,$con);
+if (!$result) {
+	die('Invalid query: ' . mysql_error());
+}
+
 echo "更新完成!!";
 ?>

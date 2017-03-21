@@ -208,7 +208,9 @@ $fbID = $userNode->getId();
 	
 	// get results from database
 	
-	$result = mysql_query("SELECT * FROM `ItemCategory`")
+// 	echo "SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+1 month"))." AND 月份 = ".date("Ym",strtotime("+0 month"))." AND 月份 = ".date("Ym",strtotime("-1 month"))." AND 月份 = ".date("Ym",strtotime("-2 month"));
+	
+	$result = mysql_query("SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+1 month"))." OR 月份 = ".date("Ym",strtotime("+0 month"))." OR 月份 = ".date("Ym",strtotime("-1 month"))." OR 月份 = ".date("Ym",strtotime("-2 month")))
 	
 	or die(mysql_error());
 	
@@ -233,7 +235,7 @@ $fbID = $userNode->getId();
 	while($row = mysql_fetch_array($result))
 	{
 		echo "<tr>";
-		echo "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+		echo "<td><img src=uploads/".str_replace(' ', '%20',$row[Photo])." style=\"height:100px;width:100px;\" /></td>";
 // 		echo "<td><img src=uploads/".$row[Photo]." /></td>";
 		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
 		echo "<td contenteditable=\"true\">".$row[品項]."</td>";

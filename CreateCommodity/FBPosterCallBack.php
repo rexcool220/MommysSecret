@@ -140,26 +140,11 @@ $fbID = $userNode->getId();
 	<div class="row">	
 		<div class="form-group has-feedback col-lg-6">
 		  <label class="control-label" for="monthSelector">月份:</label>
-			  <select id="monthSelector" class="form-control" name="month" required>
-			  	<option disabled selected value></option>
-			    <option>1</option>
-			    <option>2</option>
-			    <option>3</option>
-			    <option>4</option>
-			    <option>5</option>
-			    <option>6</option>
-			    <option>7</option>
-			    <option>8</option>
-			    <option>9</option>
-			    <option>10</option>
-			    <option>11</option>
-			    <option>12</option>
-			  </select>
+				<input id="monthPicker" type="text" class="form-control" name="month" data-error="請填寫月份" required>
 		</div>
 		<div class="form-group has-feedback col-lg-6">
 			<label class="control-label" for="datepicker">收單日期:</label>
 				<input id="datepicker" type="text" class="form-control" name="closeDate" data-error="請填寫收單日期" required>
-				<!-- 				<span class="glyphicon form-control-feedback" aria-hidden="true"></span> -->
 			<div class="help-block with-errors"></div>
 		</div>
 	</div>
@@ -271,6 +256,7 @@ $(document).ready(function()
 		$('#ajaxform').validator().on('submit', function (e) {
 			if (e.isDefaultPrevented()) 
 			{
+				$("#simple-post").prop("disabled",false);
 			}
 			else
 			{
@@ -295,11 +281,11 @@ $(document).ready(function()
 						$("#simple-msg").html('<pre><code class="prettyprint">AJAX Request Failed<br/> textStatus='+textStatus+', errorThrown='+errorThrown+'</code></pre>');
 					}
 				}).done(function(output) {
-					$("#simple-post").prop("disabled",false);
 					alert("發佈成功!!!");
 				});
 			    e.preventDefault();	//STOP default action
 			    e.unbind();
+			    $("#simple-post").prop("disabled",false);
 			}
 		})
 		$("#ajaxform").submit(); //SUBMIT FORM
@@ -312,6 +298,13 @@ $(document).ready(function()
 });
 $( function() {
 	$( "#datepicker" ).datepicker();
+} );
+$( function() {
+	$("#monthPicker").datepicker( {
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yymm'
+    });
 } );
 function myFunction() {
 	var specNumbers = parseInt(document.getElementById("specNumbers").value);

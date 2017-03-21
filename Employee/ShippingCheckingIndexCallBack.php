@@ -159,7 +159,7 @@ $fbID = $userNode->getId();
 // 		AND ShippingRecord.FBID = Members.FBID
 // 		GROUP BY RemitRecord.匯款編號
 // 		ORDER BY RemitRecord.匯款編號 ASC ";
-	$sql = 	"SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.Memo, RemitRecord.管理員備註
+	$sql = 	"SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.應匯款金額, RemitRecord.Memo, RemitRecord.管理員備註
 		FROM  `ShippingRecord` ,  `ItemCategory` ,  `RemitRecord` ,  `Members` 
 		WHERE (
 		ShippingRecord.ItemID, ShippingRecord.規格
@@ -188,6 +188,7 @@ $fbID = $userNode->getId();
     <th>FBID</th>
 	<th>最近出貨日期</th>
 	<th>最新匯款編號</th>
+	<th>應匯款金額</th>
 	<th>出貨方式</th>
 	<th>最新客戶備註</th>
 	<th>最新管理員備註</th>
@@ -200,6 +201,7 @@ $fbID = $userNode->getId();
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['FBID'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['出貨日期'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['匯款編號'] . "</td>";
+		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['應匯款金額'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['寄送方式'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['Memo'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['管理員備註'] . "</td>";

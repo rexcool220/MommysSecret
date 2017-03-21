@@ -28,7 +28,7 @@ $dataArray = $_POST['data'];
 		}
 		
 		$sql = "INSERT INTO `ShippingRecord`(`FB帳號`, `品項`, `單價`, `數量`, `SerialNumber`, `FBID`, `備註`, `月份`, `規格`, `ItemID`) 
-			VALUES ('$fbAccount', '$itemName', '$price', '$amount', NULL, '$fbId', '$comment', '$month', '$spec', '$itemID')";
+			VALUES (\"$fbAccount\", \"$itemName\", \"$price\", \"$amount\", NULL, \"$fbId\", \"$comment\", \"$month\", \"$spec\", \"$itemID\")";
 	
 		$result = mysql_query($sql,$con);
 		if (!$result) {
@@ -38,7 +38,7 @@ $dataArray = $_POST['data'];
 	
 	$latestFBDateStr = $latestFBDate->format('Y-m-d H:i:s');
 	
-	$sql = "SELECT ItemID,品項,單價,規格,月份,SUM(數量) FROM `ShippingRecord` WHERE `ItemID` = '$itemID' group by 規格";
+	$sql = "SELECT ItemID,品項,單價,規格,月份,SUM(數量) FROM `ShippingRecord` WHERE `ItemID` = \"$itemID\" group by 規格";
 	
 	$result = mysql_query($sql,$con);
 	if (!$result) {
@@ -54,7 +54,7 @@ $dataArray = $_POST['data'];
 		$month = $row['月份'];
 		$amount = $row['SUM(數量)'];
 		
-		$sql = "UPDATE `ItemCategory` SET `需求數量`='$amount',`更新時間`='$latestFBDateStr' WHERE `ItemID` = '$itemID' AND `規格`='$spec'";		
+		$sql = "UPDATE `ItemCategory` SET `需求數量`=\"$amount\",`更新時間`=\"$latestFBDateStr\" WHERE `ItemID` = \"$itemID\" AND `規格`=\"$spec\"";		
 		
 		$insertResult = mysql_query($sql,$con);
 		if (!$insertResult) {

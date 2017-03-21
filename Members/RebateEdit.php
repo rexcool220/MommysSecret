@@ -29,7 +29,7 @@ $comment = $_POST['comment'];
 	}
 	
 	$sql = "INSERT INTO `RebateRecord`(`登入帳號`, `顧客FB帳號`, `顧客FBID`, `修改金額`, `備註`, `修改日期`, `RebateNumber`, `目前回饋金`)
-	VALUES ('$loginFBAccount','$customberFBAccount','$customerFBID','$amount','$comment',CURDATE(),NULL,'$updateRebated')";
+	VALUES (\"$loginFBAccount\",\"$customberFBAccount\",\"$customerFBID\",\"$amount\",\"$comment\",CURDATE(),NULL,\"$updateRebated\")";
 	$result = mysql_query($sql,$con);
 	if (!$result) {
 		die('Invalid query: ' . mysql_error());

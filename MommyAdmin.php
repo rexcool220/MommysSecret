@@ -144,12 +144,12 @@ else
 			        </a>			
 				</td>				
 			</tr>
-			<tr>
+			<tr>	
 				<td>
-			        <a target=\"_blank\" href=\"/Employee/ShippingCheckingIndex.php\" class=\"btn btn-default btn-lg btn-block\">
-			          <span class=\"glyphicon glyphicon-plane\"></span> 出貨管理
+			        <a target=\"_blank\" href=\"BuyingInformationByQuery.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-search\"></span> 會員結帳代查詢
 			        </a>				
-				</td>		
+				</td>					
 				<td>
 			        <a target=\"_blank\" href=\"/Employee/RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-piggy-bank\"></span> 對帳管理
@@ -158,10 +158,10 @@ else
 			</tr>
 			<tr>
 				<td>
-			        <a target=\"_blank\" href=\"BuyingInformationByQuery.php\" class=\"btn btn-default btn-lg btn-block\">
-			          <span class=\"glyphicon glyphicon-search\"></span> 會員結帳代查詢
-			        </a>				
-				</td>			
+			        <a target=\"_blank\" href=\"ItemCategoryView.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-download-alt\"></span> 到貨管理
+			        </a>
+				</td>							
 				<td>
 			        <a target=\"_blank\" href=\"NotRemitList.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-thumbs-down\"></span> 未匯款清單
@@ -170,10 +170,10 @@ else
 			</tr>		
 			<tr>
 				<td>
-			        <a target=\"_blank\" href=\"FBParser.php\" class=\"btn btn-default btn-lg btn-block\">
-			          <span class=\"glyphicon glyphicon-check\"></span> 點單系統
-			        </a>			
-				</td>			
+			        <a target=\"_blank\" href=\"/Employee/ShippingCheckingIndex.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-plane\"></span> 出貨管理
+			        </a>				
+				</td>							
 				<td>
 			        <a target=\"_blank\" href=\"TagByItemID.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-tags\"></span> Tag小工具
@@ -182,9 +182,9 @@ else
 			</tr>		
 			<tr>
 				<td>
-			        <a target=\"_blank\" href=\"ItemCategoryView.php\" class=\"btn btn-default btn-lg btn-block\">
-			          <span class=\"glyphicon glyphicon-download-alt\"></span> 到貨管理
-			        </a>
+			        <a target=\"_blank\" href=\"FBParser.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-check\"></span> 點單系統
+			        </a>			
 				</td>			
 				<td>
 			        <a target=\"_blank\" href=\"TagByUnknownMembers.php\" class=\"btn btn-default btn-lg btn-block\">

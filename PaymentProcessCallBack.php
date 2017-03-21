@@ -802,7 +802,7 @@ if(!session_id()) {
 		else {
 		    $actualShippingFee = $shippingFee;
 		}
-		if($totalPrice == 0)
+		if($totalPrice <= 0)
 		{
 		    $moneyToBePaid = 0;
 		    $actualShippingFee = 0;

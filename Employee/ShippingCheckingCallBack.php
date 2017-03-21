@@ -212,7 +212,8 @@ if(isset($CustomerFBID)) {
 		ShippingRecord.匯款日期,
 		ShippingRecord.出貨日期,
 		ShippingRecord.匯款編號,
-		RemitRecord.匯款金額 FROM `ShippingRecord`,`RemitRecord`,`ItemCategory` 
+		RemitRecord.匯款金額,
+		ShippingRecord.備註 FROM `ShippingRecord`,`RemitRecord`,`ItemCategory` 
 		WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = ( ItemCategory.ItemID, ItemCategory.規格 )  
 		AND ShippingRecord.匯款編號  = RemitRecord.匯款編號
 		AND ShippingRecord.FBID = '$CustomerFBID' 
@@ -250,6 +251,7 @@ if(isset($CustomerFBID)) {
 	<th>出貨日期</th>
   	<th>匯款編號</th>
     <th>匯款金額</th>
+	<th>備註</th>
 	<th></th>
 	</tr>";
 	$totalPrice = 0;
@@ -291,6 +293,7 @@ if(isset($CustomerFBID)) {
 		$toShippingTable = $toShippingTable . "<td>" . $row['出貨日期'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['匯款編號'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['匯款金額'] . "</td>";
+		$toShippingTable = $toShippingTable . "<td>" . $row['備註'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>";
 		if($checked == false)
 		{
