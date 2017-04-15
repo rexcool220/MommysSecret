@@ -63,7 +63,7 @@ body {
     			header: true,
     		},               
             "lengthMenu": [[50,100,150,-1], [50, 100, 150, "All"]],
-        	"order": [[ 2, "asc" ]]
+        	"order": [[ 2, "desc" ]]
         });
     });
 </script>
@@ -144,22 +144,22 @@ $fbID = $userNode->getId();
 		exit;
 	}
 	
-// 	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.Memo, RemitRecord.管理員備註
-// 		FROM  `RemitRecord` ,  `ShippingRecord` ,  `Members` 
-// 		WHERE ShippingRecord.匯款編號 = RemitRecord.匯款編號
-// 		AND ShippingRecord.Active = 
-// 		TRUE 
-// 		AND ShippingRecord.匯款編號
-// 		IN (
-// 			SELECT DISTINCT ShippingRecord.匯款編號
-// 			FROM  `ShippingRecord` 
-// 			WHERE ShippingRecord.確認收款 =1
-// 			AND (ShippingRecord.出貨日期  = '0000-00-00')
-// 		)
-// 		AND ShippingRecord.FBID = Members.FBID
-// 		GROUP BY RemitRecord.匯款編號
-// 		ORDER BY RemitRecord.匯款編號 ASC ";
-	$sql = 	"SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.應匯款金額, RemitRecord.Memo, RemitRecord.管理員備註
+// 	$sql = "SELECT FB帳號, FBID, 出貨日期, 匯款編號, 寄送方式, 應匯款金額, Memo, 管理員備註
+// FROM (
+// SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.應匯款金額, RemitRecord.Memo, RemitRecord.管理員備註
+// FROM  `ShippingRecord` ,  `ItemCategory` ,  `RemitRecord` ,  `Members`
+// WHERE (
+// ShippingRecord.ItemID, ShippingRecord.規格
+// ) = ( ItemCategory.ItemID, ItemCategory.規格 )
+// AND ShippingRecord.匯款編號 = RemitRecord.匯款編號
+// AND ShippingRecord.FBID = Members.FBID
+// AND ShippingRecord.確認收款 =1
+// AND ItemCategory.Active =
+// TRUE
+// ORDER BY ShippingRecord.出貨日期 DESC
+// ) AS sub
+// GROUP BY 出貨日期";
+	$sql = 	"SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.應匯款金額, RemitRecord.Memo, RemitRecord.管理員備註, RemitRecord.匯款日期
 		FROM  `ShippingRecord` ,  `ItemCategory` ,  `RemitRecord` ,  `Members` 
 		WHERE (
 		ShippingRecord.ItemID, ShippingRecord.規格
@@ -186,7 +186,7 @@ $fbID = $userNode->getId();
 	<thead><tr>
 	<th>FB帳號 </th>
     <th>FBID</th>
-	<th>最近出貨日期</th>
+	<th>匯款日期</th>
 	<th>最新匯款編號</th>
 	<th>應匯款金額</th>
 	<th>出貨方式</th>
@@ -199,7 +199,7 @@ $fbID = $userNode->getId();
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<tr>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['FB帳號'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['FBID'] . "</td>";
-		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['出貨日期'] . "</td>";
+		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['匯款日期'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['匯款編號'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['應匯款金額'] . "</td>";
 		$ShippingCheckingIndex = $ShippingCheckingIndex . "<td>" . $row['寄送方式'] . "</td>";

@@ -15,7 +15,7 @@ if(!session_id()) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20160825">
+	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20160905">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
@@ -25,11 +25,11 @@ if(!session_id()) {
 	} );
 	function validateMemberForm() {
 	    var MemberName = document.forms["MemberInformationForm"]["MemberName"].value;
-	    var memberFBAccount = document.forms["MemberInformationForm"]["memberFBAccount"].value;
+	    var fbAccount = document.forms["MemberInformationForm"]["fbAccount"].value;
 	    var PhoneNumber = document.forms["MemberInformationForm"]["PhoneNumber"].value;
 	    
 	    if (MemberName == null || MemberName == "" || 
-	    		memberFBAccount == null || memberFBAccount == "" || 
+	    		fbAccount == null || fbAccount == "" || 
 	    	    PhoneNumber == null || PhoneNumber == "")
 	    {
 	        alert("請檢查欄位");
@@ -42,6 +42,7 @@ if(!session_id()) {
 	    var FamilyNumber = document.forms["AddressInformationForm"]["FamilyNumber"].value;
 	    var ShippingWay = document.forms["AddressInformationForm"]["ShippingWay"].value;
 	    var ShippingFee = document.forms["AddressInformationForm"]["ShippingFee"].value;
+	    var AgentAccount = document.forms["AddressInformationForm"]["AgentAccount"].value;
 	    
 	    if (Address == null || Address == "" ||
 	    	    FamilyNumber == null || FamilyNumber == "" ||
@@ -55,7 +56,9 @@ if(!session_id()) {
 	}
 
 	
-	function validateRemitForm() {
+	function validateRemitForm(form) {
+	    form.RemitButton.disabled = true;
+	    form.RemitButton.value = "處理中...";
 	    var remitLastFiveDigit = document.forms["RemitForm"]["remitLastFiveDigit"].value;
 	    var remitAmont = document.forms["RemitForm"]["remitAmont"].value;
 	    
@@ -63,6 +66,8 @@ if(!session_id()) {
 	    		remitAmont == null || remitAmont == "")
 	    {
 	        alert("請檢查欄位");
+	        form.RemitButton.disabled = false;
+	        form.RemitButton.value = "回報匯款";
 	        return false;
 	    }
 	}	
@@ -76,7 +81,7 @@ if(!session_id()) {
 		{
 			shippingFee = 85;
 		}
-		else if(document.getElementById("ShippingWayId").value == "Zoo")
+		else if(document.getElementById("ShippingWayId").value == "ZOo")
 		{
 			shippingFee = 20;
 		}
@@ -132,7 +137,7 @@ if(!session_id()) {
 	}
 	?>
 			<script>
-				window.history.replaceState( {} , '會員結帳待查詢', 'http://mommyssecret.tw/BuyingInformationByQuery.php' );
+				window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/PaymentProcessCallBack.php' );
 			</script>
 		<?php
 	try {
@@ -148,163 +153,76 @@ if(!session_id()) {
 		exit;
 	}
 	$fbAccount = $userNode->getName();
-	$fbID = $userNode->getId();
-	
-	$fbAccount = $userNode->getName();
-	
-	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
-	
-	or die(mysql_error());
-	
-	$row = mysql_fetch_array($result);
-	
-	$type = $row['TYPE'];
-	
-	if(($type == "管理員") || ($type == "共用帳號"))
+	$FBID = $userNode->getId();
+	if(isset($_SESSION["completed"]))
 	{
-		echo "<p hidden id=\"accountType\">$type</p>";
-		echo "<p hidden id=\"fbAccount\">$fbAccount</p>";
-	}
-	else
-	{
-		echo "$fbAccount : 你不是管理者";
-		exit;
+	    echo "<script type='text/javascript'>alert('已收到您匯款資料，待對帳')</script>";
+	    unset($_SESSION["completed"]);
 	}
 	
-	?>
-	
-	<script type="text/javascript">
-	$( function() {
-		var availableAccount =
-		<?php
-		$sql = "SELECT FB帳號, FBID FROM `Members`;";
-		$result = mysql_query($sql,$con);
-		if (!$result) {
-			die('Invalid query: ' . mysql_error());
-		}
-		while($rows[]=mysql_fetch_array($result));
-		$prefix = '';
-		foreach ($rows as $r)
-		{
-			$AcountList .= $prefix . '"' . $r[FB帳號].",".$r[FBID] . '"';
-			$prefix = ', ';
-		}
-		echo "[$AcountList];";
-		?>
-	    $( "#AvailibleAccount" ).autocomplete({
-	      source: availableAccount
-	    });
-  	} );
-	</script>
-  	<?php		
-	echo "<br><div class=\"container\"><form method=\"post\" action=\"\">
-			<input id=\"AvailibleAccount\" type=\"text\" value=\"\" name=\"memberFBAccountID\" class=\"FBSearch\" placeholder=\"FB帳號\"><p>
-			<input type=\"submit\" value=\"查詢\"><p>
-			</form></div>";
-	
-	
-	if(isset($_POST['memberFBAccountID']) || isset($_SESSION['memberFBAccountID']))
-	{
-	    if(isset($_POST['memberFBAccountID']))
-	    {
-	        $_SESSION['memberFBAccountID'] = $_POST['memberFBAccountID'];
-	        $memberFBAccountID = $_POST['memberFBAccountID'];
-	    }
-	    elseif (isset($_SESSION['memberFBAccountID']))
-	    {
-	        $memberFBAccountID = $_SESSION['memberFBAccountID'];
-	    }
-	    
-	    $memberFBAccountIDArray = explode(',', $memberFBAccountID);
-	    
-	    $memberFBAccount = $memberFBAccountIDArray[0];
-	    $memberFBID = $memberFBAccountIDArray[1];
-	    
-	    $sql = "Select * from Members where FBID = '$memberFBID'";
-	    $result = mysql_query($sql,$con);
-	    
-	    if (!$result) {
-	        die('Invalid query: ' . mysql_error());
-	    }
-	    
-	    $row = mysql_fetch_array($result);
-	    
-	    $memberFBID = $row['FBID'];
-	    
-	    if(isset($_SESSION[$memberFBID]))
-	    {
-	    	unset($_SESSION[$memberFBID]);
-	    }
-	    
-        if (isset($_POST['CheckOut']) && empty($_SESSION[$memberFBID])) {
-	        $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
-	        $remitAmont = $_POST['remitAmont'];
-	        $memo = $_POST['memo'];
-	        $moneyToBePaid = $_POST['moneyToBePaid'];
-	        $rebateWillBeUpdate = $_POST['rebateWillBeUpdate'];
-	        $rebateTobeDeduct = $_POST['rebateTobeDeduct'];
-	        $actualShippingFee = $_POST['actualShippingFee'];
-	        $rebate = $_POST['rebate'];
+    if (isset($_POST['CheckOut']) && empty($_SESSION["completed"])) {
+        $remitLastFiveDigit = $_POST['remitLastFiveDigit'];
+        $remitAmont = $_POST['remitAmont'];
+        $memo = $_POST['memo'];
+        $moneyToBePaid = $_POST['moneyToBePaid'];
+        $rebateWillBeUpdate = $_POST['rebateWillBeUpdate'];
+        $rebateTobeDeduct = $_POST['rebateTobeDeduct'];
+        $actualShippingFee = $_POST['actualShippingFee'];
+        $rebate = $_POST['rebate'];
         	
-	        if ($remitLastFiveDigit == "")
-	        {
-	            echo "<script type='text/javascript'>alert('remitLastFiveDigit')</script>";
-	        }
-	        elseif ($remitAmont == "")
-	        {
-	            echo "<script type='text/javascript'>alert('remitAmont')</script>";
-	        }
-	        else
-	        {		    
-	    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號`, `匯款末五碼`, `匯款日期`, `Memo`, `已收款`, `匯款金額`, `FB帳號`, `FBID`, `應匯款金額`, `PaidRebate` ,`運費`)
-	    	    VALUES (NULL ,  '$remitLastFiveDigit',  CURDATE(),  '$memo',  '0',  '$remitAmont',  '$memberFBAccount', '$memberFBID', '$moneyToBePaid', '$rebateTobeDeduct', '$actualShippingFee');";
-	    	    $result = mysql_query($sql,$con);
-	    	    if (!$result) {
-	    	        die('Invalid query: ' . mysql_error());
-	    	    }
-	    	    	
-	    	    $sql = "UPDATE `ShippingRecord` SET `備註` = '$memo', `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$memberFBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ";
-	    	    $result = mysql_query($sql,$con);
-	    	    if (!$result) {
-	    	        die('Invalid query: ' . mysql_error());
-	    	    }
-	    	    
-	    	    $sql = "UPDATE `Members` SET `Rebate` = '$rebateWillBeUpdate' WHERE FBID = '$memberFBID'";
+        if ($remitLastFiveDigit == "")
+        {
+            echo "<script type='text/javascript'>alert('remitLastFiveDigit')</script>";
+        }
+        elseif ($remitAmont == "")
+        {
+            echo "<script type='text/javascript'>alert('remitAmont')</script>";
+        }
+        else
+        {		
+    	    $sql = "INSERT INTO  `RemitRecord` (`匯款編號` ,`匯款末五碼` ,`匯款日期` ,`Memo` ,`已收款` ,`匯款金額` ,`FB帳號` ,`FBID` ,`應匯款金額`,`PaidRebate`,`運費`)
+    	    VALUES (NULL ,  \"$remitLastFiveDigit\",  CURDATE(),  \"$memo\",  \"0\",  \"$remitAmont\",  \"$fbAccount\", \"$FBID\" ,\"$moneyToBePaid\", \"$rebateTobeDeduct\", \"$actualShippingFee\");";
+    	    $result = mysql_query($sql,$con);
+    	    if (!$result) {
+    	        die('Invalid query: ' . mysql_error());
+    	    }
+    	    	
+    	    $sql = "UPDATE `ShippingRecord` SET `備註` = \"$memo\", `匯款日期` = CURDATE(), `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord)  WHERE FBID = '$FBID' AND (匯款日期 = '0000-00-00' || 匯款日期 is NULL) AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ";
+    	    $result = mysql_query($sql,$con);
+    	    if (!$result) {
+    	        die('Invalid query: ' . mysql_error());
+    	    }
+    	    
+    	    $sql = "UPDATE `Members` SET `Rebate` = '$rebateWillBeUpdate' WHERE FBID = '$FBID'";
+    	    $result = mysql_query($sql,$con);
+    	    if (!$result) {
+    	    	die('Invalid query: ' . mysql_error());
+    	    }
+    	    
+    	    if($rebateTobeDeduct > 0)
+    	    {
+	    	    $sql = "INSERT INTO `RebateRecord`(`登入帳號`, `顧客FB帳號`, `顧客FBID`, `修改金額`, `備註`, `修改日期`, `RebateNumber`, `目前回饋金`)
+	    	    VALUES ('熊會買',\"$fbAccount\",'$FBID','-$rebateTobeDeduct','系統自動處理',CURDATE(),NULL,$rebate-$rebateTobeDeduct)";
 	    	    $result = mysql_query($sql,$con);
 	    	    if (!$result) {
 	    	    	die('Invalid query: ' . mysql_error());
 	    	    }
-	    	    
-	    	    if($rebateTobeDeduct > 0)
-	    	    {
-	    	    	$sql = "INSERT INTO `RebateRecord`(`登入帳號`, `顧客FB帳號`, `顧客FBID`, `修改金額`, `備註`, `修改日期`, `RebateNumber`, `目前回饋金`)
-	    	    	VALUES ('熊會買','$memberFBAccount','$memberFBID','-$rebateTobeDeduct','系統自動處理',CURDATE(),NULL,$rebate-$rebateTobeDeduct)";
-	    	    	$result = mysql_query($sql,$con);
-	    	    	if (!$result) {
-	    	    		die('Invalid query: ' . mysql_error());
-	    	    	}
+    	    }
+    	    
+    	    if(($rebateWillBeUpdate - $rebate) > 0)
+    	    {
+	    	    $sql = "INSERT INTO `RebateRecord`(`登入帳號`, `顧客FB帳號`, `顧客FBID`, `修改金額`, `備註`, `修改日期`, `RebateNumber`, `目前回饋金`)
+	    	    VALUES ('熊會買','$fbAccount','$FBID','$rebateWillBeUpdate - $rebate','系統自動處理',CURDATE(),NULL,'$rebateWillBeUpdate')";
+	    	    $result = mysql_query($sql,$con);
+	    	    if (!$result) {
+	    	    	die('Invalid query: ' . mysql_error());
 	    	    }
-	    	    	
-	    	    if(($rebateWillBeUpdate - $rebate) > 0)
-	    	    {
-	    	    	$sql = "INSERT INTO `RebateRecord`(`登入帳號`, `顧客FB帳號`, `顧客FBID`, `修改金額`, `備註`, `修改日期`, `RebateNumber`, `目前回饋金`)
-	    	    	VALUES ('熊會買','$memberFBAccount','$memberFBID','$rebateWillBeUpdate - $rebate','系統自動處理',CURDATE(),NULL,'$rebateWillBeUpdate')";
-	    	    	$result = mysql_query($sql,$con);
-	    	    	if (!$result) {
-	    	    		die('Invalid query: ' . mysql_error());
-	    	    	}
-	    	    }
-	    	    
-	    	    
-	    	    
-	            $_SESSION[$memberFBID] = true;   
-	     		header("location: http://mommyssecret.tw/BuyingInformationByQuery.php");
-	        }		
-	    }
-	    else 
-	    {
-	    	//echo "here";
-	    }
+    	    }
+    	    
+            $_SESSION["completed"] = true;   
+     		header("location: http://mommyssecret.tw/PaymentProcessCallBack.php");
+        }		
+    }
 ?>
 <div class="container">
   <h2>訂單列表</h2>
@@ -329,8 +247,8 @@ if(!session_id()) {
     		    else
     		    {
         		    $sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `手機號碼`, `FBID`)
-        		    VALUES (\"$MemberName\", \"$memberFBAccount\", \"$PhoneNumber\", \"$memberFBID\")
-        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$memberFBAccount\", `手機號碼`=\"$PhoneNumber\"";
+        		    VALUES (\"$MemberName\", \"$fbAccount\", \"$PhoneNumber\", \"$FBID\")
+        		    ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `手機號碼`=\"$PhoneNumber\"";
         		
         		    $result = mysql_query($sql,$con);
         		    if (!$result) {
@@ -347,7 +265,7 @@ if(!session_id()) {
     		 		<?php
     		    }
 		 	}			
-			$sql = "SELECT * FROM `Members` WHERE FBID  = '$memberFBID';";
+			$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 		 	$result = mysql_query($sql,$con);
 		 	
 		 	if (!$result) {
@@ -357,19 +275,19 @@ if(!session_id()) {
 		 	$row = mysql_fetch_array($result);
 
 		 	$MemberInformation = "
-			<form name=\"MemberInformationForm\" action=\"BuyingInformationByQuery.php\" onsubmit=\"return validateMemberForm()\" method=\"POST\">
+			<form name=\"MemberInformationForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateMemberForm()\" method=\"POST\">
 		   	<input type=\"hidden\" name=\"ModifyMember\" value=\"run\">
 			<table id=\"Member\">
 		    <tr>
 				<th>FB帳號</th> 			
 			    <td>
-						<input type=\"text\" name=\"memberFBAccount\" readonly=\"readonly\" value=\"".$memberFBAccount."\"style=\"width:300px;\">
+						<input type=\"text\" name=\"fbAccount\" readonly=\"readonly\" value=\"".$fbAccount."\"style=\"width:300px;\">
 			    </td>	    				
 			</tr>
 		    <tr>
 				<th>FBID</th> 			
 			    <td>
-						<input type=\"text\" name=\"memberFBID\" readonly=\"readonly\" value=\"".$memberFBID."\"style=\"width:300px;\">
+						<input type=\"text\" name=\"FBID\" readonly=\"readonly\" value=\"".$FBID."\"style=\"width:300px;\">
 			    </td>	    				
 			</tr>		    
 			<tr>
@@ -393,11 +311,10 @@ if(!session_id()) {
     </div>
     <div id="menu1" class="tab-pane fade"><br>
 		<?php 
-			$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
-			ShippingRecord.FBID = '$memberFBID' AND
+			$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND 
+			ShippingRecord.FBID = '$FBID' AND
 			ShippingRecord.匯款日期 = '0000-00-00' AND
 			ItemCategory.Active = TRUE order by FB帳號";
-			
 			
 			$result = mysql_query($sql,$con);
 			
@@ -408,7 +325,6 @@ if(!session_id()) {
 			
 			$toRemitTable = "<table>
 				<tr>
-				<th>商品圖</th>
 				<th>SN</th>
 				<th>FB帳號 </th>
 	            <th>FBID </th>
@@ -438,7 +354,6 @@ if(!session_id()) {
 					
 				$subTotal = $row['單價'] * $row['數量'];
 				$toRemitTable = $toRemitTable . "<tr>";
-				$toRemitTable = $toRemitTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
@@ -457,12 +372,12 @@ if(!session_id()) {
 			}
 			$toRemitTable = $toRemitTable . "</table>";
 			
-			$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE 
-			(ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
-			ShippingRecord.FBID = '$memberFBID' AND 
-			ShippingRecord.匯款編號 = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$memberFBID') AND
-			ShippingRecord.出貨日期 = '0000-00-00' AND
-			ItemCategory.Active = true order by ShippingRecord.FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE
+				(ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
+				ShippingRecord.FBID = '$FBID' AND
+				ShippingRecord.匯款編號 = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND
+				ShippingRecord.出貨日期 = '0000-00-00' AND
+				ItemCategory.Active = true order by ShippingRecord.FB帳號;";
 			
 			$result = mysql_query($sql,$con);
 			
@@ -474,14 +389,13 @@ if(!session_id()) {
 			
 			$remitedTable = "<table>
             	<tr>
-				<th>商品圖</th>
              	<th>SN</th>
             	<th>FB帳號 </th>
     	        <th>FBID </th>
             	<th>品項</th>
 	    		<th>規格</th>
             	<th>單價</th>
-	    		<th>備註</th>
+        		<th>備註</th>
             	<th>數量</th>
             	<th>金額</th>
             	<th>匯款日期</th>
@@ -502,7 +416,6 @@ if(!session_id()) {
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 			    $subTotal = $row['單價'] * $row['數量'];
 			    $remitedTable = $remitedTable . "<tr>";
-			    $remitedTable = $remitedTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
@@ -520,13 +433,13 @@ if(!session_id()) {
 			}
 			$remitedTable = $remitedTable . "</table>";			
 			
-			$sql =  "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE
-				(ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
-				ShippingRecord.FBID = '$memberFBID' AND
-				ShippingRecord.匯款編號  <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$memberFBID') AND
-				ShippingRecord.出貨日期 = '0000-00-00' AND
-				匯款日期 <> '0000-00-00' AND
-				ItemCategory.Active = true order by FB帳號;";
+			$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE
+			(ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
+			ShippingRecord.FBID = '$FBID' AND
+			ShippingRecord.匯款編號  <> (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND
+			ShippingRecord.出貨日期 = '0000-00-00' AND
+			匯款日期 <> '0000-00-00' AND
+			ItemCategory.Active = true order by FB帳號;";
 			
 			
 			$result = mysql_query($sql,$con);
@@ -539,7 +452,6 @@ if(!session_id()) {
 				
 			$waitShipping = "<table>
             	<tr>
-				<th>商品圖</th>
              	<th>SN</th>
             	<th>FB帳號 </th>
 		        <th>FBID </th>
@@ -567,7 +479,6 @@ if(!session_id()) {
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 			    $subTotal = $row['單價'] * $row['數量'];
 			    $waitShipping = $waitShipping . "<tr>";
-			    $waitShipping = $waitShipping . "<td><img src=".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['SerialNumber'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['FB帳號'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['FBID'] . "</td>";
@@ -610,7 +521,8 @@ if(!session_id()) {
     		    $FamilyNumber = $_POST['FamilyNumber'];
     		    $ShippingWay = $_POST['ShippingWay'];
     		    $ShippingFee = $_POST['ShippingFee'];
-    		    $Memo = $_POST['Memo'];    		    
+    		    $Memo = $_POST['Memo'];
+    		    $AgentAccount = $_POST['AgentAccount'];    		    
     		    
 		        if ($Address == "")
 		        {
@@ -631,8 +543,8 @@ if(!session_id()) {
 		        else 
 		        {
         		    $sql = "INSERT INTO `Members` (`FB帳號`, `FBID`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`)
-        		    VALUES (\"$memberFBAccount\", \"$memberFBID\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\")
-        		    ON DUPLICATE KEY UPDATE `FB帳號`=\"$memberFBAccount\",`郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\"";
+        		    VALUES (\"$fbAccount\", \"$FBID\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\")
+        		    ON DUPLICATE KEY UPDATE `FB帳號`=\"$fbAccount\",`郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\"";
         		
         		    $result = mysql_query($sql,$con);
         		    if (!$result) {
@@ -652,7 +564,7 @@ if(!session_id()) {
 		 	}
 	 	?>
 		 	<?php
-			$sql = "SELECT * FROM `Members` WHERE FBID  = '$memberFBID';";
+			$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 		 	$result = mysql_query($sql,$con);
 		 	
 		 	if (!$result) {
@@ -662,7 +574,7 @@ if(!session_id()) {
 		 	$row = mysql_fetch_array($result);
 
 		 	$ShippingInformation = "
-			<form name=\"AddressInformationForm\" action=\"BuyingInformationByQuery.php\" onsubmit=\"return validateShippingForm()\" method=\"POST\">
+			<form name=\"AddressInformationForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateShippingForm()\" method=\"POST\">
 		   	<input type=\"hidden\" name=\"ModifyAddress\" value=\"run\">
 			<table id=\"Address\">
 		    <tr>		
@@ -706,17 +618,45 @@ if(!session_id()) {
     	 	<input type=\"submit\" value=\"修改寄送資訊\">
     	 	</form>";
 		 	
+		 	?>
+ 	 		<script>
+ 	 		$( function() {
+ 	 			var availableAccount =
+ 	 			<?php
+ 	 			$sql = "SELECT FB帳號 FROM `Members`;";
+ 	 			$result = mysql_query($sql,$con);
+ 	 			if (!$result) {
+ 	 				die('Invalid query: ' . mysql_error());
+ 	 			}
+ 	 			while($rows[]=mysql_fetch_array($result));
+ 	 			$prefix = '';
+ 	 			foreach ($rows as $r)
+ 	 			{
+ 	 				$AcountList .= $prefix . '"' . $r[FB帳號] . '"';
+ 	 				$prefix = ', ';
+ 	 			}
+ 	 			echo "[$AcountList];";
+ 	 			?>
+ 	 			    
+ 			    $( "#AgentAccount" ).autocomplete({
+ 			      source: availableAccount
+ 			    });
+ 			  } ); 	
+		  </script>	
+ 	 		<?php
+		 	
             echo $ShippingInformation;
             ?>
     </div>
     <div id="menu3" class="tab-pane fade"><br>
 		<?php
 		
-		$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND 
-			ShippingRecord.FBID = '$memberFBID' AND
+		$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
+			ShippingRecord.FBID = '$FBID' AND
 			ShippingRecord.匯款日期 = '0000-00-00' AND
 			ItemCategory.Active = TRUE order by FB帳號";
-			
+		
+		
 		$result = mysql_query($sql,$con);
 			
 		if (!$result) {
@@ -775,12 +715,14 @@ if(!session_id()) {
 		}
 		$toRemitTable = $toRemitTable . "</table>";
 			
-		$sql = "SELECT * FROM `ShippingRecord`,`ItemCategory` WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
-			ShippingRecord.FBID = '$memberFBID' AND 
-			ShippingRecord.匯款編號 = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$memberFBID') AND
-			ItemCategory.Active = true 
-			order by ShippingRecord.FB帳號;";
-			
+// 		$sql = "SELECT * FROM `ShippingRecord` WHERE FBID = '$FBID' AND `匯款編號` = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) order by FB帳號;";
+		$sql = "SELECT * FROM `ShippingRecord`, `ItemCategory` WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = (ItemCategory.ItemID, ItemCategory.規格) AND
+		ShippingRecord.FBID = '$FBID' AND
+		ShippingRecord.匯款編號 = (SELECT MAX( 匯款編號 ) FROM RemitRecord where FBID = '$FBID') AND
+		ItemCategory.Active = TRUE 
+		order by ShippingRecord.FB帳號";
+		
+		
 		$result = mysql_query($sql,$con);
 			
 		if (!$result) {
@@ -789,14 +731,14 @@ if(!session_id()) {
 			
 		$remitedTable = "<table>
 				<tr>
-				<th>商品圖</th>
+	    		<th>商品圖</th>
 			 	<th>SN</th>
 				<th>FB帳號 </th>
 	            <th>FBID </th>
 				<th>品項</th>
 	    		<th>規格</th>
 				<th>單價</th>
-				<th>備註</th>
+        		<th>備註</th>
 				<th>數量</th>
 				<th>金額</th>
 				<th>匯款日期</th>
@@ -835,7 +777,7 @@ if(!session_id()) {
 		}
 		$remitedTable = $remitedTable . "</table>";
 			
-		$sql = "SELECT * FROM `Members` WHERE FBID  = '$memberFBID';";
+		$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 		$result = mysql_query($sql,$con);
 		
 		if (!$result) {
@@ -876,7 +818,6 @@ if(!session_id()) {
 		    {
 		    	$rebateToBeIncrease = 0;
 		    }
-		    
 		    if($moneyToBePaid >= $rebate)
 		    {
 		    	$rebateTobeDeduct = $rebate;
@@ -885,11 +826,11 @@ if(!session_id()) {
 		    }
 		    else 
 		    {
+		    	
 		    	$rebateTobeDeduct = $moneyToBePaid;
 		    	$rebateWillBeUpdate = $rebate - $rebateTobeDeduct + $rebateToBeIncrease;
 		    	$moneyToBePaid = 0;
 		    }
-		    
 		    if($type == '團媽')
 		    {
 		    	$rebateToBeIncrease = 0;
@@ -919,7 +860,7 @@ if(!session_id()) {
 	    	
 	    	echo "<table style=\"font-size:24px;display: inline-block;\">
 	    	<tr>
-	    	<th>帳戶支付</th>
+	    	<th>回饋金</th>
 	    	<td>$rebateTobeDeduct</td>
 	    	</tr>
 	    	</table>";
@@ -940,8 +881,8 @@ if(!session_id()) {
 	        
 	    	echo "<table style=\"font-size:22px;\">
 	    	<tr>
-	    	<th style=\"background-color: #ccff66; color: #804000;\">帳戶餘額</th>
-	    	<td title=\"帳戶餘額=溢付款/商品退款+前期購買金買3000元2%回饋-本期使用金額（未使用完畢遞延下期繼續折抵）\">$rebate</td>
+	    	<th style=\"background-color: #ccff66; color: #804000;\">回饋金餘額</th>
+	    	<td title=\"回饋金餘額=溢付款/商品退款+前期購買金買3000元2%回饋-本期使用金額（未使用完畢遞延下期繼續折抵）\">$rebate</td>
 	    	</tr>
 	    	</table>";
 	    	
@@ -959,12 +900,13 @@ if(!session_id()) {
 	        
 	        if(($address != "") && ($familyNumber != "") && ($shippingWay != "") && ($name != ""))
 	        {
-		 		echo "<form name=\"RemitForm\" action=\"BuyingInformationByQuery.php\" onsubmit=\"return validateRemitForm(this)\" method=\"POST\">
+		 		echo "<form name=\"RemitForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateRemitForm(this)\" method=\"POST\">
 		 			<input type=\"hidden\" name=\"CheckOut\" value=\"run\">
-		        	<input type=\"hidden\" value=\"$memberFBID\" name=\"FBID\">
+		        	<input type=\"hidden\" value=\"$FBID\" name=\"FBID\">
 		        	<input type=\"hidden\" value=\"$moneyToBePaid\" name=\"moneyToBePaid\">
 	    	    	<input type=\"hidden\" value=\"$rebateWillBeUpdate\" name=\"rebateWillBeUpdate\">
-	    	    	<input type=\"hidden\" value=\"$shippingFee\" name=\"shippingFee\">
+	    	    	<input type=\"hidden\" value=\"$rebateTobeDeduct\" name=\"rebateTobeDeduct\">
+	    	    	<input type=\"hidden\" value=\"$actualShippingFee\" name=\"actualShippingFee\">
 	    	    	<input type=\"hidden\" value=\"$rebate\" name=\"rebate\">
 				  	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"轉出帳號末5碼，無摺請寫郵局局號\"></p>
 				  	<p><input type=\"text\" name=\"remitAmont\" placeholder=\"匯款金額\"></p>
@@ -977,14 +919,12 @@ if(!session_id()) {
 	        	echo '<b><font size="6">';
 	        	echo "請檢查會員資料和寄送地址，有欄位沒有填寫喔";
 	        	echo '</font></b>';
-	        	echo "<form name=\"RemitForm\" action=\"BuyingInformationByQuery.php\" onsubmit=\"return validateRemitForm(this)\" method=\"POST\">
+	        	echo "<form name=\"RemitForm\" action=\"PaymentProcessCallBack.php\" onsubmit=\"return validateRemitForm(this)\" method=\"POST\">
 	        	<fieldset disabled>
 	        	<input type=\"hidden\" name=\"CheckOut\" value=\"run\">
-	        	<input type=\"hidden\" value=\"$memberFBID\" name=\"FBID\">
+	        	<input type=\"hidden\" value=\"$FBID\" name=\"FBID\">
 	        	<input type=\"hidden\" value=\"$moneyToBePaid\" name=\"moneyToBePaid\">
 	        	<input type=\"hidden\" value=\"$rebateWillBeUpdate\" name=\"rebateWillBeUpdate\">
-	        	<input type=\"hidden\" value=\"$rebateTobeDeduct\" name=\"rebateTobeDeduct\">
-	        	<input type=\"hidden\" value=\"$actualShippingFee\" name=\"actualShippingFee\">
 	        	<p><input type=\"text\" name=\"remitLastFiveDigit\" placeholder=\"匯款末五碼\"></p>
 	        	<p><input type=\"text\" name=\"remitAmont\" placeholder=\"匯款金額\"></p>
 	        	<p><input type=\"text\" name=\"memo\" placeholder=\"Memo\"></p>
@@ -999,7 +939,8 @@ if(!session_id()) {
      		
      		$sql = "SELECT * FROM `RemitRecord` WHERE `匯款編號` = (
      		SELECT MAX(`匯款編號`)
-     		FROM `RemitRecord` WHERE FBID = '$memberFBID');";
+     		FROM `RemitRecord` WHERE FBID = '$FBID');";
+     		
      		
      		$result = mysql_query($sql,$con);
      		
@@ -1055,8 +996,8 @@ if(!session_id()) {
      		</table><br>";
      		
     	 	echo $remitedTable;
+    	 	
  		}
-	}
 		?>
     </div>    
   </div>

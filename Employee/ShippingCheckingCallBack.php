@@ -224,7 +224,7 @@ if(isset($CustomerFBID)) {
 			WHERE ShippingRecord.確認收款 =1
 			AND ShippingRecord.匯款日期 > DATE_SUB( CURDATE( ) , INTERVAL 12 WEEK) AND ShippingRecord.FBID = '$CustomerFBID'
 			)
-		AND (ShippingRecord.ItemID, ShippingRecord.規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ORDER BY 出貨日期;";
+		AND (ShippingRecord.ItemID, ShippingRecord.規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ORDER BY 出貨日期, FB帳號";
 	
 	$result = mysql_query($sql,$con);
 	

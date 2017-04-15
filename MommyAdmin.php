@@ -204,6 +204,13 @@ else
 			        </a>
 				</td>	
 			</tr>	
+			<tr>
+				<td>
+			        <a target=\"_blank\" href=\"/Employee/TagCustomerForShipping.php\" class=\"btn btn-default btn-lg btn-block\">
+			          <span class=\"glyphicon glyphicon-volume-up\"></span> 出貨通知
+			        </a>
+				</td>
+			</tr>
 		</table>";
 		echo $AdminTable;
 		?>

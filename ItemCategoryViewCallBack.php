@@ -92,6 +92,26 @@ if(!session_id()) {
 				arriveDate.html(output);
 			});	        
       	});
+        $('.table-remove').click(function () {
+            if(confirm("確定刪除?"))
+            {
+	        	var data = $('#ItemCategorys').DataTable()
+			        .row( $(this).parents('tr') )
+			        .data();
+			
+				$.ajax({
+					type: "POST",
+					url: "DeleteItemCategory.php",
+					data: {data : data}
+				}).done(function(output) {
+					alert(output);
+				});	  
+		      	$('#ItemInformation').DataTable()
+		        .row( $(this).parents('tr') )
+		        .remove()
+		        .draw();
+            }
+      	});      	
 //         $("#ItemCategorys").on('click', function() {
 //         	this.invalidate();
 //         	this.draw();
@@ -230,7 +250,25 @@ $fbID = $userNode->getId();
 	<th>到貨日期</th>
 	<th>Active</th>			
 	<th>存檔</th>
+	<th>刪除</th>
 	</thead></tr><tbody>";
+	echo "<tr>";
+	echo "<td><img src=uploads/NotAvailable.png style=\"height:100px;width:100px;\" /></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\">新增品項</td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td contenteditable=\"true\"></td>";
+	echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
+	echo "<td></td>";
+	echo "</tr>";
 	
 	while($row = mysql_fetch_array($result))
 	{
@@ -250,6 +288,7 @@ $fbID = $userNode->getId();
 		echo "<td class=\"arriveDate\">".$row[到貨日期]."</td>";
 		echo "<td contenteditable=\"true\">".$row[Active]."</td>";
 		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
+		echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
 		echo "</tr>";
 	}
 	

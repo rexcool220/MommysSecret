@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
-include_once "./vendor/google/apiclient/examples/templates/base.php";
-require_once 'ConnectMySQL.php';
+require_once dirname(__DIR__).'/vendor/autoload.php';
+include_once "../vendor/google/apiclient/examples/templates/base.php";
+require_once '../ConnectMySQL.php';
 header("Content-Type:text/html; charset=utf-8");
 if(!session_id()) {
 	session_start();
@@ -23,8 +23,8 @@ if(!session_id()) {
 	<script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">
-	<title>訂單管理</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">	
+	<title>出貨通知小幫手</title>
 	<style>
 	#Default {
 	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -64,78 +64,58 @@ if(!session_id()) {
 	</style>
 </head>
 <body>
-
+	<div id="dialog" title="小幫手說">
+		<p id="dialogText"></p>
+	</div>
 <script type="text/javascript">
-    $(document).ready(function () {                
-        $('#ItemInformation').dataTable({
+    // Activate an inline edit on click of a table cell  
+    $(document).ready(function () {
+        $('#CustomersToNotify').dataTable({  
 		"fixedHeader": {
 			header: true,
-		},               
-        dom: 'Bfrtip',
-    	buttons: [
-	    	{
-	    		text: '歷史資料',
-	    		action: function ( e, dt, node, config ) {
-				window.open("MSViewAll.php",'_blank');
-	    		}
-	    	},
-	    	{
-	    		text: '新增資料',
-	    		action: function ( e, dt, node, config ) {
-				window.open("MSNew.php",'_blank');
-	    		}
-	    	}
-    	],           
+		},              
+		dom: 'Bfrtip',
+		buttons: [
+        {
+            text: '產生Tag文字',
+            action: function ( e, dt, node, config ) {
+				this.rows().every( function () {
+				var d = this.data();
+	            	 
+				d.counter++; // update data source for the row
+	            	 
+				this.invalidate(); // invalidate the data DataTables has cached for this row
+				} );
+	                
+	            var FBAccounts = 
+	                this
+					.columns(0)
+					.data()
+					.eq( 0 )
+					.unique();      // Reduce the 2D array into a 1D array of data
+
+				var FBAccountString = "";
+	            
+	            for (var i = 0; i < FBAccounts.length; ++i) {
+	            	FBAccountString = FBAccountString + "@" + FBAccounts[i] + "<br>"; 
+	            }
+	            	            
+	            $( "#dialogText" ).html(FBAccountString);
+
+	            $( "#dialog" ).dialog();
+            }
+        }
+		],  
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
-    	"order": [[ 0, "asc" ]],
-    	select: true
+    	"aaSorting": [],
+        "select": {
+	            style:    'os',
+	            selector: 'td:first-child'
+        	}
         });
-        $('.table-update').click(function () {
-	      	var data = $('#ItemInformation').DataTable()
-		        .row( $(this).parents('tr') )
-		        .data();
-			
-			$.ajax({
-				type: "POST",
-				url: "MSEdit.php",
-				data: {data : data}
-			}).done(function(output) {
-				alert(output);
-			});	        
-      	});
-        $('.table-remove').click(function () {
-            if(confirm("確定刪除?"))
-            {
-	        	var data = $('#ItemInformation').DataTable()
-			        .row( $(this).parents('tr') )
-			        .data();
-			
-				$.ajax({
-					type: "POST",
-					url: "MSDelete.php",
-					data: {data : data}
-				}).done(function(output) {
-					alert(output);
-				});	  
-		      	$('#ItemInformation').DataTable()
-		        .row( $(this).parents('tr') )
-		        .remove()
-		        .draw();
-            }
-      	});
-//         $("#ItemInformation").on('click', function() {
-//         	this.invalidate();
-//         	this.draw();
-//         });
-		var table = $('#ItemInformation').DataTable();
-        $('#ItemInformation tbody').on( 'focusout', 'td', function () {
-        	var cell = table.cell( this );
-            cell.data( this.innerHTML );
-        } );
     });
-    // Activate an inline edit on click of a table cell  
-    
+  
 </script>
 
 
@@ -177,7 +157,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '訂單管理', 'http://mommyssecret.tw/MSView.php' );
+			window.history.replaceState( {} , '出貨通知小幫手', 'http://mommyssecret.tw/Employee/TagCustomerForShippingCallBack.php' );
 		</script>
 	<?php
 	try {
@@ -192,7 +172,7 @@ if(!$accessToken)
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
-	$fbID = $userNode->getId();
+$fbID = $userNode->getId();
 	
 	$fbAccount = $userNode->getName();
 	
@@ -204,7 +184,7 @@ if(!$accessToken)
 	
 	$type = $row['TYPE'];
 	
-	if(($type == "管理員") || ($type == "共用帳號"))
+	if($type == "共用帳號")
 	{
 		echo "<p hidden id=\"accountType\">$type</p>";
 		echo "<p hidden id=\"fbAccount\">$fbAccount</p>";
@@ -215,57 +195,49 @@ if(!$accessToken)
 		exit;
 	}
 	
-	//To get all item id
-	include('ConnectMySQL.php');
+	if(isset($_POST['shippingDate'])) {
+		$date = $_POST['shippingDate'];
+	}
+	else
+	{
+		echo "<form method=\"POST\" action=\"TagCustomerForShippingCallBack.php\">
+	 	<input type=\"date\" name=\"shippingDate\" data-date-inline-picker=\"true\"><p>
+		<input type=\"submit\" value=\"輸入日期\"><p>
+		</form>";
+		exit;
+	}
+
+	$sql = "SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, Members.寄送方式
+	FROM  `ShippingRecord` ,  `Members` 
+	WHERE  `出貨日期` =  '$date'
+	AND ShippingRecord.FBID = Members.FBID
+	GROUP BY ShippingRecord.FBID
+	ORDER BY Members.寄送方式";
+	$result = mysql_query($sql,$con);
 	
-	// get results from database
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
+
+	$row = mysql_fetch_array($result);
 	
-	$result = mysql_query("SELECT * FROM `ShippingRecord` where (匯款日期 = \"0000-00-00\" OR 出貨日期 = \"0000-00-00\")")
-	
-	or die(mysql_error());
-	
-	echo "<table id=\"ItemInformation\">
+	echo "<table id=\"CustomersToNotify\">
 	<thead><tr>
-	<th>FB帳號</th>	    		
-	<th>品項</th>
-	<th>單價</th>				
-	<th>數量</th>
-	<th>匯款日期</th>	    		
-	<th>出貨日期</th>
-	<th>序號</th>
-	<th>匯款編號</th>
-	<th>確認收款</th>
+	<th>FB帳號</th>
 	<th>FBID</th>
-	<th>備註</th>
-	<th>月份</th>
-	<th>規格</th>
-	<th>ItemID</th>
-	<th></th>
-	<th></th>			
+	<th>寄送方式</th>
 	</thead></tr><tbody>";
 	
 	while($row = mysql_fetch_array($result))
 	{
 		echo "<tr>";
-		echo "<td contenteditable=\"true\">".$row[FB帳號]."</td>";
-		echo "<td contenteditable=\"true\">".$row[品項]."</td>";
-		echo "<td contenteditable=\"true\">".$row[單價]."</td>";
-		echo "<td contenteditable=\"true\">".$row[數量]."</td>";
-		echo "<td>".$row[匯款日期]."</td>";
-		echo "<td>".$row[出貨日期]."</td>";
-		echo "<td>".$row[SerialNumber]."</td>";
-		echo "<td contenteditable=\"true\">".$row[匯款編號]."</td>";
-		echo "<td>".$row[確認收款]."</td>";
-		echo "<td contenteditable=\"true\">".$row[FBID]."</td>";
-		echo "<td contenteditable=\"true\">".$row[備註]."</td>";
-		echo "<td contenteditable=\"true\">".$row[月份]."</td>";
-		echo "<td contenteditable=\"true\">".$row[規格]."</td>";
-		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
-		echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
-		echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
+		echo "<td>".$row['FB帳號']."</td>";
+		echo "<td>".$row['FBID']."</td>";
+		echo "<td>".$row['寄送方式']."</td>";
 		echo "</tr>";
 	}
-	
+
 	echo "</tbody></table>";
 	?>
 </body>
+	
