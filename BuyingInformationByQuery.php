@@ -230,6 +230,7 @@ if(!session_id()) {
 	    $row = mysql_fetch_array($result);
 	    
 	    $memberFBID = $row['FBID'];
+	    $customerType = $row['Type'];
 	    
 	    if(isset($_SESSION[$memberFBID]))
 	    {
@@ -398,12 +399,12 @@ if(!session_id()) {
 			ShippingRecord.匯款日期 = '0000-00-00' AND
 			ItemCategory.Active = TRUE order by FB帳號";
 			
-			
 			$result = mysql_query($sql,$con);
 			
 			if (!$result) {
 				die('Invalid query: ' . mysql_error());
 			}
+			
 			$toRemitTableCount = mysql_num_rows($result);
 			
 			$toRemitTable = "<table>
@@ -426,6 +427,15 @@ if(!session_id()) {
 			$totalPrice = 0;
 			while($row = mysql_fetch_array($result))
 			{
+				if($customerType == '團媽' || $customerType == '管理員' || $customerType == 'VIP')
+				{
+					$adjustedPrice = $row['批發價'];
+				}
+				else
+				{
+					$adjustedPrice = $row['單價'];
+				}
+				
 				if($row['出貨日期'] == "0000-00-00")
 				{
 					$row['出貨日期'] = "";
@@ -436,7 +446,7 @@ if(!session_id()) {
 				}
 				$isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 					
-				$subTotal = $row['單價'] * $row['數量'];
+				$subTotal = $adjustedPrice * $row['數量'];
 				$toRemitTable = $toRemitTable . "<tr>";
 				$toRemitTable = $toRemitTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
@@ -444,7 +454,7 @@ if(!session_id()) {
 				$toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['規格'] . "</td>";
-				$toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
+				$toRemitTable = $toRemitTable . "<td>" . $adjustedPrice . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['備註'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
@@ -491,6 +501,15 @@ if(!session_id()) {
             	</tr>";
 			while($row = mysql_fetch_array($result))
 			{
+				if($customerType == '團媽' || $customerType == '管理員' || $customerType == 'VIP')
+				{
+					$adjustedPrice = $row['批發價'];
+				}
+				else
+				{
+					$adjustedPrice = $row['單價'];
+				}
+				
 			    if($row['出貨日期'] == "0000-00-00")
 			    {
 			        $row['出貨日期'] = "";
@@ -500,7 +519,7 @@ if(!session_id()) {
 			        $row['匯款日期'] = "";
 			    }
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = $row['單價'] * $row['數量'];
+			    $subTotal = $adjustedPrice * $row['數量'];
 			    $remitedTable = $remitedTable . "<tr>";
 			    $remitedTable = $remitedTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
@@ -508,7 +527,7 @@ if(!session_id()) {
 			    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['規格'] . "</td>";
-			    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
+			    $remitedTable = $remitedTable . "<td>" . $adjustedPrice . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['備註'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";
@@ -534,7 +553,7 @@ if(!session_id()) {
 			if (!$result) {
 			    die('Invalid query: ' . mysql_error());
 			}
-				
+			
 			$waitShippingCount = mysql_num_rows($result);
 				
 			$waitShipping = "<table>
@@ -556,6 +575,15 @@ if(!session_id()) {
             	</tr>";
 			while($row = mysql_fetch_array($result))
 			{
+				if($customerType == '團媽' || $customerType == '管理員' || $customerType == 'VIP')
+				{
+					$adjustedPrice = $row['批發價'];
+				}
+				else
+				{
+					$adjustedPrice = $row['單價'];
+				}
+				
 			    if($row['出貨日期'] == "0000-00-00")
 			    {
 			        $row['出貨日期'] = "";
@@ -565,7 +593,7 @@ if(!session_id()) {
 			        $row['匯款日期'] = "";
 			    }
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-			    $subTotal = $row['單價'] * $row['數量'];
+			    $subTotal = $adjustedPrice * $row['數量'];
 			    $waitShipping = $waitShipping . "<tr>";
 			    $waitShipping = $waitShipping . "<td><img src=".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['SerialNumber'] . "</td>";
@@ -573,7 +601,7 @@ if(!session_id()) {
 			    $waitShipping = $waitShipping . "<td>" . $row['FBID'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['品項'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['規格'] . "</td>";
-			    $waitShipping = $waitShipping . "<td>" . $row['單價'] . "</td>";
+			    $waitShipping = $waitShipping . "<td>" . $adjustedPrice . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['備註'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $row['數量'] . "</td>";
 			    $waitShipping = $waitShipping . "<td>" . $subTotal . "</td>";
@@ -722,6 +750,7 @@ if(!session_id()) {
 		if (!$result) {
 		    die('Invalid query: ' . mysql_error());
 		}
+		
 		$toRemitTableCount = mysql_num_rows($result);
 			
 		$toRemitTable = "<table>
@@ -744,6 +773,15 @@ if(!session_id()) {
 		$totalPrice = 0;
 		while($row = mysql_fetch_array($result))
 		{
+			if($customerType == '團媽' || $customerType == '管理員' || $customerType == 'VIP')
+			{
+				$adjustedPrice = $row['批發價'];
+			}
+			else
+			{
+				$adjustedPrice = $row['單價'];
+			}
+			
 		    if($row['出貨日期'] == "0000-00-00")
 		    {
 		        $row['出貨日期'] = "";
@@ -754,7 +792,7 @@ if(!session_id()) {
 		    }
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 		    	
-		    $subTotal = $row['單價'] * $row['數量'];
+		    $subTotal = $adjustedPrice * $row['數量'];
 		    $toRemitTable = $toRemitTable . "<tr>";
 		    $toRemitTable = $toRemitTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
@@ -762,7 +800,7 @@ if(!session_id()) {
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['品項'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['規格'] . "</td>";
-		    $toRemitTable = $toRemitTable . "<td>" . $row['單價'] . "</td>";
+		    $toRemitTable = $toRemitTable . "<td>" . $adjustedPrice . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['備註'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['數量'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $subTotal . "</td>";
@@ -806,6 +844,15 @@ if(!session_id()) {
 				</tr>";
 		while($row = mysql_fetch_array($result))
 		{
+			if($customerType == '團媽' || $customerType == '管理員' || $customerType == 'VIP')
+			{
+				$adjustedPrice = $row['批發價'];
+			}
+			else
+			{
+				$adjustedPrice = $row['單價'];
+			}
+			
 		    if($row['出貨日期'] == "0000-00-00")
 		    {
 		        $row['出貨日期'] = "";
@@ -815,7 +862,7 @@ if(!session_id()) {
 		        $row['匯款日期'] = "";
 		    }
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-		    $subTotal = $row['單價'] * $row['數量'];
+		    $subTotal = $adjustedPrice * $row['數量'];
 		    $remitedTable = $remitedTable . "<tr>";
 		    $remitedTable = $remitedTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
@@ -823,7 +870,7 @@ if(!session_id()) {
 		    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['品項'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['規格'] . "</td>";
-		    $remitedTable = $remitedTable . "<td>" . $row['單價'] . "</td>";
+		    $remitedTable = $remitedTable . "<td>" . $adjustedPrice . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['備註'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['數量'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $subTotal . "</td>";

@@ -105,11 +105,6 @@ if(!session_id()) {
 						.columns(11)
 						.data()
 						.eq( 0 );      // Reduce the 2D array into a 1D array of data		
-					var actives = 
-						this
-						.columns(12)
-						.data()
-						.eq( 0 );      // Reduce the 2D array into a 1D array of data											
 		            for (var i = 0; i < FBAccounts.length; ++i) {
 		            	if(FBAccounts[i] == "")
 		            	{
@@ -156,13 +151,6 @@ if(!session_id()) {
 			            	return false;
 		            	}
 		            }		            
-		            for (var i = 0; i < actives.length; ++i) {
-		            	if(actives[i] == "")
-		            	{
-			            	alert("請檢查Active!");
-			            	return false;
-		            	}
-		            }		
 					
 			        jQuery.fn.pop = [].pop;
 			        jQuery.fn.shift = [].shift;
@@ -196,22 +184,9 @@ if(!session_id()) {
     	],           
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
-    	"order": [[ 17, "asc" ]],
+    	"order": [[ 15, "asc" ]],
     	select: true
         });
-        $('.table-update').click(function () {
-	      	var data = $('#ItemInformation').DataTable()
-		        .row( $(this).parents('tr') )
-		        .data();
-			
-			$.ajax({
-				type: "POST",
-				url: "MSEdit.php",
-				data: {data : data}
-			}).done(function(output) {
-				alert(output);
-			});	        
-      	});
         $('.table-remove').click(function () {
             if(confirm("確定刪除?"))
             {
@@ -345,10 +320,8 @@ if(!$accessToken)
 	<th>FBID</th>
 	<th>備註</th>
 	<th>月份</th>
-	<th>Active</th>
 	<th>規格</th>
 	<th>ItemID</th>
-	<th></th>
 	<th></th>
 	<th></th>
 	</thead></tr><tbody>";
@@ -369,8 +342,6 @@ if(!$accessToken)
 	echo "<td contenteditable=\"true\"></td>";
 	echo "<td contenteditable=\"true\"></td>";
 	echo "<td contenteditable=\"true\"></td>";
-	echo "<td contenteditable=\"true\"></td>";
-	echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
 	echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
 	echo "<td><span class=\"table-duplicate glyphicon glyphicon-duplicate\"></span></td>";
 	echo "</tr>";

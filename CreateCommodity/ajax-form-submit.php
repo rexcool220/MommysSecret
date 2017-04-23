@@ -123,7 +123,7 @@ if(!$accessToken)
 	}
 	
 	$data = [
-			'message' => "[".substr($month,4,2)."月團]
+			'message' => "[".$month."]
 			[".$closeDate."收單]
 			[".$itemName."]
 			".$specString."

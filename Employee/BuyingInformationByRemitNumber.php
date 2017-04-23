@@ -30,7 +30,7 @@ if(!session_id()) {
 	<input type="submit" value="查詢"><p>
 </form>
 	
-<?php	
+<?php
 if(isset($_GET['remitNumber'])) {
 	$remitNumber = $_GET['remitNumber'];
 	
@@ -42,6 +42,14 @@ if(isset($_GET['remitNumber'])) {
 	}
 	$row = mysql_fetch_array($result);
 	$FBID = $row['FBID'];
+	
+	$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
+	$result = mysql_query($sql,$con);
+	
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
+	$customerType = $row['Type'];
 	
 	$sql = "SELECT * FROM `ShippingRecord` WHERE 匯款編號 = '$remitNumber' AND (ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true)";
 	$result = mysql_query($sql,$con);
@@ -67,6 +75,15 @@ if(isset($_GET['remitNumber'])) {
 	$totalPrice = 0;
 	while($row = mysql_fetch_array($result))
 	{
+		if($customerType == '團媽' || $customerType == '管理員' || $customerType == 'VIP')
+		{
+			$adjustedPrice = $row['批發價'];
+		}
+		else
+		{
+			$adjustedPrice = $row['單價'];
+		}
+		
 		if($row['出貨日期'] == "0000-00-00")
 		{
 			$row['出貨日期'] = "";
@@ -76,13 +93,13 @@ if(isset($_GET['remitNumber'])) {
 			$row['匯款日期'] = "";
 		}
 		$isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
-		$subTotal = $row['單價'] * $row['數量'];
+		$subTotal = $adjustedPrice * $row['數量'];
 		$RemitTable = $RemitTable . "<tr>";
 		$RemitTable = $RemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['FB帳號'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['品項'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['規格'] . "</td>";
-		$RemitTable = $RemitTable . "<td>" . $row['單價'] . "</td>";
+		$RemitTable = $RemitTable . "<td>" . $adjustedPrice . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['數量'] . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $subTotal . "</td>";
 		$RemitTable = $RemitTable . "<td>" . $row['匯款日期'] . "</td>";
