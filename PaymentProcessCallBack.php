@@ -161,6 +161,9 @@ if(!session_id()) {
 	if (!$result) {
 		die('Invalid query: ' . mysql_error());
 	}
+	
+	$row = mysql_fetch_array($result);
+	
 	$customerType = $row['Type'];
 	
 	if(isset($_SESSION["completed"]))
