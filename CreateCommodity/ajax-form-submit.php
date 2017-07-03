@@ -8,7 +8,7 @@ if(!session_id()) {
 }
 
 $target_dir = "/home/mommysse/public_html/uploads/";
-$target_file = $target_dir . basename($_FILES["my-file-selector"]["name"]);
+$target_file = $target_dir . $_FILES["my-file-selector"]["name"];
 $fileToBeUpload = $_POST['fileToBeUpload'];
 if (file_exists($target_file)) { unlink ($target_file); }
 
@@ -47,17 +47,22 @@ if (file_exists($target_file)) {
 // 	exit;
 // }
 // Check if $uploadOk is set to 0 by an error
+if($_FILES["my-file-selector"]["tmp_name"] == "")
+{
+	echo "tmp_name is empty";
+}
+
 if ($uploadOk == 0) {
 	echo "Sorry, your file was not uploaded.";
 	exit;
 	// if everything is ok, try to upload file
 } else {
 	if (move_uploaded_file($_FILES["my-file-selector"]["tmp_name"], $target_file)) {
-		echo "The file ". basename( $_FILES["my-file-selector"]["name"]). " has been uploaded.<br>";
+		echo "The file ". $_FILES["my-file-selector"]["name"]. " has been uploaded.<br>";
 		echo "=>";
 		echo $target_file;
 	} else {
-		echo "error";
+		echo "error" . $_FILES["my-file-selector"]["tmp_name"] . "#" . $target_file;
 		exit;
 	}
 }
@@ -67,7 +72,7 @@ if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
 			'app_id' => '198155157308846',
-			'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
+			'app_secret' => 'd338a067b933196d2be2c4c4c87c1205',
 			'default_graph_version' => 'v2.8',
 	]);
 	$helper = $fb->getRedirectLoginHelper();

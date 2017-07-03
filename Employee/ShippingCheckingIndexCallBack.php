@@ -72,7 +72,7 @@ if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
 			'app_id' => '198155157308846',
-			'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
+			'app_secret' => 'd338a067b933196d2be2c4c4c87c1205',
 			'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -159,7 +159,7 @@ $fbID = $userNode->getId();
 // ORDER BY ShippingRecord.出貨日期 DESC
 // ) AS sub
 // GROUP BY 出貨日期";
-	$sql = 	"SELECT ShippingRecord.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.應匯款金額, RemitRecord.Memo, RemitRecord.管理員備註, RemitRecord.匯款日期
+	$sql = 	"SELECT Members.FB帳號, ShippingRecord.FBID, ShippingRecord.出貨日期, RemitRecord.匯款編號, Members.寄送方式, RemitRecord.應匯款金額, RemitRecord.Memo, RemitRecord.管理員備註, RemitRecord.匯款日期
 		FROM  `ShippingRecord` ,  `ItemCategory` ,  `RemitRecord` ,  `Members` 
 		WHERE (
 		ShippingRecord.ItemID, ShippingRecord.規格

@@ -75,7 +75,7 @@ if(!session_id()) {
     	select: true,
 		"fixedHeader": {
 			header: true,
-		}
+		},
         });
         $('.table-update').click(function () {
         	var arriveDate = $(this).closest("tr").find(".arriveDate");
@@ -111,38 +111,58 @@ if(!session_id()) {
 		        .remove()
 		        .draw();
             }
-      	});      	
-//         $("#ItemCategorys").on('click', function() {
-//         	this.invalidate();
-//         	this.draw();
-//         });
+      	});   	
 		var table = $('#ItemCategorys').DataTable();
         $('#ItemCategorys tbody').on( 'focusout', 'td', function () {
         	var cell = table.cell( this );
             cell.data( this.innerHTML );
-//             var row = $(this).parent().parent().children().index($(this).parent());
-//             var col = $(this).parent().children().index($(this));
-//             if((col == 6)||(col == 7))
-//             {
-//             	var activeCell = table.cell(row, 12);
-//             	requestAmount = parseInt($(this).parent().children(':nth-child(7)').text());//需求數量
-//             	currentAmount = parseInt($(this).parent().children(':nth-child(8)').text());//到貨數量
-// 				if(currentAmount >= requestAmount)
-// 				{
-// 					$(this).parent().children().eq(12).empty().append('1');
-// 					activeCell.data('1');
-// 				}
-// 				else
-// 				{
-// 					$(this).parent().children().eq(12).empty().append('0');
-// 					activeCell.data('0');
-// 				}
-// 				$(this).parent().draw()
-//             }
         } );
+        $("#submit").click(function(event){
+    		var amount = $('#itemID');
+    		var comment = $('#itemSpec');
+    		amount.closest('.form-group').removeClass('has-error').addClass('has-success');
+    		comment.closest('.form-group').removeClass('has-error').addClass('has-success');
+    		if(!amount.val() || !comment.val()) {
+    			if(!amount.val())
+    			{
+    				amount.closest('.form-group').removeClass('has-success').addClass('has-error');
+    			}
+    			if(!comment.val())
+    			{
+    				comment.closest('.form-group').removeClass('has-success').addClass('has-error');
+    			}
+    			event.preventDefault();
+    		}
+    		else
+    		{
+        		event.preventDefault();
+        		$.ajax({
+    				type: "POST",
+    				url: "AddItemCategory.php",
+    				data: $(specAddForm).serialize(),
+    			}).done(function(output) {
+    				alert(output);
+    			});
+        		$('#myModal').modal('hide');
+    		}
+    	});            
     });
-    // Activate an inline edit on click of a table cell  
     
+	function addSpec(tableCell) {
+			var res = tableCell.parentNode.childNodes[0].innerHTML.match(/<img src=\"uploads\/([^\"]+)\"/);
+			$('#photo').val(res[1]);
+			$('#itemID').val(tableCell.parentNode.childNodes[1].innerHTML);
+			$('#itemName').val(tableCell.parentNode.childNodes[2].innerHTML);
+			$('#itemPrice').val(tableCell.parentNode.childNodes[3].innerHTML);
+			$('#itemSpec').val(tableCell.parentNode.childNodes[4].innerHTML);
+			$('#month').val(tableCell.parentNode.childNodes[5].innerHTML);
+			$('#itemCost').val(tableCell.parentNode.childNodes[8].innerHTML);
+			$('#itemWholeSalePrice').val(tableCell.parentNode.childNodes[9].innerHTML);
+			$('#vendor').val(tableCell.parentNode.childNodes[10].innerHTML);
+			$('#arriveDate').val(tableCell.parentNode.childNodes[11].innerHTML);			
+			jQuery.noConflict(); 
+			$('#myModal').modal('show');
+	}  
 </script>
 
 
@@ -151,7 +171,7 @@ if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
 		'app_id' => '198155157308846',
-		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
+		'app_secret' => 'd338a067b933196d2be2c4c4c87c1205',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -275,7 +295,7 @@ $fbID = $userNode->getId();
 		echo "<tr>";
 		echo "<td><img src=uploads/".str_replace(' ', '%20',$row[Photo])." style=\"height:100px;width:100px;\" /></td>";
 // 		echo "<td><img src=uploads/".$row[Photo]." /></td>";
-		echo "<td contenteditable=\"true\">".$row[ItemID]."</td>";
+		echo "<td onclick=\"addSpec(this)\">".$row[ItemID]."</td>";
 		echo "<td contenteditable=\"true\">".$row[品項]."</td>";
 		echo "<td contenteditable=\"true\">".$row[價格]."</td>";
 		echo "<td contenteditable=\"true\">".$row[規格]."</td>";
@@ -294,5 +314,63 @@ $fbID = $userNode->getId();
 	
 	echo "</tbody></table>";
 	?>
+
+<div id="myModal" class="modal fade" aria-labelledby="myModalLabel" aria-hidden="true" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">新增規格</h4>
+            </div>
+            <div class="modal-body" id="myModalBody">
+                <form id="specAddForm" role="form" >
+                	<div class="form-group">
+                        <label for="itemID">photo</label>
+                        <input type="text" name="photo" id="photo" class="form-control"/>
+                    </div>                
+                	<div class="form-group">
+                        <label for="itemID">ItemID</label>
+                        <input type="text" name="itemID" id="itemID" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemName">品項</label>
+                        <input type="text" name="itemName" id="itemName" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemPrice">價格</label>
+                        <input type="text" name="itemPrice" id="itemPrice" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="itemSpec">規格</label>
+                        <input type="text" name="itemSpec" id="itemSpec" placeholder="輸入規格" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="month">月份</label>
+                        <input type="text" name="month" id="month" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemCost">成本</label>
+                        <input type="text" name="itemCost" id="itemCost" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemWholeSalePrice">批發價</label>
+                        <input type="text" name="itemWholeSalePrice" id="itemWholeSalePrice" class="form-control"/>
+                    </div>              
+                    <div class="form-group">
+                        <label for="vendor">廠商</label>
+                        <input type="text" name="vendor" id="vendor" class="form-control"/>
+                    </div>     
+                    <div class="form-group">
+                        <label for="arriveDate">到貨日期</label>
+                        <input type="text" name="arriveDate" id="arriveDate" class="form-control"/>
+                    </div>                                         
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="submit" class="btn btn-success">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 	

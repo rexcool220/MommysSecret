@@ -14,23 +14,27 @@ if(!session_id()) {
 	<meta name="format-detection" content="telephone=no">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="../MommysSecret.css">
+	<link rel="stylesheet" type="text/css" href="../MommysSecret.css?2017062317">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>	
+	  
 <title>出貨確認表</title>
 </head>
 <body>
-<!-- <form method="POST" action=""> -->
-<!-- 	<input type="text" value="" name="CustomerfbAccount" class="FBSearch" placeholder="FB帳號"><p> -->
-<!-- 	<input type="submit" value="查詢"><p> -->
-<!-- </form> -->
+<script type="text/javascript">
+    $(document).ready(function () {        
+        $('.printTag').click(function () {
+        	alert("printTag");
+      	});    
+    });
+</script>
 <?php
 if(!$accessToken)
 {
 	$fb = new Facebook\Facebook([
 		'app_id' => '198155157308846',
-		'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
+		'app_secret' => 'd338a067b933196d2be2c4c4c87c1205',
 		'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -213,6 +217,7 @@ if(isset($CustomerFBID)) {
 		ShippingRecord.出貨日期,
 		ShippingRecord.匯款編號,
 		RemitRecord.匯款金額,
+		ShippingRecord.備註,
 		RemitRecord.管理員備註,
 		ShippingRecord.備註 FROM `ShippingRecord`,`RemitRecord`,`ItemCategory` 
 		WHERE (ShippingRecord.ItemID, ShippingRecord.規格) = ( ItemCategory.ItemID, ItemCategory.規格 )  
@@ -235,7 +240,8 @@ if(isset($CustomerFBID)) {
 	$toShippingTableCount = mysql_num_rows($result);
 	$toShippingTable = "<form action=\"ShippingCheckingCallBack.php\" method=\"post\">
 		<input type='submit' value=\"確定出貨!\">
-		<input type=\"hidden\" value=\"$CustomerFBID\" name=\"CustomerFBID\">";
+		<input type=\"hidden\" value=\"$CustomerFBID\" name=\"CustomerFBID\">
+		<input type=\"button\" id=\"printTag\" value=\"列印標籤\">";
 	$toShippingTable = $toShippingTable . "<table>
 	<tr>
 	<th>商品圖</th>
@@ -252,7 +258,8 @@ if(isset($CustomerFBID)) {
 	<th>出貨日期</th>
   	<th>匯款編號</th>
     <th>匯款金額</th>
-	<th>備註</th>
+	<th>商品備註</th>
+	<th>管理員備註</th>
 	<th></th>
 	</tr>";
 	$totalPrice = 0;
@@ -294,6 +301,7 @@ if(isset($CustomerFBID)) {
 		$toShippingTable = $toShippingTable . "<td>" . $row['出貨日期'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['匯款編號'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['匯款金額'] . "</td>";
+		$toShippingTable = $toShippingTable . "<td>" . $row['備註'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['管理員備註'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>";
 		if($checked == false)

@@ -1,6 +1,6 @@
 <?php 
 require_once __DIR__ . '/vendor/autoload.php';
-
+include_once "./vendor/google/apiclient/examples/templates/base.php";
 require_once 'ConnectMySQL.php';
 
 header("Content-Type:text/html; charset=utf-8");
@@ -19,8 +19,35 @@ if(!session_id()) {
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <title>MommysSecret</title>
-
+<script>
+  $(function() {
+    $('#toggle-event').change(function() {
+        if($(this).prop('checked'))
+        {
+			$.ajax({
+				type: "POST",
+				url: "MommyAdminSetting.php",
+				data: {isOpen: 'true'}
+			}).done(function(output) {
+// 				alert(output);
+			});	
+        }
+        else
+        {
+        	$.ajax({
+				type: "POST",
+				url: "MommyAdminSetting.php",
+				data: {isOpen: 'false'}
+			}).done(function(output) {
+// 				alert(output);
+			});
+        }
+    })
+  })
+</script>
 </head>
 
 <body>
@@ -36,7 +63,7 @@ if(!isset($_GET['code']))
 	
 	$fb = new Facebook\Facebook([
 	  'app_id' => '198155157308846',
-	  'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
+	  'app_secret' => 'd338a067b933196d2be2c4c4c87c1205',
 	  'default_graph_version' => 'v2.6',
 	]);
 	$helper = $fb->getRedirectLoginHelper();
@@ -55,7 +82,7 @@ else
 	{
 		$fb = new Facebook\Facebook([
 				'app_id' => '198155157308846',
-				'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
+				'app_secret' => 'd338a067b933196d2be2c4c4c87c1205',
 				'default_graph_version' => 'v2.6',
 		]);
 		$helper = $fb->getRedirectLoginHelper();
@@ -128,7 +155,37 @@ else
 		echo "$fbAccount : 你沒有權限";
 		exit;
 	}
-
+	$sql = "SELECT * FROM `Setting`;";
+	$result = mysql_query($sql,$con);
+	
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
+	
+	$row = mysql_fetch_array($result);
+	
+	$isOpen = $row['isOpen'];
+	
+	$isOpenCheckBox = "";
+	
+	if($isOpen == 1)
+	{
+		$isOpenCheckBox = "
+			<tr>
+				<td>
+					<input id=\"toggle-event\" type=\"checkbox\" data-toggle=\"toggle\" data-on=\"開放匯款\" data-off=\"不開放匯款\" checked>
+				</td>
+			</tr>";
+	}
+	else 
+	{
+		$isOpenCheckBox = "
+			<tr>
+				<td>
+					<input id=\"toggle-event\" type=\"checkbox\" data-toggle=\"toggle\" data-on=\"開放匯款\" data-off=\"不開放匯款\">
+				</td>
+			</tr>";
+	}
 	
 	$AdminTable = "
 		<table id=\"AdminTable\">
@@ -211,6 +268,9 @@ else
 			        </a>
 				</td>
 			</tr>
+			<tr>" .
+				$isOpenCheckBox .
+			"</tr>
 		</table>";
 		echo $AdminTable;
 		?>

@@ -104,7 +104,7 @@ if(!session_id()) {
 	{
 		$fb = new Facebook\Facebook([
 				'app_id' => '198155157308846',
-				'app_secret' => '3f31e64dbccb7ccc03c35398d5dc0652',
+				'app_secret' => 'd338a067b933196d2be2c4c4c87c1205',
 				'default_graph_version' => 'v2.6',
 		]);
 		$helper = $fb->getRedirectLoginHelper();
@@ -154,6 +154,23 @@ if(!session_id()) {
 	}
 	$fbAccount = $userNode->getName();
 	$FBID = $userNode->getId();
+	
+	$sql = "SELECT * FROM `Setting`;";
+	$result = mysql_query($sql,$con);
+	
+	if (!$result) {
+		die('Invalid query: ' . mysql_error());
+	}
+	
+	$row = mysql_fetch_array($result);
+	
+	$isOpen = $row['isOpen'];
+	if($isOpen == 0)
+	{
+		echo "《系統更新到貨狀況中》";
+		exit;
+	}
+	
 	
 	$sql = "SELECT * FROM `Members` WHERE FBID  = '$FBID';";
 	$result = mysql_query($sql,$con);
