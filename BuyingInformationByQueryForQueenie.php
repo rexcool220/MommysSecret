@@ -105,7 +105,7 @@ if(!empty($_GET['fbAccount'])) {
 	echo '登入的FB帳號 :'.$fbAccount.'<br>';
 	echo 'E-Mail : '.$row['E-Mail'].'<br>';
 	echo '手機號碼 : '.$row['手機號碼'].'<br>';
-	echo '郵遞區號＋地址 : '.$row['郵遞區號＋地址'].'<br>';
+	echo '郵遞區號地址 : '.$row['郵遞區號地址'].'<br>';
 	echo '全家店到店服務代號 : '.$row['全家店到店服務代號'].'<br>';
 	echo '寄送方式 : '.$row['寄送方式'].'<br>';
 	echo '<b><font size="6">';

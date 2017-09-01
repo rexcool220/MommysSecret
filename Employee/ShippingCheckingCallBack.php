@@ -371,15 +371,15 @@ if(isset($CustomerFBID)) {
 		{
 			$MemberInformation = $MemberInformation. 
 			"<tr>
-			<th>郵遞區號＋地址</th>
-			<td>".$row['郵遞區號＋地址']."</td>
+			<th>郵遞區號地址</th>
+			<td>".$row['郵遞區號地址']."</td>
 			</tr>";
 		}
 		if($row['寄送方式'] == "店到店")
 		{
 			$MemberInformation = $MemberInformation. 
 			"<tr>
-			<th>全家店到店 店名+地址 </th>
+			<th>全家店到店 店名地址 </th>
 			<td>".$row['全家店到店服務代號']."</td>
 			</tr>";
 		}

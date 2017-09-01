@@ -175,12 +175,10 @@ if(!empty($_POST['Members'])) {
 				$field[$fieldCount] = $column;
 				$fieldCount++;
 			}
-			
-			//$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`) VALUES (";
-			
-			$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`) 
+
+			$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`) 
 				VALUES (\"$field[0]\", \"$field[1]\", \"$field[2]\", \"$field[3]\", \"$field[4]\", \"$field[5]\", \"$field[6]\", \"$field[7]\", \"$field[8]\") 
-				ON DUPLICATE KEY UPDATE `姓名`=\"$field[0]\", `E-Mail`=\"$field[2]\", `手機號碼`=\"$field[3]\", `郵遞區號＋地址`=\"$field[4]\",`全家店到店服務代號`=\"$field[5]\", `寄送方式`=\"$field[6]\", `運費`=\"$field[7]\", `備註`=\"$field[8]\"";
+				ON DUPLICATE KEY UPDATE `姓名`=\"$field[0]\", `E-Mail`=\"$field[2]\", `手機號碼`=\"$field[3]\", `郵遞區號地址`=\"$field[4]\",`全家店到店服務代號`=\"$field[5]\", `寄送方式`=\"$field[6]\", `運費`=\"$field[7]\", `備註`=\"$field[8]\"";
 			
 // 			$sql = substr($sql, 0, -2);
 // 			$sql = "$sql);";

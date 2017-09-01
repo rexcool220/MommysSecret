@@ -160,8 +160,8 @@ if(isset($_GET['remitNumber'])) {
 		<td>".$row['手機號碼']."</td>
 		</tr>
 		<tr>
-		<th>郵遞區號＋地址</th>
-		<td>".$row['郵遞區號＋地址']."</td>
+		<th>郵遞區號地址</th>
+		<td>".$row['郵遞區號地址']."</td>
 		</tr>
 		<tr>
 		<th>全家店到店服務代號 </th>

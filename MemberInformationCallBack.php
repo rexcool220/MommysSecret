@@ -203,13 +203,13 @@ if(!$accessToken)
 	    </td>	
 	</tr>
 	<tr>		
-		<th>郵遞區號＋地址<font color=\"red\">*</font></th>         		
+		<th>郵遞區號地址<font color=\"red\">*</font></th>         		
 	    <td>
-			<input type=\"text\" name=\"Address\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['郵遞區號＋地址']."\"style=\"width:300px;\">
+			<input type=\"text\" name=\"Address\" title=\"請務必寫郵遞區號，如104Ｘ縣市Ｘ區ＸＸ路Ｘ段Ｘ號Ｘ樓\" value=\"".$row['郵遞區號地址']."\"style=\"width:300px;\">
 	    </td>	
 	</tr>    		
 	<tr>			
-		<th>全家店到店 店名+地址<font color=\"red\">*</font><br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
+		<th>全家店到店 店名地址<font color=\"red\">*</font><br><a target=\"_blank\" href=\"http://www.famiport.com.tw/shop.asp\">http://www.famiport.com.tw/shop.asp</a></th>         		
 				
 	    <td>
 			<input type=\"text\" name=\"FamilyNumber\" title=\"ex:全家板橋松柏店 新北市板橋區松柏街13號\" value=\"".$row['全家店到店服務代號']."\"style=\"width:300px;\">
@@ -252,9 +252,9 @@ if(!$accessToken)
 		$ShippingFee = $_POST['ShippingFee'];
 		$Memo = $_POST['Memo'];
  		
- 		$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `FBID`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`)
+ 		$sql = "INSERT INTO `Members` (`姓名`, `FB帳號`, `FBID`, `手機號碼`, `郵遞區號地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`)
  		VALUES (\"$MemberName\", \"$fbAccount\", \"$FBID\", \"$PhoneNumber\", \"$Address\", \"$FamilyNumber\", \"$ShippingWay\", \"$ShippingFee\", \"$Memo\")
- 		ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `手機號碼`=\"$PhoneNumber\", `郵遞區號＋地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\"";		
+ 		ON DUPLICATE KEY UPDATE `姓名`=\"$MemberName\", `FB帳號`=\"$fbAccount\", `手機號碼`=\"$PhoneNumber\", `郵遞區號地址`=\"$Address\",`全家店到店服務代號`=\"$FamilyNumber\", `寄送方式`=\"$ShippingWay\", `運費`=\"$ShippingFee\", `備註`=\"$Memo\"";
  		$result = mysql_query($sql,$con);
 //  		echo $sql;
  		if (!$result) {

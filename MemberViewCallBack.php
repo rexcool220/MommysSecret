@@ -234,7 +234,7 @@ if(!$accessToken)
 	<th>姓名</th>	    		
 	<th>FB帳號</th>
 	<th>手機號碼</th>				
-	<th>郵遞區號＋地址</th>
+	<th>郵遞區號地址</th>
 	<th>全家店到店服務代號</th>	    		
 	<th>寄送方式</th>
 	<th>運費</th>
@@ -264,7 +264,7 @@ if(!$accessToken)
 		echo "<td contenteditable=\"true\">".$row[姓名]."</td>";
 		echo "<td contenteditable=\"true\">".$row[FB帳號]."</td>";
 		echo "<td contenteditable=\"true\">".$row[手機號碼]."</td>";
-		echo "<td contenteditable=\"true\">".$row[郵遞區號＋地址]."</td>";
+		echo "<td contenteditable=\"true\">".$row[郵遞區號地址]."</td>";
 		echo "<td contenteditable=\"true\">".$row[全家店到店服務代號]."</td>";
 		echo "<td contenteditable=\"true\">".$row[寄送方式]."</td>";
 		echo "<td contenteditable=\"true\">".$row[運費]."</td>";

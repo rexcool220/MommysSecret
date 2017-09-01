@@ -117,7 +117,7 @@ echo '<div style="padding:4px; border:1px solid red; color:red;">'.$error.'</div
 	
 	<strong>手機號碼:</strong> <input type="text" name="手機號碼" value="<?php echo $phoneNumber; ?>" /><br/>
 	
-	<strong>郵遞區號＋地址:</strong> <input type="text" name="郵遞區號＋地址" value="<?php echo $address; ?>" /><br/>
+	<strong>郵遞區號地址:</strong> <input type="text" name="郵遞區號地址" value="<?php echo $address; ?>" /><br/>
 	
 	<strong>全家店到店服務代號: *</strong> <input type="text" name="全家店到店服務代號" value="<?php echo $familyNumber; ?>" /><br/>
 	
@@ -159,7 +159,7 @@ if (isset($_POST['submit']))
 	
 	$phoneNumber = $_POST['手機號碼'];
 	
-	$address = $_POST['郵遞區號＋地址'];
+	$address = $_POST['郵遞區號地址'];
 	
 	$familyNumber = $_POST['全家店到店服務代號'];
 	
@@ -196,7 +196,7 @@ else
 
 // echo $sql;
 
-mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號＋地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `Rebate`, `FBID`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$rebate', '$FBID')")
+mysql_query("INSERT INTO `Members` (`姓名`, `FB帳號`, `E-Mail`, `手機號碼`, `郵遞區號地址`, `全家店到店服務代號`, `寄送方式`, `運費`, `備註`, `Rebate`, `FBID`) VALUES ('$name', '$FBAccount', '$eMail', '$phoneNumber', '$address', '$familyNumber', '$shippingWay','$shippingFee', '$memo', '$rebate', '$FBID')")
 
 or die(mysql_error());
 

@@ -250,7 +250,7 @@ $fbID = $userNode->getId();
 	
 // 	echo "SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+1 month"))." AND 月份 = ".date("Ym",strtotime("+0 month"))." AND 月份 = ".date("Ym",strtotime("-1 month"))." AND 月份 = ".date("Ym",strtotime("-2 month"));
 	
-	$result = mysql_query("SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+2 month"))." OR 月份 = ".date("Ym",strtotime("+1 month"))." OR 月份 = ".date("Ym",strtotime("+0 month"))." OR 月份 = ".date("Ym",strtotime("-1 month"))." OR 月份 = ".date("Ym",strtotime("-2 month")))
+	$result = mysql_query("SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+2 month"))." OR 月份 = ".date("Ym",strtotime("+1 month"))." OR 月份 = ".date("Ym",strtotime("+15 day"))." OR 月份 = ".date("Ym",strtotime("+0 month"))." OR 月份 = ".date("Ym",strtotime("-1 month"))." OR 月份 = ".date("Ym",strtotime("-2 month")))
 	
 	or die(mysql_error());
 	
