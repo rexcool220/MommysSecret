@@ -18,7 +18,7 @@ header("Content-Type:text/html; charset=utf-8");
 	
 	$data = ObtainPageSource($customedGoogleForm.$fbAccount);
 	
-	$redirectUrl = "http://MommysSecret.tw/PostToFB.php";
+	$redirectUrl = "http://mommyssecret.tw/MS/PostToFB.php";
 	
 	if(preg_match("/(?<=<form action=\")[^\"]*/", $data, $matches)) {
 		$googleResponseUrl = $matches[0];

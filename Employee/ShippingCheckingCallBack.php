@@ -67,7 +67,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '出貨確認表', 'http://mommyssecret.tw/Employee/ShippingCheckingCallBack.php' );
+			window.history.replaceState( {} , '出貨確認表', 'http://mommyssecret.tw/MS/Employee/ShippingCheckingCallBack.php' );
 		</script>
 	<?php
 try {
@@ -198,7 +198,7 @@ if(isset($CustomerFBID)) {
 		        
 		    }
 		}
-		header("location: http://mommyssecret.tw/ShippingCheckingCallBack.php?CustomerFBID=$CustomerFBID");
+		header("location: http://mommyssecret.tw/MS/ShippingCheckingCallBack.php?CustomerFBID=$CustomerFBID");
 	}
 	
 	//$sql = "SELECT * FROM `ShippingRecord`,`RemitRecord` WHERE ShippingRecord.FBID = '$CustomerFBID' AND ShippingRecord.匯款編號  = RemitRecord.匯款編號   AND ShippingRecord.(ItemID, 規格) IN (SELECT DISTINCT ItemID, 規格 FROM  `ItemCategory` WHERE Active = true) ORDER BY 出貨日期;";

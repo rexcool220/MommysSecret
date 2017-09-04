@@ -217,7 +217,7 @@ if (!empty($_GET['RemitChecked'])) {
 		die('Invalid query: ' . mysql_error());
 	}
 	
-	header("location: http://mommyssecret.tw/RemitCheckingCallBack.php");
+	header("location: http://mommyssecret.tw/MS/RemitCheckingCallBack.php");
 }
 
 if (!empty($_GET['RemitUnchecked'])) {
@@ -237,7 +237,7 @@ if (!empty($_GET['RemitUnchecked'])) {
         die('Invalid query: ' . mysql_error());
     }
 
-    header("location: http://mommyssecret.tw/RemitCheckingCallBack.php");
+    header("location: http://mommyssecret.tw/MS/RemitCheckingCallBack.php");
 }
 
 if (!empty($_GET['remitNumberLink'])) {
@@ -258,7 +258,7 @@ if (!empty($_GET['remitNumberLink'])) {
 		die('Invalid query: ' . mysql_error());
 	}
 
-	header("location: http://mommyssecret.tw/RemitCheckingCallBack.php");
+	header("location: http://mommyssecret.tw/MS/RemitCheckingCallBack.php");
 }
 
 echo $remitCheckingTable;
@@ -293,7 +293,7 @@ if (table != null) {
 function tableText(tableCell) {
     var memo = prompt("輸入管理員備註");
 	var remitNumberLink = table.rows[tableCell.parentNode.rowIndex].cells[0].innerHTML;
-	window.location.replace("http://mommyssecret.tw/RemitCheckingCallBack.php?managerMemo=" + memo + "&remitNumberLink=" + remitNumberLink);
+	window.location.replace("http://mommyssecret.tw/MS/RemitCheckingCallBack.php?managerMemo=" + memo + "&remitNumberLink=" + remitNumberLink);
 }
 function confirmRemited(tableCell) {
     //alert("confirm");

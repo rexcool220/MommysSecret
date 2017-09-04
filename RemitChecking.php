@@ -13,7 +13,7 @@
 	
 	$permissions = ['email'];
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/RemitCheckingCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/RemitCheckingCallBack.php', $permissions);
 	
 	header("location: ".$loginUrl);
 ?>

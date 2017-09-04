@@ -13,6 +13,6 @@
 	
 	$permissions = ['email'];
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/DeleteBySerialNumberCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/DeleteBySerialNumberCallBack.php', $permissions);
 	header("location: ".$loginUrl);
 ?>

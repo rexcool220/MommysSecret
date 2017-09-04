@@ -19,7 +19,7 @@
 	$permissions = ['email','user_managed_groups']; // optional
 	//$permissions = ['email','publish_actions','user_managed_groups']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/ItemCategoryViewCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/ItemCategoryViewCallBack.php', $permissions);
 	
 	//echo urldecode($loginUrl);
 	header("location: ".$loginUrl);

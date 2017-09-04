@@ -185,7 +185,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '會員管理', 'http://mommyssecret.tw/Members/MemberView.php' );
+			window.history.replaceState( {} , '會員管理', 'http://mommyssecret.tw/MS/Members/MemberView.php' );
 		</script>
 	<?php
 	try {

@@ -7,7 +7,7 @@ if(!session_id()) {
 	session_start();
 }
 
-$target_dir = "/home/mommysse/public_html/uploads/";
+$target_dir = "/home/mommysse/public_html/MS/uploads/";
 $target_file = $target_dir . basename($_FILES["my-file-selector"]["name"]);
 
 if (file_exists($target_file)) { unlink ($target_file); }

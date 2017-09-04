@@ -19,7 +19,7 @@
 	$permissions = ['email']; // optional
 	//$permissions = ['email','publish_actions','user_managed_groups']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://MommysSecret.tw/GetFBAccount.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/GetFBAccount.php', $permissions);
 	 
 	$_SESSION['googleFormUrl'] = $_GET['googleFormUrl'];
 	$_SESSION['fieldID'] = $_GET['fieldID'];

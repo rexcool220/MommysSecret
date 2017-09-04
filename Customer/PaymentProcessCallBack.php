@@ -137,7 +137,7 @@ if(!session_id()) {
 	}
 	?>
 			<script>
-				window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/PaymentProcessCallBack.php' );
+				window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/MS/PaymentProcessCallBack.php' );
 			</script>
 		<?php
 	try {
@@ -220,7 +220,7 @@ if(!session_id()) {
     	    }
     	    
             $_SESSION["completed"] = true;   
-     		header("location: http://mommyssecret.tw/PaymentProcessCallBack.php");
+     		header("location: http://mommyssecret.tw/MS/PaymentProcessCallBack.php");
         }		
     }
 ?>
@@ -257,7 +257,7 @@ if(!session_id()) {
         		        die('Invalid query2: ' . mysql_error());
         		    }
         		    	
-        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
+        		    //header("location: http://mommyssecret.tw/MS/MemberInformationCallBack.php");
         		    ?>
      			 		<script>
      			 			alert("更改成功");
@@ -538,7 +538,7 @@ if(!session_id()) {
         		        die('Invalid query2: ' . mysql_error());
         		    }
         		    	
-        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
+        		    //header("location: http://mommyssecret.tw/MS/MemberInformationCallBack.php");
         		    ?>
      			 		<script>
      			 			alert("更改成功");

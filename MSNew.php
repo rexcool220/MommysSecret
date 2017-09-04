@@ -267,7 +267,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '新增訂單', 'http://mommyssecret.tw/MSNew.php' );
+			window.history.replaceState( {} , '新增訂單', 'http://mommyssecret.tw/MS/MSNew.php' );
 		</script>
 	<?php
 	try {

@@ -13,7 +13,7 @@
 	
 	$permissions = ['user_managed_groups','publish_actions']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/SetFacebookAccessTokenCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/SetFacebookAccessTokenCallBack.php', $permissions);
 	
 	//echo urldecode($loginUrl);
 	header("location: ".$loginUrl);

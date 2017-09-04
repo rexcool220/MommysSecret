@@ -137,7 +137,7 @@ if(!$accessToken)
 }
  	?>
  		<script>
- 			window.history.replaceState( {} , '個人資料', 'http://mommyssecret.tw/MemberInformationCallBack.php' );
+ 			window.history.replaceState( {} , '個人資料', 'http://mommyssecret.tw/MS/MemberInformationCallBack.php' );
  		</script>
  	<?php
  	
@@ -265,7 +265,7 @@ if(!$accessToken)
  		
  		$_SESSION['Completed'] = true;
  		
- 		header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
+ 		header("location: http://mommyssecret.tw/MS/MemberInformationCallBack.php");
  	}
  	else
  	{

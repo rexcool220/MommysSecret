@@ -157,7 +157,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '出貨通知小幫手', 'http://mommyssecret.tw/Employee/TagCustomerForShippingCallBack.php' );
+			window.history.replaceState( {} , '出貨通知小幫手', 'http://mommyssecret.tw/MS/Employee/TagCustomerForShippingCallBack.php' );
 		</script>
 	<?php
 	try {

@@ -118,7 +118,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '回饋金查詢', 'http://mommyssecret.tw/Members/RebateView.php' );
+			window.history.replaceState( {} , '回饋金查詢', 'http://mommyssecret.tw/MS/Members/RebateView.php' );
 		</script>
 	<?php
 	try {

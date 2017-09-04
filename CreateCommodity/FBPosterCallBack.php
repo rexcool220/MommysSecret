@@ -62,7 +62,7 @@ if(!$accessToken)
 }
 ?>
 	<script>
-		window.history.replaceState( {} , 'FBPoseter', 'http://mommyssecret.tw/CreateCommodity/FBPoster.php' );
+		window.history.replaceState( {} , 'FBPoseter', 'http://mommyssecret.tw/MS/CreateCommodity/FBPoster.php' );
 	</script>
 <?php
 	try {

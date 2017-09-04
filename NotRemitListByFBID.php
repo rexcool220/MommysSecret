@@ -51,7 +51,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '出貨確認表', 'http://mommyssecret.tw/NotRemitListByFBID.php' );
+			window.history.replaceState( {} , '出貨確認表', 'http://mommyssecret.tw/MS/NotRemitListByFBID.php' );
 		</script>
 	<?php
 try {

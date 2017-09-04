@@ -13,7 +13,7 @@ $helper = $fb->getRedirectLoginHelper();
 
 $permissions = ['email'];
 
-$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/Employee/TagCustomerForShippingCallBack.php', $permissions);
+$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/Employee/TagCustomerForShippingCallBack.php', $permissions);
 
 header("location: ".$loginUrl);
 ?>

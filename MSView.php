@@ -177,7 +177,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '訂單管理', 'http://mommyssecret.tw/MSView.php' );
+			window.history.replaceState( {} , '訂單管理', 'http://mommyssecret.tw/MS/MSView.php' );
 		</script>
 	<?php
 	try {

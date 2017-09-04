@@ -14,6 +14,6 @@ if(!session_id()) {
 	
 	$permissions = ['email','user_managed_groups'];
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/Members/MemberViewCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/Members/MemberViewCallBack.php', $permissions);
 	header("location: ".$loginUrl);
 ?>

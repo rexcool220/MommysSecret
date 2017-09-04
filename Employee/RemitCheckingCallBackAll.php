@@ -156,7 +156,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '對帳管理-歷史紀錄', 'http://mommyssecret.tw/Employee/RemitCheckingCallBackAll.php' );
+			window.history.replaceState( {} , '對帳管理-歷史紀錄', 'http://mommyssecret.tw/MS/Employee/RemitCheckingCallBackAll.php' );
 		</script>
 	<?php
 	try {

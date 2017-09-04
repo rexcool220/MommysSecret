@@ -51,7 +51,7 @@ if(!$accessToken)
 }
 ?>
  		<script>
- 			window.history.replaceState( {} , '刪除定單', 'http://mommyssecret.tw/DeleteBySerialNumberCallBack.php' );
+ 			window.history.replaceState( {} , '刪除定單', 'http://mommyssecret.tw/MS/DeleteBySerialNumberCallBack.php' );
  		</script>
  <?php 	
 try {
@@ -150,7 +150,7 @@ if (!empty($_POST['act'])) {
 	if (!$result) {
 		die('Invalid query: ' . mysql_error());
 	}
-	header("location: http://mommyssecret.tw/DeleteBySerialNumberCallBack.php");
+	header("location: http://mommyssecret.tw/MS/DeleteBySerialNumberCallBack.php");
 }
 
 echo $SelectedTable;

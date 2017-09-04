@@ -13,7 +13,7 @@
 	
 	$permissions = ['email'];
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/ImportGoogleSpreadSheetCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/ImportGoogleSpreadSheetCallBack.php', $permissions);
 	 
 	$_SESSION['personal'] = $_GET['personal'];
 	header("location: ".$loginUrl);

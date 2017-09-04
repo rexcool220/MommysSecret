@@ -71,7 +71,7 @@ if(!isset($_GET['code']))
 	$permissions = ['email']; // optional
 	//$permissions = ['email','publish_actions','user_managed_groups']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MommyAdmin.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/MommyAdmin.php', $permissions);
 	
 	//echo urldecode($loginUrl);
 	header("location: ".$loginUrl);
@@ -116,7 +116,7 @@ else
 	
 	?>
 		<script>
-			window.history.replaceState( {} , 'MommysAdmin', 'http://mommyssecret.tw/MommyAdmin.php' );
+			window.history.replaceState( {} , 'MommysAdmin', 'http://mommyssecret.tw/MS/MommyAdmin.php' );
 		</script>
 	<?php	
 	
@@ -191,7 +191,7 @@ else
 		<table id=\"AdminTable\">
 			<tr>
 				<td>
-			        <a target=\"_blank\" href=\"/Members/MemberView.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/MS/Members/MemberView.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-user\"></span> 會員資料
 			        </a>				
 				</td>
@@ -208,7 +208,7 @@ else
 			        </a>				
 				</td>					
 				<td>
-			        <a target=\"_blank\" href=\"/Employee/RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/MS/Employee/RemitChecking.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-piggy-bank\"></span> 對帳管理
 			        </a>				
 				</td>			
@@ -227,7 +227,7 @@ else
 			</tr>		
 			<tr>
 				<td>
-			        <a target=\"_blank\" href=\"/Employee/ShippingCheckingIndex.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/MS/Employee/ShippingCheckingIndex.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-plane\"></span> 出貨管理
 			        </a>				
 				</td>							
@@ -251,19 +251,19 @@ else
 			</tr>
 			<tr>
 				<td>
-			        <a target=\"_blank\" href=\"/CreateCommodity/FBPoster.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/MS/CreateCommodity/FBPoster.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-comment\"></span> 開團小幫手
 			        </a>
 				</td>
 				<td>
-			        <a target=\"_blank\" href=\"/Members/RebateView.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/MS/Members/RebateView.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-usd\"></span> 回饋金查詢
 			        </a>
 				</td>	
 			</tr>	
 			<tr>
 				<td>
-			        <a target=\"_blank\" href=\"/Employee/TagCustomerForShipping.php\" class=\"btn btn-default btn-lg btn-block\">
+			        <a target=\"_blank\" href=\"/MS/Employee/TagCustomerForShipping.php\" class=\"btn btn-default btn-lg btn-block\">
 			          <span class=\"glyphicon glyphicon-volume-up\"></span> 出貨通知
 			        </a>
 				</td>

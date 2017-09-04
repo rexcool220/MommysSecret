@@ -122,7 +122,7 @@ if(!empty($_GET['fbAccount'])) {
 		if (!$result) {
 			die('Invalid query: ' . mysql_error());
 		}
-		header("location: "."http://mommyssecret.tw/BuyingInformationByQueryForQueenie.php?fbAccount=".$fbAccount);
+		header("location: "."http://mommyssecret.tw/MS/BuyingInformationByQueryForQueenie.php?fbAccount=".$fbAccount);
 		
 	} else {
 	

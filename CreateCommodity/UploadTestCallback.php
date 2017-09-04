@@ -62,7 +62,7 @@ if(!$accessToken)
 }
 ?>
 	<script>
-		window.history.replaceState( {} , 'FBPoseter', 'http://mommyssecret.tw/CreateCommodity/UploadTestCallback.php' );
+		window.history.replaceState( {} , 'FBPoseter', 'http://mommyssecret.tw/MS/CreateCommodity/UploadTestCallback.php' );
 	</script>
 <?php
 	try {

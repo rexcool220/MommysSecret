@@ -204,7 +204,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '到貨管理', 'http://mommyssecret.tw/ItemCategoryViewCallBack.php' );
+			window.history.replaceState( {} , '到貨管理', 'http://mommyssecret.tw/MS/ItemCategoryViewCallBack.php' );
 		</script>
 	<?php
 	try {

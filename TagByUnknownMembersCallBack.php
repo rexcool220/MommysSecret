@@ -172,7 +172,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '失蹤會員小幫手', 'http://mommyssecret.tw/TagByUnknownMembersCallBack.php' );
+			window.history.replaceState( {} , '失蹤會員小幫手', 'http://mommyssecret.tw/MS/TagByUnknownMembersCallBack.php' );
 		</script>
 	<?php
 	try {

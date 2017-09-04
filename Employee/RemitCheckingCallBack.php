@@ -165,7 +165,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '對帳管理', 'http://mommyssecret.tw/Employee/RemitChecking.php' );
+			window.history.replaceState( {} , '對帳管理', 'http://mommyssecret.tw/MS/Employee/RemitChecking.php' );
 		</script>
 	<?php
 	try {

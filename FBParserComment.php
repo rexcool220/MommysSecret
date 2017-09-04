@@ -318,7 +318,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '點單確認表', 'http://mommyssecret.tw/FBParserComment.php' );
+			window.history.replaceState( {} , '點單確認表', 'http://mommyssecret.tw/MS/FBParserComment.php' );
 		</script>
 	<?php
 	try {

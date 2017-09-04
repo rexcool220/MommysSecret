@@ -178,7 +178,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '點單小幫手', 'http://mommyssecret.tw/TagByItemIDCallBack.php' );
+			window.history.replaceState( {} , '點單小幫手', 'http://mommyssecret.tw/MS/TagByItemIDCallBack.php' );
 		</script>
 	<?php
 	try {

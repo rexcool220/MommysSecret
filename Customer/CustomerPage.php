@@ -13,7 +13,7 @@
 	
 	$permissions = ['email','user_managed_groups']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/Customer/CustomerPageCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/Customer/CustomerPageCallBack.php', $permissions);
 	
 	header("location: ".$loginUrl);
 ?>

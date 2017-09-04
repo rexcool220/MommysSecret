@@ -18,7 +18,7 @@
 	
 	$permissions = ['email','user_managed_groups','publish_actions']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/CreateCommodity/FBPosterCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/CreateCommodity/FBPosterCallBack.php', $permissions);
 	
 	//echo urldecode($loginUrl);
 	header("location: ".$loginUrl);

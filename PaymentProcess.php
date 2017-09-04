@@ -13,7 +13,7 @@
 	
 	$permissions = ['email'];
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/PaymentProcessCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/PaymentProcessCallBack.php', $permissions);
 	
 	header("location: ".$loginUrl);
 ?>

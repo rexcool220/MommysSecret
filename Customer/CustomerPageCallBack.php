@@ -105,7 +105,7 @@ if(!$accessToken)
 }
 ?>
 	<script>
-		window.history.replaceState( {} , 'CustomerPage', 'http://mommyssecret.tw/Customer/CustomerPageCallback.php' );
+		window.history.replaceState( {} , 'CustomerPage', 'http://mommyssecret.tw/MS/Customer/CustomerPageCallback.php' );
 	</script>
 <?php
 	try {

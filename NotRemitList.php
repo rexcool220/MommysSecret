@@ -195,7 +195,7 @@ if (table != null) {
 function tableText(tableCell) {
 	var form = document.createElement("form");
 	form.setAttribute("method", "post");
-	form.setAttribute("action", "http://mommyssecret.tw/NotRemitListByFBID.php");
+	form.setAttribute("action", "http://mommyssecret.tw/MS/NotRemitListByFBID.php");
 	form.setAttribute("target", "view");
 
 	var hiddenField = document.createElement("input"); 

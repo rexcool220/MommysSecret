@@ -132,7 +132,7 @@ if(!session_id()) {
 	}
 	?>
 			<script>
-				window.history.replaceState( {} , '會員結帳待查詢', 'http://mommyssecret.tw/BuyingInformationByQuery.php' );
+				window.history.replaceState( {} , '會員結帳待查詢', 'http://mommyssecret.tw/MS/BuyingInformationByQuery.php' );
 			</script>
 		<?php
 	try {
@@ -299,7 +299,7 @@ if(!session_id()) {
 	    	    
 	    	    
 	            $_SESSION[$memberFBID] = true;   
-	     		header("location: http://mommyssecret.tw/BuyingInformationByQuery.php");
+	     		header("location: http://mommyssecret.tw/MS/BuyingInformationByQuery.php");
 	        }		
 	    }
 	    else 
@@ -340,7 +340,7 @@ if(!session_id()) {
         		        die('Invalid query2: ' . mysql_error());
         		    }
         		    	
-        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
+        		    //header("location: http://mommyssecret.tw/MS/MemberInformationCallBack.php");
         		    ?>
      			 		<script>
      			 			alert("更改成功");
@@ -669,7 +669,7 @@ if(!session_id()) {
         		        die('Invalid query2: ' . mysql_error());
         		    }
         		    	
-        		    //header("location: http://mommyssecret.tw/MemberInformationCallBack.php");
+        		    //header("location: http://mommyssecret.tw/MS/MemberInformationCallBack.php");
         		    ?>
      			 		<script>
      			 			alert("更改成功");

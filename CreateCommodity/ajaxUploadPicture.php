@@ -7,7 +7,7 @@ if(!session_id()) {
 	session_start();
 }
 
-$target_dir = "/home/mommysse/public_html/uploads/";
+$target_dir = "/home/mommysse/public_html/MS/uploads/";
 $target_file = $target_dir . $_FILES["my-file-selector"]["name"];
 $fileToBeUpload = $_POST['fileToBeUpload'];
 if (file_exists($target_file)) { unlink ($target_file); }
@@ -38,7 +38,7 @@ if ($uploadOk == 0) {
 	// if everything is ok, try to upload file
 } else {
 	if (move_uploaded_file($_FILES["my-file-selector"]["tmp_name"], $target_file)) {
-		echo "http://mommyssecret.tw/uploads/" . $_FILES["my-file-selector"]["name"];
+		echo "http://mommyssecret.tw/MS/uploads/" . $_FILES["my-file-selector"]["name"];
 	} else {
 		echo "error";
 		exit;

@@ -105,7 +105,7 @@ if(!$accessToken)
 }
 	?>
 		<script>
-			window.history.replaceState( {} , '未出貨確認總表', 'http://mommyssecret.tw/Employee/ShippingCheckingIndex.php' );
+			window.history.replaceState( {} , '未出貨確認總表', 'http://mommyssecret.tw/MS/Employee/ShippingCheckingIndex.php' );
 		</script>
 	<?php
 try {
@@ -237,7 +237,7 @@ function tableText(tableCell) {
 
 	var form = document.createElement("form");
 	form.setAttribute("method", "post");
-	form.setAttribute("action", "http://mommyssecret.tw/Employee/ShippingCheckingCallBack.php");
+	form.setAttribute("action", "http://mommyssecret.tw/MS/Employee/ShippingCheckingCallBack.php");
 	form.setAttribute("target", "view");
 
 	var hiddenField = document.createElement("input"); 

@@ -13,7 +13,7 @@
 	
 	$permissions = ['email']; // optional
 	
-	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MemberInformationCallBack.php', $permissions);
+	$loginUrl = $helper->getLoginUrl('http://mommyssecret.tw/MS/MemberInformationCallBack.php', $permissions);
 	
 	//echo urldecode($loginUrl);
 	$_SESSION['personal'] = $_GET['personal'];

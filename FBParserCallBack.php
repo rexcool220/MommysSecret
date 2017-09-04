@@ -114,7 +114,7 @@ if(!$accessToken)
 }
 ?>
 	<script>
-		window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/FBParserCallBack.php' );
+		window.history.replaceState( {} , 'PaymentProcess', 'http://mommyssecret.tw/MS/FBParserCallBack.php' );
 	</script>
 <?php
 	try {
@@ -259,7 +259,7 @@ function tableText(tableCell) {
 
 	var form = document.createElement("form");
 	form.setAttribute("method", "post");
-	form.setAttribute("action", "http://mommyssecret.tw/FBParserComment.php");
+	form.setAttribute("action", "http://mommyssecret.tw/MS/FBParserComment.php");
 	form.setAttribute("target", "view");
 
 	var hiddenField = document.createElement("input"); 
