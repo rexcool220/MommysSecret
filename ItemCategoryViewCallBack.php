@@ -24,7 +24,7 @@ if(!session_id()) {
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="../../extensions/Editor/js/dataTables.editor.min.js"></script>
 	<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">	
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">
 	<title>到貨管理</title>
 	<style>
 	#Default {
@@ -32,22 +32,22 @@ if(!session_id()) {
 	    border-collapse: collapse;
 	    width: 100%;
 	}
-	
+
 	#Member {
 	    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 	    border-collapse: collapse;
 	    width: 60%;
 	}
-	
+
 	td, th {
 	    border: 1px solid #ddd;
 	    padding: 8px;
 	}
-	
+
 	tr:nth-child(even){background-color: #f2f2f2;}
-	
+
 	tr:hover {background-color: #ddd;}
-	
+
 	th {
 	    padding-top: 12px;
 	    padding-bottom: 12px;
@@ -67,8 +67,8 @@ if(!session_id()) {
 <body>
 
 <script type="text/javascript">
-    $(document).ready(function () {        
-        $('#ItemCategorys').dataTable({                
+    $(document).ready(function () {
+        $('#ItemCategorys').dataTable({
         "lengthMenu": [[-1], ["All"]],
         "bLengthChange": false,
     	"order": [[ 0, "asc" ]],
@@ -82,7 +82,7 @@ if(!session_id()) {
 	      	var data = $('#ItemCategorys').DataTable()
 		        .row( $(this).parents('tr') )
 		        .data();
-			
+
 			$.ajax({
 				type: "POST",
 				url: "UpdateItemCategory.php",
@@ -90,7 +90,7 @@ if(!session_id()) {
 			}).done(function(output) {
 				alert(output);
 				arriveDate.html(output);
-			});	        
+			});
       	});
         $('.table-remove').click(function () {
             if(confirm("確定刪除?"))
@@ -98,20 +98,20 @@ if(!session_id()) {
 	        	var data = $('#ItemCategorys').DataTable()
 			        .row( $(this).parents('tr') )
 			        .data();
-			
+
 				$.ajax({
 					type: "POST",
 					url: "DeleteItemCategory.php",
 					data: {data : data}
 				}).done(function(output) {
 					alert(output);
-				});	  
+				});
 		      	$('#ItemInformation').DataTable()
 		        .row( $(this).parents('tr') )
 		        .remove()
 		        .draw();
             }
-      	});   	
+      	});
 		var table = $('#ItemCategorys').DataTable();
         $('#ItemCategorys tbody').on( 'focusout', 'td', function () {
         	var cell = table.cell( this );
@@ -145,12 +145,13 @@ if(!session_id()) {
     			});
         		$('#myModal').modal('hide');
     		}
-    	});            
+    	});
     });
-    
+
 	function addSpec(tableCell) {
-			var res = tableCell.parentNode.childNodes[0].innerHTML.match(/<img src=\"uploads\/([^\"]+)\"/);
-			$('#photo').val(res[1]);
+
+			var res = tableCell.parentNode.childNodes[0].innerHTML.match(/uploads\/([^\"]+)\"/);
+            $('#photo').val(res[1]);
 			$('#itemID').val(tableCell.parentNode.childNodes[1].innerHTML);
 			$('#itemName').val(tableCell.parentNode.childNodes[2].innerHTML);
 			$('#itemPrice').val(tableCell.parentNode.childNodes[3].innerHTML);
@@ -159,10 +160,10 @@ if(!session_id()) {
 			$('#itemCost').val(tableCell.parentNode.childNodes[8].innerHTML);
 			$('#itemWholeSalePrice').val(tableCell.parentNode.childNodes[9].innerHTML);
 			$('#vendor').val(tableCell.parentNode.childNodes[10].innerHTML);
-			$('#arriveDate').val(tableCell.parentNode.childNodes[11].innerHTML);			
-			jQuery.noConflict(); 
+			$('#arriveDate').val(tableCell.parentNode.childNodes[11].innerHTML);
+			jQuery.noConflict();
 			$('#myModal').modal('show');
-	}  
+	}
 </script>
 
 
@@ -186,7 +187,7 @@ if(!$accessToken)
 		echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		exit;
 	}
-	
+
 	if(empty($accessToken)&&!empty($_SESSION['accessToken']))
 	{
 		$accessToken = $_SESSION['accessToken'];
@@ -221,17 +222,17 @@ if(!$accessToken)
 	}
 	$fbAccount = $userNode->getName();
 $fbID = $userNode->getId();
-	
+
 	$fbAccount = $userNode->getName();
-	
+
 	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
-	
+
 	or die(mysql_error());
-	
+
 	$row = mysql_fetch_array($result);
-	
+
 	$type = $row['TYPE'];
-	
+
 	if(($type == "管理員") || ($type == "共用帳號"))
 	{
 		echo "<p hidden id=\"accountType\">$type</p>";
@@ -242,18 +243,18 @@ $fbID = $userNode->getId();
 		echo "$fbAccount : 你不是管理者";
 		exit;
 	}
-	
+
 	//To get all item id
 	include('ConnectMySQL.php');
-	
+
 	// get results from database
-	
+
 // 	echo "SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+1 month"))." AND 月份 = ".date("Ym",strtotime("+0 month"))." AND 月份 = ".date("Ym",strtotime("-1 month"))." AND 月份 = ".date("Ym",strtotime("-2 month"));
-	
-	$result = mysql_query("SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+2 month"))." OR 月份 = ".date("Ym",strtotime("+1 month"))." OR 月份 = ".date("Ym",strtotime("+15 day"))." OR 月份 = ".date("Ym",strtotime("+0 month"))." OR 月份 = ".date("Ym",strtotime("-1 month"))." OR 月份 = ".date("Ym",strtotime("-2 month")))
-	
+
+	$result = mysql_query("SELECT * FROM `ItemCategory` where 月份 = ".date("Ym",strtotime("+2 month"))." OR 月份 = ".date("Ym",strtotime("+1 month"))." OR 月份 = ".date("Ym",strtotime("+15 day"))." OR 月份 = ".date("Ym",strtotime("+0 month"))." OR 月份 = ".date("Ym",strtotime("-1 month"))." OR 月份 = ".date("Ym",strtotime("-2 month"))." OR 月份 = ".date("Ym",strtotime("-3 month"))." OR 月份 = ".date("Ym",strtotime("-4 month"))." OR 月份 = ".date("Ym",strtotime("-5 month"))  )
+
 	or die(mysql_error());
-	
+
 	echo "<table id=\"ItemCategorys\">
 	<thead><tr>
 	<th>商品圖</th>
@@ -273,7 +274,7 @@ $fbID = $userNode->getId();
 	<th>刪除</th>
 	</thead></tr><tbody>";
 	echo "<tr>";
-	echo "<td><img src=uploads/NotAvailable.png style=\"height:100px;width:100px;\" /></td>";
+	echo "<td><img src=../uploads/NotAvailable.png style=\"height:100px;width:100px;\" /></td>";
 	echo "<td contenteditable=\"true\"></td>";
 	echo "<td contenteditable=\"true\">新增品項</td>";
 	echo "<td contenteditable=\"true\"></td>";
@@ -289,11 +290,11 @@ $fbID = $userNode->getId();
 	echo "<td><span id=\"Icon\" class=\"table-update glyphicon glyphicon-edit\"></span></td>";
 	echo "<td></td>";
 	echo "</tr>";
-	
+
 	while($row = mysql_fetch_array($result))
 	{
 		echo "<tr>";
-		echo "<td><img src=uploads/".str_replace(' ', '%20',$row[Photo])." style=\"height:100px;width:100px;\" /></td>";
+		echo "<td><img src=../uploads/".str_replace(' ', '%20',$row[Photo])." style=\"height:100px;width:100px;\" /></td>";
 // 		echo "<td><img src=uploads/".$row[Photo]." /></td>";
 		echo "<td onclick=\"addSpec(this)\">".$row[ItemID]."</td>";
 		echo "<td contenteditable=\"true\">".$row[品項]."</td>";
@@ -311,7 +312,7 @@ $fbID = $userNode->getId();
 		echo "<td><span class=\"table-remove glyphicon glyphicon-remove\"></span></td>";
 		echo "</tr>";
 	}
-	
+
 	echo "</tbody></table>";
 	?>
 
@@ -327,7 +328,7 @@ $fbID = $userNode->getId();
                 	<div class="form-group">
                         <label for="itemID">photo</label>
                         <input type="text" name="photo" id="photo" class="form-control"/>
-                    </div>                
+                    </div>
                 	<div class="form-group">
                         <label for="itemID">ItemID</label>
                         <input type="text" name="itemID" id="itemID" class="form-control"/>
@@ -355,15 +356,15 @@ $fbID = $userNode->getId();
                     <div class="form-group">
                         <label for="itemWholeSalePrice">批發價</label>
                         <input type="text" name="itemWholeSalePrice" id="itemWholeSalePrice" class="form-control"/>
-                    </div>              
+                    </div>
                     <div class="form-group">
                         <label for="vendor">廠商</label>
                         <input type="text" name="vendor" id="vendor" class="form-control"/>
-                    </div>     
+                    </div>
                     <div class="form-group">
                         <label for="arriveDate">到貨日期</label>
                         <input type="text" name="arriveDate" id="arriveDate" class="form-control"/>
-                    </div>                                         
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

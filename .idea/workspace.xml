@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a9547839-cc0d-4178-bac9-cd19e0b798e8" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/AddItemCategory.php" afterPath="$PROJECT_DIR$/AddItemCategory.php" />
+      <change beforePath="$PROJECT_DIR$/BuyingInformationByQuery.php" afterPath="$PROJECT_DIR$/BuyingInformationByQuery.php" />
+      <change beforePath="$PROJECT_DIR$/CreateCommodity/ajax-form-submit.php" afterPath="$PROJECT_DIR$/CreateCommodity/ajax-form-submit.php" />
+      <change beforePath="$PROJECT_DIR$/Employee/ShippingCheckingCallBack.php" afterPath="$PROJECT_DIR$/Employee/ShippingCheckingCallBack.php" />
+      <change beforePath="$PROJECT_DIR$/ItemCategoryViewCallBack.php" afterPath="$PROJECT_DIR$/ItemCategoryViewCallBack.php" />
+      <change beforePath="$PROJECT_DIR$/PaymentProcessCallBack.php" afterPath="$PROJECT_DIR$/PaymentProcessCallBack.php" />
+      <change beforePath="$PROJECT_DIR$/upload.php" afterPath="$PROJECT_DIR$/upload.php" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="BuyingInformationByQuery.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BuyingInformationByQuery.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="127">
+              <caret line="414" column="52" lean-forward="true" selection-start-line="411" selection-start-column="20" selection-end-line="414" selection-end-column="52" />
+              <folding>
+                <marker date="1520067383490" expanded="true" signature="4893:4916" ph="SELECT * FRO... Setting" />
+                <marker date="1520067383490" expanded="true" signature="5364:5404" ph="SELECT TYPE Members" />
+                <marker date="1520067383490" expanded="true" signature="5804:5836" ph="SELECT FB帳號,... Members" />
+                <marker date="1520067383490" expanded="true" signature="6297:6521" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="6331:6515" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="6461:6501" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="6504:6508" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="7124:7172" ph="Select * fro... Members" />
+                <marker date="1520067383490" expanded="true" signature="8346:8656" ph="INSERT INTO RemitRecord" />
+                <marker date="1520067383490" expanded="true" signature="8826:9096" ph="UPDATE `ShippingRecord`... " />
+                <marker date="1520067383490" expanded="true" signature="8900:8935" ph="SELECT MAX( RemitRecord" />
+                <marker date="1520067383490" expanded="true" signature="9028:9095" ph="SELECT DISTI... ItemCategory" />
+                <marker date="1520067383490" expanded="true" signature="9265:9345" ph="UPDATE `Members`... " />
+                <marker date="1520067383490" expanded="true" signature="9559:9790" ph="INSERT INTO `RebateRecord`... " />
+                <marker date="1520067383490" expanded="true" signature="10035:10273" ph="INSERT INTO `RebateRecord`... " />
+                <marker date="1520067383490" expanded="true" signature="11632:11811" ph="INSERT INTO `Members`... " />
+                <marker date="1520067383490" expanded="true" signature="11812:11893" ph="UPDATE `姓名`... " />
+                <marker date="1520067383490" expanded="true" signature="12361:12412" ph="SELECT * FRO... Members" />
+                <marker date="1520067383490" expanded="true" signature="12738:13702" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="12829:13642" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="12840:13033" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="12874:13015" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="12988:13000" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="13044:13227" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="13078:13209" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="13182:13194" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="13241:13432" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="13301:13420" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="13381:13393" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="13443:13630" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="13510:13620" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="13593:13605" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="13841:14110" ph="SELECT * FRO... ShippingRecord" />
+                <marker date="1520067383490" expanded="true" signature="14309:14578" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="14318:14578" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="15221:15246" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="16316:16699" ph="SELECT * FRO... ShippingRecord" />
+                <marker date="1520067383490" expanded="true" signature="16531:16593" ph="SELECT MAX( RemitRecord" />
+                <marker date="1520067383490" expanded="true" signature="16902:17285" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="16920:17285" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="17944:17969" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="19042:19444" ph="SELECT * FRO... ShippingRecord" />
+                <marker date="1520067383490" expanded="true" signature="19260:19322" ph="SELECT MAX( RemitRecord" />
+                <marker date="1520067383490" expanded="true" signature="19653:20027" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="19671:20027" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="20675:20700" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="23092:23345" ph="INSERT INTO `Members`... " />
+                <marker date="1520067383490" expanded="true" signature="23346:23496" ph="UPDATE `FB帳號`... " />
+                <marker date="1520067383490" expanded="true" signature="24033:24084" ph="SELECT * FRO... Members" />
+                <marker date="1520067383490" expanded="true" signature="24415:26185" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="24508:26119" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="24519:24762" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="24596:24746" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="24717:24729" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="24782:25172" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="24994:25156" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="25123:25135" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="25186:25654" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="25265:25628" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="25358:25370" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="25372:25613" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="25669:25902" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="25723:25886" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="25853:25865" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="25921:26104" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="25975:26088" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="26055:26067" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="26327:26597" ph="SELECT * FRO... ShippingRecord" />
+                <marker date="1520067383490" expanded="true" signature="26792:27061" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="26801:27061" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="27724:27749" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="28846:29186" ph="SELECT * FRO... ShippingRecord" />
+                <marker date="1520067383490" expanded="true" signature="29056:29118" ph="SELECT MAX( RemitRecord" />
+                <marker date="1520067383490" expanded="true" signature="29331:29603" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="29340:29603" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="30239:30264" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="31316:31367" ph="SELECT * FRO... Members" />
+                <marker date="1520067383490" expanded="true" signature="32810:32847" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="32849:32934" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="32860:32919" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33043:33080" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33082:33172" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33093:33157" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33265:33302" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33304:33395" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33315:33380" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33488:33525" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33527:33617" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33538:33602" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33868:33883" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33885:34081" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="33896:34066" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="33916:33958" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="34694:35476" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="35764:36672" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="35794:36654" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="36604:36630" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="36774:36898" ph="SELECT * FRO... RemitRecord" />
+                <marker date="1520067383490" expanded="true" signature="36826:36897" ph="SELECT MAX(`... RemitRecord" />
+                <marker date="1520067383490" expanded="true" signature="37345:37382" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37384:37476" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37396:37460" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37575:37612" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37614:37711" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37626:37695" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37810:37847" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37849:37946" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="37861:37930" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="38045:38082" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="38084:38179" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="38096:38163" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="38223:38238" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="38240:38443" ph="..." />
+                <marker date="1520067383490" expanded="true" signature="38252:38427" ph="..." />
+                <marker date="1520067383490" expanded="false" signature="38273:38315" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FBPosterCallBack.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CreateCommodity/FBPosterCallBack.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="201">
+              <caret line="150" column="24" lean-forward="true" selection-start-line="150" selection-start-column="24" selection-end-line="150" selection-end-column="24" />
+              <folding>
+                <marker date="1520060263064" expanded="true" signature="2741:2781" ph="SELECT TYPE Members" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ItemCategoryViewCallBack.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ItemCategoryViewCallBack.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="402">
+              <caret line="152" column="96" lean-forward="false" selection-start-line="152" selection-start-column="96" selection-end-line="152" selection-end-column="96" />
+              <folding>
+                <marker date="1520074527603" expanded="true" signature="7247:7287" ph="SELECT TYPE Members" />
+                <marker date="1520074527603" expanded="true" signature="7916:8315" ph="SELECT * FRO... ItemCategory" />
+                <marker date="1520074527603" expanded="true" signature="8413:8675" ph="..." />
+                <marker date="1520074527603" expanded="true" signature="8422:8663" ph="..." />
+                <marker date="1520074527603" expanded="true" signature="8426:8655" ph="..." />
+                <marker date="1520074527603" expanded="true" signature="8749:8774" ph="..." />
+                <marker date="1520074527603" expanded="true" signature="9586:9611" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AddItemCategory.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AddItemCategory.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="27" column="2" lean-forward="true" selection-start-line="27" selection-start-column="2" selection-end-line="27" selection-end-column="2" />
+              <folding>
+                <marker date="1520074393670" expanded="true" signature="463:742" ph="INSERT INTO `ItemCategory`... " />
+                <marker date="1520074393670" expanded="true" signature="743:931" ph="UPDATE `品項`... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>upload</find>
+      <find>ItemCategory</find>
+      <find>uploads</find>
+      <find>addspec</find>
+      <find>specAddForm</find>
+      <find>myModal</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/PaymentProcessCallBack.php" />
+        <option value="$PROJECT_DIR$/BuyingInformationByQuery.php" />
+        <option value="$PROJECT_DIR$/upload.php" />
+        <option value="$PROJECT_DIR$/CreateCommodity/ajax-form-submit.php" />
+        <option value="$PROJECT_DIR$/Employee/ShippingCheckingCallBack.php" />
+        <option value="$PROJECT_DIR$/AddItemCategory.php" />
+        <option value="$PROJECT_DIR$/ItemCategoryViewCallBack.php" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
+    <option name="width" value="1680" />
+    <option name="height" value="947" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="MommysSecret" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MommysSecret" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="MommysSecret" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MommysSecret" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="CreateCommodity" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="MommysSecret" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MommysSecret" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="Employee" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a9547839-cc0d-4178-bac9-cd19e0b798e8" name="Default" comment="" />
+      <created>1520060425497</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1520060425497</updated>
+      <workItem from="1520060427806" duration="397000" />
+      <workItem from="1520067121571" duration="4158000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="4555000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="23" width="1680" height="947" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32914287" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/PaymentProcessCallBack.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="853" column="61" lean-forward="false" selection-start-line="853" selection-start-column="61" selection-end-line="853" selection-end-column="61" />
+          <folding>
+            <marker date="1520067330179" expanded="true" signature="5129:5152" ph="SELECT * FRO... Setting" />
+            <marker date="1520067330179" expanded="false" signature="5621:5849" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="5851:5884" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="5918:5963" ph="SELECT * FRO... Members" />
+            <marker date="1520067330179" expanded="true" signature="7093:7388" ph="INSERT INTO RemitRecord" />
+            <marker date="1520067330179" expanded="true" signature="7552:7800" ph="UPDATE `ShippingRecord`... " />
+            <marker date="1520067330179" expanded="true" signature="7610:7645" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067330179" expanded="true" signature="7732:7799" ph="SELECT DISTI... ItemCategory" />
+            <marker date="1520067330179" expanded="true" signature="7963:8037" ph="UPDATE `Members`... " />
+            <marker date="1520067330179" expanded="true" signature="8243:8461" ph="INSERT INTO `RebateRecord`... " />
+            <marker date="1520067330179" expanded="true" signature="8696:8921" ph="INSERT INTO `RebateRecord`... " />
+            <marker date="1520067330179" expanded="true" signature="10200:10367" ph="INSERT INTO `Members`... " />
+            <marker date="1520067330179" expanded="true" signature="10368:10443" ph="UPDATE `姓名`... " />
+            <marker date="1520067330179" expanded="true" signature="10911:10956" ph="SELECT * FRO... Members" />
+            <marker date="1520067330179" expanded="true" signature="11279:12219" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11370:12159" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11381:11562" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11415:11544" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="11517:11529" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11573:11744" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11607:11726" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="11699:11711" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11758:11949" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11818:11937" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="11898:11910" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="11960:12147" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="12027:12137" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="12110:12122" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="12358:12622" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067330179" expanded="true" signature="12821:13073" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="12830:13073" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="14687:15061" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067330179" expanded="true" signature="14897:14953" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067330179" expanded="true" signature="15262:15631" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="15280:15631" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="17261:17645" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067330179" expanded="true" signature="17470:17526" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067330179" expanded="true" signature="17855:18212" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="17873:18212" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="21212:21453" ph="INSERT INTO `Members`... " />
+            <marker date="1520067330179" expanded="true" signature="21454:21598" ph="UPDATE `FB帳號`... " />
+            <marker date="1520067330179" expanded="true" signature="22135:22180" ph="SELECT * FRO... Members" />
+            <marker date="1520067330179" expanded="true" signature="22509:24279" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="22602:24213" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="22613:22856" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="22690:22840" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="22811:22823" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="22876:23266" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="23088:23250" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="23217:23229" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="23280:23748" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="23359:23722" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="23452:23464" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="23466:23707" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="23763:23996" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="23817:23980" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="23947:23959" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="24015:24198" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="24069:24182" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="24149:24161" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="24385:24411" ph="SELECT FB帳號 Members" />
+            <marker date="1520067330179" expanded="true" signature="25039:25302" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067330179" expanded="true" signature="25493:25762" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="25502:25762" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="26425:26450" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="27791:28115" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067330179" expanded="true" signature="27993:28049" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067330179" expanded="true" signature="28258:28559" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="28267:28559" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="29195:29220" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="30272:30317" ph="SELECT * FRO... Members" />
+            <marker date="1520067330179" expanded="true" signature="31750:31787" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="31789:31874" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="31800:31859" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="31983:32020" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32022:32112" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32033:32097" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32205:32242" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32244:32334" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32255:32319" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32427:32464" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32466:32556" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32477:32541" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32807:32822" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32824:33022" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="32835:33007" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="32855:32897" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="33633:34510" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="34796:35520" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="34826:35502" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="35452:35478" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="35622:35740" ph="SELECT * FRO... RemitRecord" />
+            <marker date="1520067330179" expanded="true" signature="35674:35739" ph="SELECT MAX(`... RemitRecord" />
+            <marker date="1520067330179" expanded="true" signature="36195:36232" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36234:36326" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36246:36310" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36425:36462" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36464:36561" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36476:36545" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36660:36697" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36699:36796" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36711:36780" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36895:36932" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36934:37029" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="36946:37013" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="37073:37088" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="37090:37293" ph="..." />
+            <marker date="1520067330179" expanded="true" signature="37102:37277" ph="..." />
+            <marker date="1520067330179" expanded="false" signature="37123:37165" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Employee/ShippingCheckingCallBack.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="282" column="63" lean-forward="false" selection-start-line="282" selection-start-column="63" selection-end-line="282" selection-end-column="63" />
+          <folding>
+            <marker date="1520069377755" expanded="true" signature="2798:2838" ph="SELECT TYPE Members" />
+            <marker date="1520069377755" expanded="true" signature="3236:3268" ph="SELECT FB帳號,... Members" />
+            <marker date="1520069377755" expanded="true" signature="3738:3922" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="3868:3908" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="3911:3915" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="5102:5288" ph="UPDATE `ShippingRecord`... " />
+            <marker date="1520069377755" expanded="true" signature="5220:5287" ph="SELECT DISTI... ItemCategory" />
+            <marker date="1520069377755" expanded="true" signature="5545:5722" ph="UPDATE `ShippingRecord`... " />
+            <marker date="1520069377755" expanded="true" signature="5654:5721" ph="SELECT DISTI... ItemCategory" />
+            <marker date="1520069377755" expanded="true" signature="6284:7266" ph="SELECT ItemC... ShippingRecord" />
+            <marker date="1520069377755" expanded="true" signature="6923:7119" ph="SELECT Shipp... ShippingRecord" />
+            <marker date="1520069377755" expanded="true" signature="7178:7245" ph="SELECT DISTI... ItemCategory" />
+            <marker date="1520069377755" expanded="true" signature="7502:7671" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="7721:7985" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="7727:7985" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="8460:8485" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="10575:10628" ph="SELECT * FRO... Members" />
+            <marker date="1520069377755" expanded="true" signature="11033:11330" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11040:11090" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11097:11149" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11156:11208" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11215:11271" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11278:11330" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11420:11479" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11571:11638" ph="..." />
+            <marker date="1520069377755" expanded="true" signature="11696:11749" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BuyingInformationByQuery.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="414" column="52" lean-forward="true" selection-start-line="411" selection-start-column="20" selection-end-line="414" selection-end-column="52" />
+          <folding>
+            <marker date="1520067383490" expanded="true" signature="4893:4916" ph="SELECT * FRO... Setting" />
+            <marker date="1520067383490" expanded="true" signature="5364:5404" ph="SELECT TYPE Members" />
+            <marker date="1520067383490" expanded="true" signature="5804:5836" ph="SELECT FB帳號,... Members" />
+            <marker date="1520067383490" expanded="true" signature="6297:6521" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="6331:6515" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="6461:6501" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="6504:6508" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="7124:7172" ph="Select * fro... Members" />
+            <marker date="1520067383490" expanded="true" signature="8346:8656" ph="INSERT INTO RemitRecord" />
+            <marker date="1520067383490" expanded="true" signature="8826:9096" ph="UPDATE `ShippingRecord`... " />
+            <marker date="1520067383490" expanded="true" signature="8900:8935" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067383490" expanded="true" signature="9028:9095" ph="SELECT DISTI... ItemCategory" />
+            <marker date="1520067383490" expanded="true" signature="9265:9345" ph="UPDATE `Members`... " />
+            <marker date="1520067383490" expanded="true" signature="9559:9790" ph="INSERT INTO `RebateRecord`... " />
+            <marker date="1520067383490" expanded="true" signature="10035:10273" ph="INSERT INTO `RebateRecord`... " />
+            <marker date="1520067383490" expanded="true" signature="11632:11811" ph="INSERT INTO `Members`... " />
+            <marker date="1520067383490" expanded="true" signature="11812:11893" ph="UPDATE `姓名`... " />
+            <marker date="1520067383490" expanded="true" signature="12361:12412" ph="SELECT * FRO... Members" />
+            <marker date="1520067383490" expanded="true" signature="12738:13702" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="12829:13642" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="12840:13033" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="12874:13015" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="12988:13000" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="13044:13227" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="13078:13209" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="13182:13194" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="13241:13432" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="13301:13420" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="13381:13393" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="13443:13630" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="13510:13620" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="13593:13605" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="13841:14110" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067383490" expanded="true" signature="14309:14578" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="14318:14578" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="15221:15246" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="16316:16699" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067383490" expanded="true" signature="16531:16593" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067383490" expanded="true" signature="16902:17285" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="16920:17285" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="17944:17969" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="19042:19444" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067383490" expanded="true" signature="19260:19322" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067383490" expanded="true" signature="19653:20027" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="19671:20027" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="20675:20700" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="23092:23345" ph="INSERT INTO `Members`... " />
+            <marker date="1520067383490" expanded="true" signature="23346:23496" ph="UPDATE `FB帳號`... " />
+            <marker date="1520067383490" expanded="true" signature="24033:24084" ph="SELECT * FRO... Members" />
+            <marker date="1520067383490" expanded="true" signature="24415:26185" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="24508:26119" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="24519:24762" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="24596:24746" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="24717:24729" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="24782:25172" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="24994:25156" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="25123:25135" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="25186:25654" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="25265:25628" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="25358:25370" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="25372:25613" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="25669:25902" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="25723:25886" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="25853:25865" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="25921:26104" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="25975:26088" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="26055:26067" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="26327:26597" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067383490" expanded="true" signature="26792:27061" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="26801:27061" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="27724:27749" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="28846:29186" ph="SELECT * FRO... ShippingRecord" />
+            <marker date="1520067383490" expanded="true" signature="29056:29118" ph="SELECT MAX( RemitRecord" />
+            <marker date="1520067383490" expanded="true" signature="29331:29603" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="29340:29603" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="30239:30264" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="31316:31367" ph="SELECT * FRO... Members" />
+            <marker date="1520067383490" expanded="true" signature="32810:32847" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="32849:32934" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="32860:32919" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33043:33080" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33082:33172" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33093:33157" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33265:33302" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33304:33395" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33315:33380" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33488:33525" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33527:33617" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33538:33602" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33868:33883" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33885:34081" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="33896:34066" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="33916:33958" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="34694:35476" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="35764:36672" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="35794:36654" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="36604:36630" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="36774:36898" ph="SELECT * FRO... RemitRecord" />
+            <marker date="1520067383490" expanded="true" signature="36826:36897" ph="SELECT MAX(`... RemitRecord" />
+            <marker date="1520067383490" expanded="true" signature="37345:37382" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37384:37476" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37396:37460" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37575:37612" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37614:37711" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37626:37695" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37810:37847" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37849:37946" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="37861:37930" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="38045:38082" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="38084:38179" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="38096:38163" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="38223:38238" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="38240:38443" ph="..." />
+            <marker date="1520067383490" expanded="true" signature="38252:38427" ph="..." />
+            <marker date="1520067383490" expanded="false" signature="38273:38315" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CreateCommodity/FBPosterCallBack.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="150" column="24" lean-forward="true" selection-start-line="150" selection-start-column="24" selection-end-line="150" selection-end-column="24" />
+          <folding>
+            <marker date="1520060263064" expanded="true" signature="2741:2781" ph="SELECT TYPE Members" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CreateCommodity/ajax-form-submit.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="146" column="13" lean-forward="true" selection-start-line="146" selection-start-column="13" selection-end-line="146" selection-end-column="13" />
+          <folding>
+            <marker date="1520069065478" expanded="true" signature="4418:4693" ph="INSERT INTO `ItemCategory`... " />
+            <marker date="1520069065478" expanded="true" signature="4694:4885" ph="UPDATE `品項`... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/upload.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="41" lean-forward="false" selection-start-line="1" selection-start-column="41" selection-end-line="1" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AddItemCategory.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="2" lean-forward="true" selection-start-line="27" selection-start-column="2" selection-end-line="27" selection-end-column="2" />
+          <folding>
+            <marker date="1520074393670" expanded="true" signature="463:742" ph="INSERT INTO `ItemCategory`... " />
+            <marker date="1520074393670" expanded="true" signature="743:931" ph="UPDATE `品項`... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ItemCategoryViewCallBack.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="402">
+          <caret line="152" column="96" lean-forward="false" selection-start-line="152" selection-start-column="96" selection-end-line="152" selection-end-column="96" />
+          <folding>
+            <marker date="1520074527603" expanded="true" signature="7247:7287" ph="SELECT TYPE Members" />
+            <marker date="1520074527603" expanded="true" signature="7916:8315" ph="SELECT * FRO... ItemCategory" />
+            <marker date="1520074527603" expanded="true" signature="8413:8675" ph="..." />
+            <marker date="1520074527603" expanded="true" signature="8422:8663" ph="..." />
+            <marker date="1520074527603" expanded="true" signature="8426:8655" ph="..." />
+            <marker date="1520074527603" expanded="true" signature="8749:8774" ph="..." />
+            <marker date="1520074527603" expanded="true" signature="9586:9611" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

@@ -6,7 +6,7 @@ header("Content-Type:text/html; charset=utf-8");
 if(!session_id()) {
 	session_start();
 }
-$target_dir = "/home/mommysse/public_html/MS/uploads/";
+$target_dir = "/home/mommysse/public_html/uploads/";
 $target_file = $target_dir . $_FILES["my-file-selector"]["name"];
 $fileToBeUpload = $_POST['fileToBeUpload'];
 if (file_exists($target_file)) { unlink ($target_file); }

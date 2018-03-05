@@ -70,7 +70,7 @@ if(!session_id()) {
 	    var shippingFee = 0;
 		if(document.getElementById("ShippingWayId").value == "店到店")
 		{
-			shippingFee = 60;
+			shippingFee = 90;
 		}
 		else if(document.getElementById("ShippingWayId").value == "貨運")
 		{
@@ -149,8 +149,23 @@ if(!session_id()) {
 	}
 	$fbAccount = $userNode->getName();
 	$fbID = $userNode->getId();
-	
-	$fbAccount = $userNode->getName();
+
+    $sql = "SELECT * FROM `Setting`;";
+    $result = mysql_query($sql,$con);
+
+    if (!$result) {
+        die('Invalid query: ' . mysql_error());
+    }
+
+    $row = mysql_fetch_array($result);
+
+    $isOpen = $row['isOpen'];
+    $openRemitDate = $row['開放匯款日期'];
+
+    $openRemitDatetime = new DateTime($openRemitDate);
+    $currentDate = new DateTime();
+    $interval = date_diff($openRemitDatetime, $currentDate);
+    $intervalDate = $interval->format('%a');
 	
 	$result = mysql_query("SELECT TYPE FROM `Members` WHERE FBID = $fbID")
 	
@@ -448,7 +463,7 @@ if(!session_id()) {
 					
 				$subTotal = $adjustedPrice * $row['數量'];
 				$toRemitTable = $toRemitTable . "<tr>";
-				$toRemitTable = $toRemitTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+				$toRemitTable = $toRemitTable . "<td><img src=../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 				$toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
@@ -521,7 +536,7 @@ if(!session_id()) {
 			    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 			    $subTotal = $adjustedPrice * $row['數量'];
 			    $remitedTable = $remitedTable . "<tr>";
-			    $remitedTable = $remitedTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+			    $remitedTable = $remitedTable . "<td><img src=../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 			    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
@@ -794,7 +809,7 @@ if(!session_id()) {
 		    	
 		    $subTotal = $adjustedPrice * $row['數量'];
 		    $toRemitTable = $toRemitTable . "<tr>";
-		    $toRemitTable = $toRemitTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+		    $toRemitTable = $toRemitTable . "<td><img src=../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
@@ -864,7 +879,7 @@ if(!session_id()) {
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 		    $subTotal = $adjustedPrice * $row['數量'];
 		    $remitedTable = $remitedTable . "<tr>";
-		    $remitedTable = $remitedTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+		    $remitedTable = $remitedTable . "<td><img src=../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
@@ -898,8 +913,8 @@ if(!session_id()) {
 		$shippingFee = $row['運費'];
 		$rebate = $row['Rebate'];
 		$type = $row['Type'];
-		
-		if($totalPrice > 6000)
+
+        if($totalPrice > 6000)
 		{
 		    $actualShippingFee = 0;
 		}
@@ -915,7 +930,7 @@ if(!session_id()) {
 		else
 		{
 		    $moneyToBePaid = $totalPrice + $actualShippingFee;
-		    if($totalPrice > 3000)
+		    if(($intervalDate <= 2) && ($type != '黑名單'))
 		    {
 		    	$rebateToBeIncrease = $totalPrice * 2 / 100;
 		    }
@@ -937,7 +952,7 @@ if(!session_id()) {
 		    	$moneyToBePaid = 0;
 		    }
 		    
-		    if($type == '團媽')
+		    if($type == '團媽' || $type == '管理員')
 		    {
 		    	$rebateToBeIncrease = 0;
 		    	$rebateWillBeUpdate = 0;

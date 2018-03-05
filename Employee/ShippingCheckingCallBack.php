@@ -280,7 +280,7 @@ if(isset($CustomerFBID)) {
 		
 		$subTotal = $row['單價'] * $row['數量'];
 		$toShippingTable = $toShippingTable . "<tr>";
-		$toShippingTable = $toShippingTable . "<td><img src=../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+		$toShippingTable = $toShippingTable . "<td><img src=../../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['SerialNumber'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['FB帳號'] . "</td>";
 		$toShippingTable = $toShippingTable . "<td>" . $row['FBID'] . "</td>";

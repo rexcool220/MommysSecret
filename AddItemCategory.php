@@ -17,7 +17,7 @@ $vendor= $_POST['vendor'];
 $arriveDate= $_POST['arriveDate'];
 
 $sql = "INSERT INTO `ItemCategory` (`ItemID`,`品項`,`價格`,`規格`,`月份`,`成本`,`批發價`,`廠商`,`到貨日期`,`Photo`,`Active`)
-VALUES ( \"$itemID\", \"$itemName\", \"$itemPrice\", \"$itemSpec\", \"$month\", \"$itemCost\", \"$itemWholeSalePrice\", \"$vendor\", \"$arriveDate\", \"NotAvailable.png\", 0)
+VALUES ( \"$itemID\", \"$itemName\", \"$itemPrice\", \"$itemSpec\", \"$month\", \"$itemCost\", \"$itemWholeSalePrice\", \"$vendor\", \"$arriveDate\", \"$photo\", 0)
 ON DUPLICATE KEY UPDATE `品項`=\"$itemName\", `價格`=\"$itemPrice\", `月份`=\"$month\", `成本`=\"$itemCost\", `批發價`=\"$itemWholeSalePrice\", `廠商`=\"$vendor\", `到貨日期`=\"$arriveDate\", `Photo`=\"$photo\", `Active`=0";
 
 $result = mysql_query($sql,$con);

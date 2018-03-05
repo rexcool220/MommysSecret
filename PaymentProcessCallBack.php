@@ -15,7 +15,7 @@ if(!session_id()) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20160905">
+	<link rel="stylesheet" type="text/css" href="MommysSecret.css?20170912">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>  
@@ -75,7 +75,7 @@ if(!session_id()) {
 	    var shippingFee = 0;
 		if(document.getElementById("ShippingWayId").value == "店到店")
 		{
-			shippingFee = 60;
+			shippingFee = 90;
 		}
 		else if(document.getElementById("ShippingWayId").value == "貨運")
 		{
@@ -165,10 +165,29 @@ if(!session_id()) {
 	$row = mysql_fetch_array($result);
 	
 	$isOpen = $row['isOpen'];
-	if($isOpen == 0)
+    $openRemitDate = $row['開放匯款日期'];
+
+    $openRemitDatetime = new DateTime($openRemitDate);
+    $currentDate = new DateTime();
+    $interval = date_diff($openRemitDatetime, $currentDate);
+    $intervalDate = $interval->format('%a');
+
+    if($isOpen == 0)
 	{
-		echo "《系統更新到貨狀況中》";
-		exit;
+        echo "    
+        <div style=\"
+        display: inline-block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 400px;
+        height: 100px;
+        margin: auto;
+        background-color: #ffffff;\"><h1>系統更新到貨狀況中</h1>
+        </div>";
+        exit;
 	}
 	
 	
@@ -760,7 +779,7 @@ if(!session_id()) {
 		    	
 		    $subTotal = $adjustedPrice * $row['數量'];
 		    $toRemitTable = $toRemitTable . "<tr>";
-		    $toRemitTable = $toRemitTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+		    $toRemitTable = $toRemitTable . "<td><img src=../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $toRemitTable = $toRemitTable . "<td>" . $row['FBID'] . "</td>";
@@ -832,7 +851,7 @@ if(!session_id()) {
 		    $isReceivedPayment = ($row['確認收款'] == 0)?"否":"已收";
 		    $subTotal = $adjustedPrice * $row['數量'];
 		    $remitedTable = $remitedTable . "<tr>";
-		    $remitedTable = $remitedTable . "<td><img src=uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
+		    $remitedTable = $remitedTable . "<td><img src=../uploads/".$row[Photo]." style=\"height:100px;width:100px;\" /></td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['SerialNumber'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FB帳號'] . "</td>";
 		    $remitedTable = $remitedTable . "<td>" . $row['FBID'] . "</td>";
@@ -883,7 +902,7 @@ if(!session_id()) {
 		else
 		{
 		    $moneyToBePaid = $totalPrice + $actualShippingFee;
-		    if($totalPrice > 3000)
+		    if(($intervalDate <= 2) && ($type != '黑名單'))
 		    {
 		    	$rebateToBeIncrease = $totalPrice * 2 / 100;
 		    }
